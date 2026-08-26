@@ -1,0 +1,88 @@
+/* Published blog article content — extends editor prose for reader view */
+.blog-article-prose.prose-editor .tiptap {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+}
+
+.blog-article-prose.prose-editor .tiptap > * + * {
+    margin-top: 0;
+}
+
+.blog-article-prose.prose-editor .tiptap p {
+    margin-bottom: 1rem;
+}
+
+.blog-article-prose.prose-editor .tiptap h1,
+.blog-article-prose.prose-editor .tiptap h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.blog-article-prose.prose-editor .tiptap h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/*
+ * Article images render at their own size, capped to the column and to the 1920x1080 artwork
+ * ceiling. `width: 100%` used to stretch every image to the full column, so a small screenshot
+ * was upscaled until it blurred. width/height auto with both max-* set keeps the aspect ratio.
+ */
+.blog-article-prose.prose-editor .tiptap img {
+    border-radius: 0.75rem;
+    display: block;
+    margin: 1.5rem 0;
+    width: auto;
+    height: auto;
+    max-width: min(100%, 1920px);
+    max-height: 1080px;
+}
+
+.blog-article-prose.prose-editor .tiptap a {
+    color: var(--color-primary);
+}
+
+.blog-article-prose.prose-editor .tiptap ul,
+.blog-article-prose.prose-editor .tiptap ol {
+    margin-bottom: 1rem;
+}
+
+/* Match editor table layout: wrapper for scroll, no handle gutters, compact cells */
+.blog-article-prose.prose-editor .tiptap .tableWrapper {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+}
+
+.blog-article-prose.prose-editor .tiptap table {
+    margin: 1.5rem 0;
+}
+
+.blog-article-prose.prose-editor .tiptap .tableWrapper table {
+    margin: 0;
+}
+
+.blog-article-prose.prose-editor .tiptap td > p,
+.blog-article-prose.prose-editor .tiptap th > p {
+    margin-bottom: 0;
+}
+
+.blog-article-prose.prose-editor .tiptap td > p + p,
+.blog-article-prose.prose-editor .tiptap th > p + p {
+    margin-top: 0.5rem;
+}
+
+.blog-article-prose.prose-editor .tiptap td img,
+.blog-article-prose.prose-editor .tiptap th img {
+    margin: 0.5rem 0;
+    width: auto;
+    max-width: 100%;
+}

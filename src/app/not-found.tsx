@@ -1,7 +1,7 @@
-// import LinkCustom from "@/components/link-custom.component";
+import LinkCustom from "@/components/link-custom.component";
 
-// import { isSupportedLanguage } from "@/proxies/language.proxy";
-// import { LANGUAGE } from "@/shared/constants/common.constants";
+import { isSupportedLanguage } from "@/proxies/language.proxy";
+import { LANGUAGE } from "@/shared/constants/common.constants";
 
 interface NotFoundPageProps {
   params?: Promise<{ locale?: string }> | { locale?: string };
@@ -10,7 +10,7 @@ interface NotFoundPageProps {
 export default async function NotFoundPage({ params }: NotFoundPageProps) {
   const resolvedParams = await params;
   const routeLocale = resolvedParams?.locale;
-  // const language = await isSupportedLanguage(routeLocale) ? routeLocale : LANGUAGE.TH;
+  const language = await isSupportedLanguage(routeLocale) ? routeLocale : LANGUAGE.TH;
 
   return (
     <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden text-center">
@@ -45,12 +45,12 @@ export default async function NotFoundPage({ params }: NotFoundPageProps) {
             aria-hidden="true"
             className="absolute inset-[-200%] animate-spin [animation-duration:3s] bg-[conic-gradient(from_0deg,transparent_35%,var(--color-primary)_47%,white_50%,var(--color-primary)_53%,transparent_65%)]"
           />
-          {/* <LinkCustom
+          <LinkCustom
             href={`/${language}`}
             className="relative z-10 flex items-center justify-center rounded-md bg-(--surface-default) px-8 py-2.5 text-sm font-medium text-(--text-primary) transition-colors duration-200 hover:bg-(--surface-default)"
           >
             Back to home
-          </LinkCustom> */}
+          </LinkCustom>
         </div>
       </div>
     </main>
