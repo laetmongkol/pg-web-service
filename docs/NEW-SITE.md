@@ -24,19 +24,23 @@
 
 ## 0. Env + ไฟล์ static
 
-| อะไร | ที่ไหน |
-|---|---|
-| origin ของเว็บ (canonical / sitemap / OG) | `.env` → `NEXT_PUBLIC_APP_URL=https://www.acme.com` |
-| tenant ใน dev | `.env` → `NEXT_PUBLIC_DEV_DOMAIN_CODE=acme` |
-| backend | `.env` → `APP_SERVICE_ORIGIN=...` |
-| โลโก้ light/dark | `public/logo.svg` (ตอนนี้ `logo.tsx` ชี้ไฟล์นี้ — **ยังไม่มีใน `public/`**) |
-| โลโก้ JSON-LD / OG | `public/logo.png` (ค่า `ORGANIZATION.logoPath`) |
-| รูป OG default | `public/og-default.png` (ค่า `SITE_METADATA.ogImage`) |
-| favicon | `src/app/favicon.ico`, `src/app/icon.png`, `src/app/apple-icon.png` |
+
+| อะไร                                      | ที่ไหน                                                                      |
+| ----------------------------------------- | --------------------------------------------------------------------------- |
+| origin ของเว็บ (canonical / sitemap / OG) | `.env` → `NEXT_PUBLIC_APP_URL=https://www.acme.com`                         |
+| tenant ใน dev                             | `.env` → `NEXT_PUBLIC_DEV_DOMAIN_CODE=acme`                                 |
+| backend                                   | `.env` → `APP_SERVICE_ORIGIN=...`                                           |
+| โลโก้ light/dark                          | `public/logo.svg` (ตอนนี้ `logo.tsx` ชี้ไฟล์นี้ — **ยังไม่มีใน** `public/`) |
+| โลโก้ JSON-LD / OG                        | `public/logo.png` (ค่า `ORGANIZATION.logoPath`)                             |
+| รูป OG default                            | `public/og-default.png` (ค่า `SITE_METADATA.ogImage`)                       |
+| favicon                                   | `src/app/favicon.ico`, `src/app/icon.png`, `src/app/apple-icon.png`         |
+
 
 `src/lib/seo/json-ld.ts` และ `src/app/layout.tsx` **ไม่ต้องแก้** — อ่านจาก constants.
 
 ---
+
+
 
 ## 1. `src/shared/constants/seo.constants.ts`
 
@@ -91,6 +95,8 @@ export const SERVICE = {
 
 ---
 
+
+
 ## 2. `src/lib/seo/metadata.ts`
 
 แก้เฉพาะ `SITE_METADATA` ด้านบน. ฟังก์ชันด้านล่างอย่าแตะ.
@@ -130,6 +136,8 @@ export async function generateMetadata({
 
 ---
 
+
+
 ## 3. `src/shared/constants/nav-links.constants.ts`
 
 เมนู navbar. `key` = translation key ที่ `navbar.tsx` เรียก `t(key)`.
@@ -156,6 +164,8 @@ const NAV_LINKS: NavLinkItem[] = [
 
 ---
 
+
+
 ## 4. `src/components/layout/navbar-component/nav-links.tsx`
 
 ไอคอนเมนู. key **ต้องตรง** `NAV_LINKS[].key`.
@@ -175,6 +185,8 @@ const NAV_LINK_ICONS: Partial<Record<NavLinkKey, LucideIcon>> = {
 
 ---
 
+
+
 ## 5. `src/components/layout/navbar-component/navbar-actions.tsx`
 
 ปุ่มขวา (sign-in / CTA). URL ว่าง = ลิงก์พัง.
@@ -193,6 +205,8 @@ export const NAVBAR_ROUTES = {
 
 ---
 
+
+
 ## 6. `src/components/layout/logo.tsx`
 
 ```tsx
@@ -208,20 +222,24 @@ export const NAVBAR_ROUTES = {
 
 ---
 
+
+
 ## 7. `src/components/layout/footer.tsx`
 
 จุดที่ต้องใส่:
 
-| ตัวแปร / จุด | ใส่อะไร |
-|---|---|
-| `LINE_QR_STORAGE_KEY` | media key จาก CMS/S3 ไม่ใช่ URL เต็ม. ว่าง = กล่องว่าง |
-| `SOCIAL_LINKS` | URL จริง + icon จาก `react-icons` |
-| `COMPANY_LINKS` / `GROUP_COMPANY_LINKS` | `key` = translation key, `href` = `"/about-us"` หรือ `"#"` ถ้ายังไม่มีหน้า |
-| `LEGAL_LINKS` | แถวล่าง — ตอนนี้ `href={t(link.href)}` ดังนั้น `href` ใน array ต้องเป็น **translation key ที่คืน URL** ไม่ใช่ path ตรง ๆ |
-| `<h2>Name</h2>` | ชื่อบริษัท |
-| `<p>Description</p>` | คำโปรย |
-| `title` / `subtitle` ที่ hardcode | ข้อความหรือ `t("footer.xxx")` |
-| `© … rights.` | ข้อความลิขสิทธิ์ |
+
+| ตัวแปร / จุด                            | ใส่อะไร                                                                                                                  |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `LINE_QR_STORAGE_KEY`                   | media key จาก CMS/S3 ไม่ใช่ URL เต็ม. ว่าง = กล่องว่าง                                                                   |
+| `SOCIAL_LINKS`                          | URL จริง + icon จาก `react-icons`                                                                                        |
+| `COMPANY_LINKS` / `GROUP_COMPANY_LINKS` | `key` = translation key, `href` = `"/about-us"` หรือ `"#"` ถ้ายังไม่มีหน้า                                               |
+| `LEGAL_LINKS`                           | แถวล่าง — ตอนนี้ `href={t(link.href)}` ดังนั้น `href` ใน array ต้องเป็น **translation key ที่คืน URL** ไม่ใช่ path ตรง ๆ |
+| `<h2>Name</h2>`                         | ชื่อบริษัท                                                                                                               |
+| `<p>Description</p>`                    | คำโปรย                                                                                                                   |
+| `title` / `subtitle` ที่ hardcode       | ข้อความหรือ `t("footer.xxx")`                                                                                            |
+| `© … rights.`                           | ข้อความลิขสิทธิ์                                                                                                         |
+
 
 ตัวอย่างลิงก์:
 
@@ -245,6 +263,8 @@ const COMPANY_LINKS: FooterLinkItem[] = [
 
 ---
 
+
+
 ## 8. `src/proxies/routing-guard.proxy.ts`
 
 ปิดหน้าโดยไม่ลบไฟล์. key = logical path **ตัด locale**.
@@ -262,6 +282,8 @@ const ROUTE_REGISTRY: Record<string, PublishStatus> = {
 มีหน้าใหม่ที่ยังไม่พร้อม → ใส่ `"N"` ก่อน แล้วค่อยเปิด.
 
 ---
+
+
 
 ## 9. `src/app/[locale]/(public)/page.tsx`
 
@@ -284,9 +306,11 @@ src/app/[locale]/(public)/our-businesses/product-a/page.tsx
 
 ---
 
+
+
 ## 10. `src/styles/theme-tokens.css`
 
-แก้สเกลสีใน `:root`. ชื่อตัวแปร**ห้ามเปลี่ยน** — component อ้าง `--color-primary-*` อยู่แล้ว.
+แก้สเกลสีใน `:root`. ชื่อตัวแปร**ห้ามเปลี่ยน** — component อ้าง `--color-primary-`* อยู่แล้ว.
 
 จุดที่ใช้บ่อย:
 
@@ -299,6 +323,8 @@ src/app/[locale]/(public)/our-businesses/product-a/page.tsx
 หน้า `page.tsx` (swatch) ใช้ดู token หลังเปลี่ยนสี.
 
 ---
+
+
 
 ## 11. `src/app/sitemap.xml/route.ts`
 
@@ -321,17 +347,23 @@ site:label="..."
 
 ---
 
+
+
 ## 12. อื่นที่เกี่ยวกับแบรนด์ (ไม่อยู่ใน git list ล่าสุด)
 
-| path | ทำอะไร |
-|---|---|
-| `package.json` → `"name"` | ชื่อแพ็กเกจ เช่น `acme-web-service` |
-| `next.config.ts` | คอมเมนต์ชื่อ repo sibling; `rewrites` ไป `APP_SERVICE_ORIGIN` |
-| `src/app/robots.ts` | ไม่ต้องแก้ — ใช้ `getSiteUrl()` |
-| `src/app/layout.tsx` | font / JSON-LD. เปลี่ยนฟอนต์ที่นี่ถ้าแบรนด์ไม่ใช้ Roboto + Noto Sans Thai |
-| `src/lib/seo/json-ld.ts` | ไม่ต้องแก้ |
+
+| path                      | ทำอะไร                                                                    |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `package.json` → `"name"` | ชื่อแพ็กเกจ เช่น `acme-web-service`                                       |
+| `next.config.ts`          | คอมเมนต์ชื่อ repo sibling; `rewrites` ไป `APP_SERVICE_ORIGIN`             |
+| `src/app/robots.ts`       | ไม่ต้องแก้ — ใช้ `getSiteUrl()`                                           |
+| `src/app/layout.tsx`      | font / JSON-LD. เปลี่ยนฟอนต์ที่นี่ถ้าแบรนด์ไม่ใช้ Roboto + Noto Sans Thai |
+| `src/lib/seo/json-ld.ts`  | ไม่ต้องแก้                                                                |
+
 
 ---
+
+
 
 ## Checklist สั้น
 
