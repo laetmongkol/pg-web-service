@@ -1,0 +1,23 @@
+/* Improve stability when switching theme */
+html,
+body,
+* {
+  will-change: auto;
+}
+
+/* Global theme transition */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
+}
+
+/* Keep interactive elements feeling fast */
+a:hover,
+button:hover,
+a,
+button {
+  transition-duration: 0.15s;
+}
