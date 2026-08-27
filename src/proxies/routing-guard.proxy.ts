@@ -15,12 +15,7 @@ export type PublishStatus = "Y" | "N" | "D";
  * - "N" disabled — 404 for everyone
  * - "D" draft — 404 (this site has no admin preview)
  */
-const ROUTE_REGISTRY: Record<string, PublishStatus> = {
-  "/about-us": "Y",
-  "/contact-us": "Y",
-  "/our-businesses": "Y",
-  [BLOG_BASE_PATH]: "Y",
-};
+const ROUTE_REGISTRY: Record<string, PublishStatus> = {};
 
 export function getRouteStatus(logicalPath: string): PublishStatus {
   return ROUTE_REGISTRY[logicalPath] ?? "Y";
