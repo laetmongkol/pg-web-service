@@ -5,7 +5,7 @@ import { getLanguageLabel } from "@/shared/constants/language.constants"
 
 export const revalidate = 3600
 
-const GOC_NS = "https://gocprime.net/sitemap"
+const GOC_NS = ""
 
 function escapeXml(value: string): string {
   return value

@@ -3,18 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
 
-import {
-  ChartLine,
-  ChevronDown,
-  Home,
-  Info,
-  LucideIcon,
-  Megaphone,
-  MessageCircleQuestion,
-  Newspaper,
-  Package,
-  Users,
-} from "lucide-react"
+import { Home, LucideIcon, ChevronDown } from "lucide-react"
 
 import cn from "@/lib/tw-merge"
 
@@ -34,14 +23,7 @@ interface NavLinksProps {
 }
 
 const NAV_LINK_ICONS: Partial<Record<NavLinkKey, LucideIcon>> = {
-  "navbar.home": Home,
-  "navbar.about": Info,
-  "navbar.partners": Users,
-  "navbar.services.title": Package,
-  "navbar.promotions.title": Megaphone,
-  "navbar.blogs": Newspaper,
-  "navbar.contactUs": MessageCircleQuestion,
-  "navbar.registerTrading": ChartLine,
+  "Home": Home,
 }
 
 const NAV_LINK_ACTIVE_CLASS = "text-(--color-primary-readable) nav-link-underline-active"

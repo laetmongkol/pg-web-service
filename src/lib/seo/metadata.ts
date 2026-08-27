@@ -7,13 +7,13 @@ import type { Metadata } from "next"
 import { ORGANIZATION, SEO_X_DEFAULT_LOCALE } from "@/shared/constants/seo.constants"
 
 export const SITE_METADATA = {
-  name: "PIP Group Holding",
-  defaultTitle: "PIP Group Holding",
+  name: "",
+  defaultTitle: "",
   description:
-    "PIP Group Holding",
+    "",
   titleTemplate: "%s",
   keywords: [
-    "PIP Group Holding",
+    "",
   ],
   ogImage: "/og-default.png",
 } as const
