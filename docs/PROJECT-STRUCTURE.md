@@ -1,10 +1,10 @@
-# คู่มือโครงสร้าง pip-group-holding-web-service
+# คู่มือโครงสร้างเว็บ template
 
 เอกสารนี้สำหรับ junior ที่เพิ่งเข้าโปรเจกต์  
 เป้าหมาย: อ่านแล้วรู้ว่า **ไฟล์ไหนทำอะไร**, **ต่อกับใคร**, และ **ต่างจาก** `create-next-app` **ตรงไหน**
 
-โครงนี้ copy มาจากเว็บ GOC แล้วค่อย ๆ เปลี่ยนเป็นเว็บ PIP Group Holding  
-บางไฟล์ยังมีชื่อ/คอมเมนต์ของ GOC ค้างอยู่ — ท้ายเอกสารมีรายการนั้น
+นี่คือ **โครงเว็บสาธารณะว่าง** — ค่าแบรนด์ / เมนู / SEO ใส่ทีหลัง  
+วิธีเติมค่า: [NEW-SITE.md](./NEW-SITE.md)
 
 อย่าใส่ค่าจากไฟล์ `.env` จริงลงเอกสารหรือ git เด็ดขาด ใช้แค่ชื่อตัวแปรจาก `.env.example`
 
@@ -28,7 +28,7 @@
 14. `src/styles/` [และ](#14-srcstyles-และ-globalscss) `globals.css`
 15. [ตัวแปรแวดล้อม](#15-ตัวแปรแวดล้อม)
 16. [กฎสำคัญเวลาแก้โค้ด](#16-กฎสำคัญเวลาแก้โค้ด)
-17. [สถานะปัจจุบันของ PIP (ยังไม่เสร็จ)](#17-สถานะปัจจุบันของ-pip-ยังไม่เสร็จ)
+17. [สถานะ template (ช่องว่างที่ต้องเติม)](#17-สถานะ-template-ช่องว่างที่ต้องเติม)
 
 ---
 
@@ -36,7 +36,7 @@
 
 ## 1. ภาพใหญ่ในหนึ่งหน้า
 
-โปรเจกต์นี้เป็น **เว็บสาธารณะ** (marketing site) ของ PIP Group Holding  
+โปรเจกต์นี้เป็น **เว็บสาธารณะ** (marketing site) ว่างค่าแบรนด์  
 สร้างด้วย **Next.js App Router** (ไฟล์ใน `src/app/`)
 
 มันไม่ใช่เว็บเดี่ยว ๆ ที่เก็บข้อมูลในตัวเอง มันเป็น **หน้าบ้าน** ที่ดึงข้อมูลจาก backend อีกตัวชื่อ `api-app-service` (NestJS)
@@ -161,14 +161,14 @@ Next.js ปกติที่ `create-next-app` ให้มา มีแค่ 
 "typecheck": "npx tsc --noEmit --watch"
 ```
 
-ต่างจาก Next ปกติ: ล็อกพอร์ต **3000** ชัดเจน (GOC ใช้ 3001 เพื่อไม่ชนกันตอนเปิดคู่)
+ต่างจาก Next ปกติ: ล็อกพอร์ต **3000** ชัดเจน (กันชนเว็บอื่นที่เปิดคู่บนเครื่องเดียวกัน)
 
 ไลบรารีสำคัญที่ create-next-app ไม่ใส่ให้:
 
 - `next-intl` — ภาษาใน URL
 - `@tanstack/react-query` — cache ฝั่ง client ตอนเรียก API จากเบราว์เซอร์
 - `zustand` — state เล็ก ๆ เช่น ธีม
-- `react-hook-form` + `zod` — ฟอร์ม (ยังไม่ใช้มากใน PIP)
+- `react-hook-form` + `zod` — ฟอร์ม (template ยังไม่ผูกหน้าฟอร์ม)
 - `server-only` — กันเผลอ import โค้ดเซิร์ฟเวอร์เข้า client bundle
 - `@vercel/oidc` — token ตอนยิง staging ของ backend ที่ติด Deployment Protection
 
@@ -456,7 +456,7 @@ hreflang จริงสร้างใน `lib/seo/active-locales.ts` จาก
 
 ตอนนี้ถ้า API พัง **throw** ไม่คืน `{}`  
 เหตุผลในคอมเมนต์: กัน ISR จำ HTML ว่างแล้ว Google index  
-ผลข้างเคียงตอน PIP ยังไม่มี tenant ครบ: **ทั้งหน้า 500** ไม่ใช่หน้าว่าง
+ผลข้างเคียงตอน tenant / backend ยังไม่พร้อม: **ทั้งหน้า 500** ไม่ใช่หน้าว่าง
 
 ต่อไปนี้คือโซ่ที่ junior ต้องจำ:
 
@@ -507,7 +507,7 @@ src/app/
         └── page.tsx           ← หน้าแรก = /th หรือ /en
 ```
 
-ไม่มี `(admin)` ใน PIP (GOC เคยมี console)
+ไม่มี `(admin)` ใน template นี้ — เป็นเว็บสาธารณะอย่างเดียว (console อยู่คนละ repo ถ้าโปรเจกต์มี)
 
 ### `layout.tsx` (root)
 
@@ -596,7 +596,7 @@ Next จะเสิร์ฟที่ `/robots.txt`
 
 ข้อมูลราย URL มาจาก `lib/seo/sitemap-entries.ts` (หน้า static + บล็อก + author ถ้า backend มี)
 
-ไฟล์ XML ยังมี namespace `gocprime.net` ค้างจาก GOC — ตอนเรียนใหรู้ว่าเป็น XML attribute ไม่กระทบการเรนเดอร์หน้า
+ไฟล์ XML อาจมี prefix กำหนดเองบน `<url>` (เช่น `site:` / ชื่อเก่า) — เป็น XML attribute สำหรับ stylesheet/debug ไม่กระทบการเรนเดอร์หน้า เปลี่ยนชื่อได้ตอนขึ้นเว็บใหม่ (ดู NEW-SITE.md)
 
 `revalidate = 3600` = สร้างใหม่ได้อย่างน้อยทุกชั่วโมง
 
@@ -616,7 +616,7 @@ Next จะเสิร์ฟที่ `/robots.txt`
 
 
 
-### ที่หน้า PIP ใช้จริงตอนนี้
+### ที่หน้าสาธารณะใช้จริงตอนนี้
 
 
 | ไฟล์                                       | ใครเรียก                                       |
@@ -648,18 +648,17 @@ BUTTON_COLOR_VARIANT_CLASSNAME.primary.solid
 
 `cn()` จาก `lib/tw-merge` รวม class แล้วตัดของที่ชนกัน (เช่น `px-2` กับ `px-4` เหลืออันหลัง)
 
-### ชิ้นที่ copy มาแต่หน้า PIP ยังไม่ใช้
+### ชิ้นที่มีใน kit แต่หน้ายังไม่เรียก
 
 เช่น ฟอร์มทั้งชุด (`input-custom`, `table-custom`, `pagination-*`)  
-เป็น kit กลาง ไม่ใช่หน้า GOC โดยตรง — เก็บไว้ได้ถ้าจะมีฟอร์มติดต่อ
+เป็น kit กลาง — เก็บไว้ได้ถ้าจะมีฟอร์มติดต่อ
 
-ชิ้นที่ผูกหน้า GOC โดยเฉพาะ (FAQ accordion, review stars, ฯลฯ) อาจถูกลบไปแล้วหรือยังค้าง — ถ้าเจอไฟล์ที่ไม่มี import จาก `app/` แปลว่ายังไม่มีคนใช้
+ถ้าเจอไฟล์ที่ไม่มี import จาก `app/` แปลว่ายังไม่มีหน้าใช้
 
 ### `navbar-actions.tsx`
 
 ปุ่มขวาสุดของ navbar  
-ตอนนี้ยังชี้ URL ของ GOC (`my.gocprime.com`) และ `/register`  
-เป็นจุดที่ต้องเปลี่ยนเมื่อ PIP มีลิงก์จริง
+`NAVBAR_ROUTES` ใน template ว่าง — ใส่ URL จริงตอนขึ้นเว็บ (ดู NEW-SITE.md)
 
 ---
 
@@ -761,7 +760,7 @@ src/services/
 
 SSR **ต้องมี** `NEXT_PUBLIC_APP_URL` ไม่งั้น throw
 
-### ตัวกลางที่หน้า PIP ใช้จริงวันนี้
+### ตัวกลางที่หน้าสาธารณะใช้จริงวันนี้
 
 - `language` + `server` — layout, proxy, hreflang
 - `translate` + `server` — i18n
@@ -769,10 +768,10 @@ SSR **ต้องมี** `NEXT_PUBLIC_APP_URL` ไม่งั้น throw
 - `url-redirect` + `server` — 404 vs redirect
 - `blog-*` / `author` + `server` — sitemap ยังเรียกอยู่
 
-ตัวกลางหน้า GOC ที่ไม่มีหน้าใน PIP (ลบได้ถ้าทีมโอเค):  
+wrapper อื่นที่หน้ายังไม่เรียก (ลบได้ถ้าทีมโอเค):  
 `register-trading`, `point-mall`, `faqs`, `contact`, `countries`, `parameter`, `translate-content`, `system` (health)
 
-อย่าลบไฟล์ใน `generated-cli` แม้ API นั้น PIP ยังไม่ใช้ — generate ทั้งก้อนอยู่แล้ว
+อย่าลบไฟล์ใน `generated-cli` แม้ API นั้นหน้ายังไม่ใช้ — generate ทั้งก้อนอยู่แล้ว
 
 ### แพทเทิร์นเรียกข้อมูล (จำสูตรนี้)
 
@@ -887,12 +886,12 @@ changeTheme(theme) {
 ### `stores/loading.store.ts`
 
 ธง `isLoading` กลาง ๆ สำหรับ overlay ในอนาคต  
-หน้า PIP ยังไม่ผูกมาก
+template ยังไม่ผูกหน้ามาก
 
 ### `providers/hooks/count-up.hook.ts`
 
-hook นับเลขวิ่งขึ้น (หน้าแรก GOC เคยใช้)  
-PIP อาจยังไม่เรียก
+hook นับเลขวิ่งขึ้น  
+หน้าแรก template อาจยังไม่เรียก
 
 ---
 
@@ -933,7 +932,7 @@ PIP อาจยังไม่เรียก
 | `base-transitions.css`                           | transition กลาง                                                               |
 | `custom-animations.css`                          | `@keyframes` เช่น `blob-pulse-soft`, `loading-wave`, `bounce` ใช้คู่ Tailwind |
 | `component.navbar.css`                           | `--navbar-height`, underline เมนู, ปุ่ม CTA ที่ต้องใช้ CSS จริง               |
-| `component.text-editor.css` / `blog-article.css` | บทความ/editor — PIP ยังไม่มีหน้าบล็อกก็ import ไว้แล้ว                        |
+| `component.text-editor.css` / `blog-article.css` | บทความ/editor — import ไว้แล้ว แม้ยังไม่มีหน้าบล็อก                        |
 
 
 ทำไม navbar บางส่วนไม่ใช้แค่ Tailwind?  
@@ -971,7 +970,7 @@ PIP อาจยังไม่เรียก
 อย่า commit `.env`  
 อย่า paste ค่าใน PR หรือแชท
 
-ถ้า `NEXT_PUBLIC_DEV_DOMAIN_CODE` ยังเป็นของเว็บอื่น ข้อมูลภาษา/แปลที่ดึงมาจะเป็น tenant นั้น — หน้าอาจขึ้นแต่ข้อความไม่ใช่ของ PIP
+ถ้า `NEXT_PUBLIC_DEV_DOMAIN_CODE` ชี้ tenant คนละเว็บ ข้อมูลภาษา/แปลที่ดึงมาจะเป็นของ tenant นั้น — หน้าขึ้นได้แต่ข้อความผิดไซต์
 
 ---
 
@@ -992,21 +991,21 @@ PIP อาจยังไม่เรียก
 
 
 
-## 17. สถานะปัจจุบันของ PIP (ยังไม่เสร็จ)
+## 17. สถานะ template (ช่องว่างที่ต้องเติม)
 
-โครงชั้นโครงสร้างพร้อมแล้ว หน้าคอนเทนต์ยังไม่ครบ
+โครงชั้นโครงสร้างพร้อมแล้ว ค่าแบรนด์ยังว่าง — วิธีใส่ดู [NEW-SITE.md](./NEW-SITE.md)
 
-ยังขาด / ยังเป็นของเก่า (ตอนเขียนเอกสารนี้):
+ช่องที่ตั้งใจว่าง / ต้องเติมตอนขึ้นเว็บใหม่:
 
-- หน้าแรกยัง UI Next starter
-- เมนูชี้ `/about-us` `/contact-us` `/our-businesses/*` แต่ยังไม่มี `page.tsx`
-- ไม่มีไฟล์โลโก้จริงใน `public/` (`logo.tsx` ยังชี้ `/next.svg`)
-- ไม่มี `og-default.png` / `logo.png` ตาม SEO constants
-- ไม่มี `src/app/api/revalidate/route.ts`
-- `navbar-actions` ยังมี URL GOC
-- `sitemap.xml` ยังมี XML namespace ชื่อ goc
-- wrapper `register-trading` / `point-mall` ฯลฯ ยังอยู่ใน `services/modules` โดยหน้าไม่เรียก
-- `fetch-translations` throw เมื่อ API พัง
+- `ORGANIZATION` / `SERVICE` / `SITE_METADATA`
+- `NAV_LINKS` / `NAVBAR_ROUTES` / footer
+- ไฟล์โลโก้และ OG ใน `public/` (`logo.svg`, `logo.png`, `og-default.png`)
+- หน้าคอนเทนต์ (`page.tsx` ต่อ path) + `PUBLIC_STATIC_ROUTES`
+- สีใน `theme-tokens.css`
+- `package.json` name
+- sitemap XML prefix (optional)
+- wrapper เช่น `register-trading` / `point-mall` อยู่ใน `services/modules` โดยหน้ายังไม่เรียก
+- `fetch-translations` throw เมื่อ API พัง (กัน ISR จำหน้าว่าง)
 
 สิ่งที่ทำแล้วเทียบ create-next-app:
 
