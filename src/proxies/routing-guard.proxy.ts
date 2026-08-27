@@ -9,33 +9,17 @@ export type PublishStatus = "Y" | "N" | "D";
 
 /**
  * Manual on/off switch for static (public) pages, keyed by logical path
- * (locale + route-group prefixes stripped, e.g. "/promotion/point-mall").
+ * (locale stripped, e.g. "/about-us").
  *
  * - "Y" published (default for any path not listed here)
  * - "N" disabled — 404 for everyone
- * - "D" draft — 404 for guests, visible to logged-in admins for preview
- *
- * TODO: replace ROUTE_REGISTRY lookup with a cached `web_config.publish_status`
- * read once that table exists. Keep `getRouteStatus`'s signature so callers
- * (proxy.ts) don't need to change.
+ * - "D" draft — 404 (this site has no admin preview)
  */
 const ROUTE_REGISTRY: Record<string, PublishStatus> = {
-  "/about-us-new": "Y",
+  "/about-us": "Y",
   "/contact-us": "Y",
-  "/partners-new": "Y",
-  "/register-trading": "Y",
-  "/promotion": "Y",
-  "/promotion/point-mall": "Y",
+  "/our-businesses": "Y",
   [BLOG_BASE_PATH]: "Y",
-  "/services": "Y",
-  "/services/forex-broker-thailand": "Y",
-  "/services/forex-course": "Y",
-  "/services/forex-expert-advisor": "Y",
-  "/services/forex-trading": "Y",
-  "/services/forex-trading-platform": "Y",
-  "/services/gold-trading": "Y",
-  "/services/open-forex-account": "Y",
-  "/services/trading-demo-free": "Y",
 };
 
 export function getRouteStatus(logicalPath: string): PublishStatus {

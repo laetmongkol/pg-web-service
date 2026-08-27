@@ -9,7 +9,7 @@ import { BUTTON_BASE_CLASSNAME } from "@/shared/ui/classes/button.classes"
 
 // TODO: change later
 export const NAVBAR_ROUTES = {
-  signIn: "https://my.gocprime.com/",
+  signIn: "https://google.com/",
   startTrading: "/register",
 } as const
 
@@ -23,7 +23,6 @@ export function getNavbarHref(language: LANGUAGE, route: NavbarRouteKey) {
   }
   return `/${language}${path}`
 }
-
 interface NavbarActionsProps {
   language: LANGUAGE
   signInLabel: string
@@ -59,11 +58,14 @@ export default function NavbarActions({ language, signInLabel, startTradingLabel
   return (
     <div className="flex shrink-0 items-center gap-3">
       <LinkCustom href={signInHref} target="_blank" className={SIGN_IN_LINK_CLASSNAME}>
-        {signInLabel}
+        {/* {signInLabel} */}
+        Sign In
       </LinkCustom>
       <LinkCustom href={startTradingHref} onMouseMove={handleCtaMouseMove} className={CTA_LINK_CLASSNAME}>
-        {startTradingLabel}
+        {/* {startTradingLabel} */}
+        Register
       </LinkCustom>
     </div>
   )
 }
+

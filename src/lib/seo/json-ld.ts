@@ -14,7 +14,7 @@ export function buildOrganizationJsonLd(): JsonLdObject {
   const logo = `${base}${ORGANIZATION.logoPath}`
   return {
     "@context": "https://schema.org",
-    "@type": "FinancialService",
+    "@type": "Organization",
     "@id": organizationId(),
     name: ORGANIZATION.name,
     alternateName: ORGANIZATION.alternateName,

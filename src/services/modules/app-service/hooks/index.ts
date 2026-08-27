@@ -3,5 +3,3 @@
 export { default as useContactAppService } from "./contact.app-service.hook";
 export { default as useCountriesAppService } from "./countries.app-service.hook";
 export { default as useParameterAppService } from "./parameter.app-service.hook";
-export { default as usePointMallAppService } from "./point-mall.app-service.hook";
-export { default as useRegisterTradingAppService } from "./register-trading.app-service.hook";

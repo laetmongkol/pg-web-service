@@ -23,9 +23,9 @@ export default async function NotFoundPage({ params }: NotFoundPageProps) {
 
       {/* Background digits */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-9 flex select-none items-center justify-center gap-1">
-        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--border-default) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.8s]">4</span>
-        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--border-default) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.6s]">0</span>
-        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--border-default) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.4s]">4</span>
+        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--color-primary) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.8s]">4</span>
+        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--color-primary) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.6s]">0</span>
+        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--color-primary) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.4s]">4</span>
       </div>
 
       {/* Content */}

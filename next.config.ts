@@ -11,7 +11,7 @@ const appServiceOrigin = (
 
 const nextConfig: NextConfig = {
   // Pin the workspace root to this project. Sibling services under the parent dir
-  // (api-app-service, goc-traffic-tracking-api) otherwise make Turbopack infer the
+  // (api-app-service, pip-group-holding-traffic-tracking-api) otherwise make Turbopack infer the
   // parent as root, which breaks `tailwindcss` resolution in CSS imports.
   turbopack: {
     root: process.cwd(),

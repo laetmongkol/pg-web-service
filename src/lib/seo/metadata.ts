@@ -7,18 +7,13 @@ import type { Metadata } from "next"
 import { ORGANIZATION, SEO_X_DEFAULT_LOCALE } from "@/shared/constants/seo.constants"
 
 export const SITE_METADATA = {
-  name: "GOC Prime",
-  defaultTitle: "GOC Prime — Forex & Gold Trading Broker",
+  name: "PIP Group Holding",
+  defaultTitle: "PIP Group Holding",
   description:
-    "GOC Prime — trade forex and gold with a regulated broker. Expert advisors, courses, fast platforms and trusted execution.",
+    "PIP Group Holding",
   titleTemplate: "%s",
   keywords: [
-    "GOC Prime",
-    "forex broker",
-    "gold trading",
-    "forex trading",
-    "expert advisor",
-    "forex course",
+    "PIP Group Holding",
   ],
   ogImage: "/og-default.png",
 } as const
@@ -52,7 +47,7 @@ export function getSiteUrl(): string {
   if (process.env.NODE_ENV === "production") {
     throw new Error("[seo] NEXT_PUBLIC_APP_URL must be set in production")
   }
-  return "http://localhost:3001"
+  return "http://localhost:3000"
 }
 
 /** Backward-compatible alias. Prefer getSiteUrl(). */
@@ -178,7 +173,7 @@ export function createRootMetadata(): Metadata {
     keywords: [...SITE_METADATA.keywords],
     authors: [{ name: SITE_METADATA.name, url: appUrl }],
     publisher: SITE_METADATA.name,
-    category: "forex",
+    category: "business",
     robots: PUBLIC_INDEX_ROBOTS,
     // Icons come from the file-convention API (app/favicon.ico, app/icon.png,
     // app/apple-icon.png) — no explicit `icons` config to keep in sync.

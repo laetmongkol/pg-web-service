@@ -33,38 +33,38 @@ interface FooterSocialItem {
   icon: IconType
 }
 
-// Only Facebook has a real GOC Prime profile. The rest pointed at the platform's own home
+// Only Facebook has a real PIP Group Holding profile. The rest pointed at the platform's own home
 // page, which is noise for users and dilutes outgoing link signal — uncomment each once its
 // real profile URL exists.
 const SOCIAL_LINKS: FooterSocialItem[] = [
-  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61593048774179", icon: IoLogoFacebook },
-  // { label: "Instagram", href: "https://www.instagram.com", icon: IoLogoInstagram },
-  // { label: "YouTube", href: "https://www.youtube.com", icon: IoLogoYoutube },
-  // { label: "Line", href: "https://line.me", icon: SiLine },
-  // { label: "X", href: "https://www.x.com", icon: FaXTwitter },
+  { label: "Facebook", href: "https://www.facebook.com", icon: IoLogoFacebook },
+  { label: "Instagram", href: "https://www.instagram.com", icon: IoLogoInstagram },
+  { label: "YouTube", href: "https://www.youtube.com", icon: IoLogoYoutube },
+  { label: "Line", href: "https://line.me", icon: SiLine },
+  { label: "X", href: "https://www.x.com", icon: FaXTwitter },
 ]
 
 const COMPANY_LINKS: FooterLinkItem[] = [
-  { key: "footer.company.aboutUs", href: "/about-us-new" },
-  { key: "footer.company.partners", href: "/partners-new" },
-  { key: "footer.company.blogs", href: BLOG_BASE_PATH },
-  { key: "footer.company.contactUs", href: "/contact-us" }
+  { key: "About Us", href: "/about-us" },
+  { key: "Our Businesses", href: "/our-businesses" },
+  { key: "Contact Us", href: "/contact-us" }
 ]
 
-const TRADING_LINKS: FooterLinkItem[] = [
-  { key: "footer.trading.services", href: "/services" },
-  { key: "footer.trading.promotions", href: "/promotion" },
-  // href "#" — decide the real destination (/register or /register-trading) before restoring.
-  // { key: "footer.trading.openAccount", href: "#" }
+const GROUP_COMPANY_LINKS: FooterLinkItem[] = [
+  { key: "7days", href: "/our-businesses/7days" },
+  { key: "PipEvo", href: "/our-businesses/pip-evo" },
+  { key: "Sriwilai", href: "/our-businesses/sriwilai" },
+  { key: "DMS", href: "/our-businesses/dms" },
+  { key: "Sabaidee", href: "/our-businesses/sabaidee" },
 ]
 
 // All three were href "#" — a broker's legal links must resolve to the real documents, and a
 // dead "#" is worse than no link because it reads as if the document exists. Uncomment each
 // once the page ships.
 const LEGAL_LINKS: FooterLinkItem[] = [
-  { key: "footer.legal.privacy", href: "footer.href.privacy" },
-  { key: "footer.legal.termsOfUse", href: "footer.href.termsOfUse" },
-  { key: "footer.legal.riskDisclosure", href: "footer.href.riskDisclosure" },
+  { key: "privacy", href: "" },
+  { key: "terms of use", href: "" },
+  { key: "risk disclosure", href: "" },
 ]
 async function FooterLinkList({
   label,
@@ -129,9 +129,9 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
         <div className="flex w-full flex-col gap-10 lg:flex-row">
           {/* Brand & Socials */}
           <div className="flex w-full flex-col gap-5 lg:w-2/5">
-            <h2 className="text-2xl font-bold">{t("footer.brandName")}</h2>
+            <h2 className="text-2xl font-bold">PIP Group Holding</h2>
             <p className="max-w-xs text-sm leading-relaxed text-white/85">
-              {t("footer.brandDescription")}
+              PIP Group Holding is a leading provider of financial services and solutions to businesses and individuals.
             </p>
             <div className="flex items-center gap-2.5">
               {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
@@ -152,13 +152,13 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
           <div className="flex w-full min-w-0 flex-col gap-4 lg:flex-1 lg:flex-row lg:justify-around">
             <div className="flex w-full min-w-0 flex-row justify-between gap-4 sm:gap-6 lg:w-2/3">
               <FooterLinkList
-                label="footer.company.title"
+                label="Company"
                 links={COMPANY_LINKS}
                 language={language}
               />
               <FooterLinkList
-                label="footer.trading.title"
-                links={TRADING_LINKS}
+                label="Group Companies"
+                links={GROUP_COMPANY_LINKS}
                 language={language}
               />
             </div>
@@ -166,7 +166,7 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
             {/* Support */}
             <div className="flex w-full min-w-0 flex-col gap-4 lg:w-1/3">
               <h3 className="text-base font-bold text-white lg:block hidden">
-                {t("footer.support.title")}
+                Support
               </h3>
               <div
                 className={cn(
@@ -183,10 +183,10 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
                   </div>
                   <div className="flex min-w-0 flex-col gap-1">
                     <p className="text-sm font-bold">
-                      {t("footer.support.liveChat")}
+                      Live Chat
                     </p>
                     <p className="text-sm text-white/75">
-                      {t("footer.support.support247")}
+                      Support 24/7
                     </p>
                   </div>
                 </div>
@@ -195,18 +195,18 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
                     <div className="flex flex-row gap-0.5 lg:hidden">
                       <p className="text-sm font-bold">
-                        {t("footer.support.liveChat")}
+                        Live Chat
                       </p>
                       <p className="text-sm font-bold text-white">
-                        {t("footer.support.support247")}
+                        Support 24/7
                       </p>
                     </div>
                     <div className="flex min-w-0 flex-col">
                       <p className="text-xs leading-relaxed wrap-break-word text-white/85">
-                        {t("footer.support.scanContact")}
+                        Scan to contact
                       </p>
                       <p className="text-xs leading-relaxed wrap-break-word text-white/85">
-                        {t("footer.support.officialLineId")}
+                        Official Line ID
                       </p>
                     </div>
                   </div>
@@ -219,7 +219,7 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-center gap-4 border-t border-(--surface-default)/20 pt-4 lg:flex-row lg:items-center lg:justify-between">
           <p className="text-xs text-white/75">
-              {t("footer.copyright")}
+              © {new Date().getFullYear()} PIP Group Holding. All rights reserved.
           </p>
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/75">
             {LEGAL_LINKS.map((link) => (
