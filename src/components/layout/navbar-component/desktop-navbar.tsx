@@ -7,10 +7,9 @@ import LinkCustom from "@/components/link-custom.component";
 import { LANGUAGE } from "@/shared/constants/common.constants";
 
 import AppLogo from "../logo";
-import { NavbarLabels,NavLinkItem } from "../navbar";
+import { NavbarLabels, NavLinkItem } from "../navbar";
 import LanguageSelector from "./language-selector";
 import { NavMenuLinks } from "./nav-links";
-import NavbarActions from "./navbar-actions";
 
 interface DesktopNavbarProps {
     language: LANGUAGE;
@@ -23,25 +22,15 @@ interface DesktopNavbarProps {
 export default function DesktopNavbar({ language, navLinks, languages, showLogo = false, labels }: DesktopNavbarProps) {
     return (
         <div className={cn("hidden min-w-0 flex-1 items-center gap-4 lg:flex")}>
-            {showLogo && (
-                <LinkCustom href={`/${language}`} className="shrink-0">
-                    <AppLogo/>
-                </LinkCustom>
-            )}
 
-            <div className={cn("navbar-nav-scroll min-w-0 flex-1 overflow-x-auto overflow-y-clip overscroll-x-contain")}>
+            <div className={cn("navbar-nav-scroll flex  max-w-screen-2xl mx-auto flex-1 gap-12 justify-between overflow-x-auto overflow-y-clip overscroll-x-contain h-16")}>
+                {showLogo && (
+                    <LinkCustom href={`/${language}`} className="flex items-center shrink-0 bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs">
+                        <AppLogo />
+                    </LinkCustom>
+                )}
                 <NavMenuLinks language={language} links={navLinks} labels={labels.navLinks} />
-            </div>
-
-            <div className={cn("flex shrink-0 items-center gap-3")}>
-                {/* <ToggleTheme /> */}
                 <LanguageSelector currentLanguage={language} languages={languages} />
-                <div className="h-5 w-px shrink-0 bg-(--border-default)" aria-hidden="true" />
-                <NavbarActions
-                    language={language}
-                    signInLabel={labels.signIn}
-                    startTradingLabel={labels.startTrading}
-                />
             </div>
         </div>
     )

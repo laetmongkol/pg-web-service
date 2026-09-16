@@ -26,8 +26,8 @@ const NAV_LINK_ICONS: Partial<Record<NavLinkKey, LucideIcon>> = {
   "Home": Home,
 }
 
-const NAV_LINK_ACTIVE_CLASS = "text-(--color-primary-readable) nav-link-underline-active"
-const NAV_LINK_INACTIVE_CLASS = "text-(--text-primary)"
+const NAV_LINK_ACTIVE_CLASS = "text-(--text-invert) bg-(--surface-default)/8 rounded-full px-3 py-1"
+const NAV_LINK_INACTIVE_CLASS = "text-(--text-invert) rounded-full px-3 py-1 rounded-full px-3 py-1"
 
 function getNavHref(language: LANGUAGE, href: string) {
   return `/${language}${href ? `/${href}` : ""}`
@@ -53,8 +53,8 @@ function isLinkActive(pathname: string, language: LANGUAGE, link: NavLinkItem): 
 
 const DESKTOP_LINK_CLASSNAME = cn(
   "relative inline-flex items-center gap-1 whitespace-nowrap text-base",
-  "transition-colors hover:text-(--color-primary-readable)",
-  "nav-link-underline px-[0.5px] outline-none",
+  "transition-colors",
+  "px-[0.5px] outline-none",
 )
 
 const DESKTOP_DROPDOWN_PANEL_CLASSNAME = cn(
@@ -320,7 +320,7 @@ export function NavMenuLinks({ language, links, labels, isMobile, onLinkClick }:
   }
 
   return (
-    <ul className={cn("flex w-max items-center gap-6 px-6")}>
+    <ul className={cn("flex w-max items-center gap-3 px-2 bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs")}>
       {links.map((link) => (
         <DesktopNavLink key={link.key} language={language} link={link} pathname={pathname} labels={labels} />
       ))}

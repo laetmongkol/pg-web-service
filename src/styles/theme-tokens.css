@@ -18,9 +18,9 @@
   --color-primary-200: #AFEBFF;
   --color-primary-250: #96E0F9;
   --color-primary-300: #7ED8F7;
-  --color-primary-350: #4FC2F1;
+  --color-primary-350: #101F37;
   /* base */
-  --color-primary-400: #1AA5E9;
+  --color-primary-400: #101F37;
   /* hover */
   --color-primary-500: #09AFE7;
   /* active */
@@ -94,8 +94,8 @@
      muted    = form inputs, secondary sections inside a card
      elevated = floating elements (tooltip, modal)
   */
-  --surface-page: #EEECEA;
-  --surface-default: #FFFFFF;
+  --surface-page: #E7E9EB;
+  --surface-default: #E7E9EB;
   --surface-muted: #F4F3F1;
   --surface-elevated: #FFFFFF;
   --surface-code-inline: #f8f5f5;

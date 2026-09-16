@@ -21,7 +21,10 @@ const envSeconds = (name: string, fallback: number): number => {
 };
 
 /** Non-list content pages — home, services, about, partners, promotion, point mall copy. */
-export const CONTENT_REVALIDATE_SECONDS = envSeconds("NEXT_CONTENT_REVALIDATE_SECONDS", 3600);
+// Hardcoded on purpose: this window is NOT env-tunable any more. Editors need copy edits
+// visible within minutes, and one number in code beats the same number drifting across
+// five .env files and five Vercel projects. Change it here and redeploy.
+export const CONTENT_REVALIDATE_SECONDS = 300;
 
 /** Blog surfaces (article, list, hero, sitemap, author pages) churn faster. */
 export const BLOG_REVALIDATE_SECONDS = envSeconds("NEXT_BLOG_REVALIDATE_SECONDS", 1800);
