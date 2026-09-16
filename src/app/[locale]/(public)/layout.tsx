@@ -35,8 +35,10 @@ const PublicLayout = async ({ children, params }: PublicLayoutProps) => {
   const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
   const languages = await fetchLanguages();
 
+  // overflow-x-clip, not -hidden: `hidden` makes this a scroll container and kills
+  // `position: sticky` in every page below it. `clip` trims the same overflow without that.
   return (
-    <div className="relative flex min-h-screen w-full overflow-x-hidden flex-col bg-(--surface-default)">
+    <div className="relative flex min-h-screen w-full overflow-x-clip flex-col bg-(--surface-default)">
       <main className="flex flex-1">
       <Navbar language={language} languages={languages} menuItems={NAV_LINKS} showLogo />
         <section className="w-full whitespace-pre-line">{children}</section>

@@ -44,48 +44,48 @@ const ITEMS = [
 }
 ]
 
-const ConsiderationSection = () => {
+const ConsiderationSection = ( { data, language }: ConsiderationSectionProps ) => {
     return (
-        <section className={cn("flex flex-col max-w-6xl mx-auto px-6 sm:px-12 md:px-16",
+        <section className={cn("flex flex-col max-w-7xl mx-auto px-6 sm:px-12 md:px-16",
             "py-16 gap-8"
         )}>
-            <FadeIn direction="down" className={cn("flex flex-col gap-8",
+            <FadeIn className={cn("flex flex-col gap-8",
                 "items-center"
             )}>
-                <span className={cn(
+                <FadeIn delay={100} className={cn(
                     "text-(--color-secondary) border border-(--color-secondary) px-4 py-1 rounded-full text-center font-bold",
                 )}>
                     {"ทำไมต้องเลือกเรา"}
-                </span>
+                </FadeIn>
 
                 <h2 className={cn(
                     "font-bold text-(--text-primary)",
-                    "text-3xl text-center leading-tight"
+                    "text-3xl sm:text-4xl text-center leading-tight"
                 )}>
                     {"สร้างขึ้นเพื่อ"}
                     <span className="text-(--color-secondary)">
                         {"คุณค่าระยะยาว"}
                     </span>
                 </h2>
-                <div className={cn("grid grid-cols-1 sm:grid-cols-4 gap-5 w-full",
+                <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 w-full",
                     "items-center"
                 )}>
-                    {ITEMS.map((item)=>{
+                    {ITEMS.map((item, index)=>{
                         const Icon = resolveConsiderationIcon(item.icon);
                         return (
-                        <div key={item.number} className={cn("flex flex-col gap-4 bg-white p-8 rounded-3xl w-full border border-(--border-default)")}>
+                        <FadeIn key={item.number} delay={index * 150} className={cn("flex flex-col gap-4 bg-white p-8 rounded-3xl w-full border border-(--border-default)")}>
                             <Icon className={"text-(--color-secondary) size-12 w-12 h-12 bg-(--color-secondary)/10 rounded-xl p-3"} />
                             <span className={cn("text-(--text-primary) text-3xl font-bold")}>
                                 {item.number}
                             </span>
-                            <span className={cn("text-(--text-primary) text-base font-bold")}>
+                            <span className={cn("text-(--text-primary) text-lg font-bold")}>
                                 {item.title}
                             </span>
                             <span className={cn("w-1/10 h-0.5 bg-(--color-secondary)")}/>
-                            <span className={cn("text-(--text-secondary) text-sm")}>
+                            <span className={cn("text-(--text-secondary) text-base")}>
                                 {item.description}
                             </span>
-                        </div>
+                        </FadeIn>
                         );
                     })}
                 </div>

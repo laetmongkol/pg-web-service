@@ -1,19 +1,21 @@
 import Image from "next/image";
 import cn from "@/lib/tw-merge";
-import LinkCustom from "@/components/link-custom.component";
-import { ArrowUpRight } from "lucide-react";
+import LinkCustom from "@/components/link-custom.component"
+import { ArrowUpRight, Mouse } from "lucide-react";
 import FillImage from "@/components/fill-image.component";
+import FadeIn from "@/app/component/fade-in.components";
 
 interface HeroSectionProps {
+    data: any;
     language: string;
 }
 
 const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
 
 
-const HeroSection = ( { language }: HeroSectionProps ) => {
+const HeroSection = ({ data, language }: HeroSectionProps) => {
     return (
-        <section className="relative mt-14 lg:mt-0 h-fit flex flex-col h-[1080px] items-center">
+        <section className="relative mt-14 lg:mt-0 h-fit flex flex-col h-[1080px] max-h-[1080px] items-center">
             <div className="hidden lg:block w-full">
                 <FillImage
                     src={mockUpImage}
@@ -32,11 +34,11 @@ const HeroSection = ( { language }: HeroSectionProps ) => {
                     className={cn("object-cover aspect-square object-left w-full max-h-[1080px]",
                     )} />
             </div>
-            <div className={cn("absolute flex flex-col justify-center h-full w-full max-w-6xl mx-auto px-6 sm:px-12 md:px-16",
+            <div className={cn("absolute flex flex-col justify-center h-full w-full max-w-7xl mx-auto px-6 sm:px-12 md:px-16",
                 "items-center",
                 "sm:items-start gap-14"
             )}>
-                <div className={cn("flex flex-col",
+                <FadeIn className={cn("flex flex-col",
                     "text-center items-center gap-8 lg:max-xl:pt-5 pt-0",
                     "sm:text-start sm:items-start",
                 )}>
@@ -60,8 +62,9 @@ const HeroSection = ( { language }: HeroSectionProps ) => {
                     )}>
                         {"PIP Group Holding เชื่อมต่อธุรกิจ โอกาส และศักยภาพเชิงกลยุทธ์ \nเพื่อสร้างคุณค่าระยะยาวให้กับทุกภาคส่วน"}
                     </p>
-                </div>
-                <LinkCustom href={`/${language}/about-us`} className="w-fit hidden sm:block">
+                </FadeIn>
+                <FadeIn delay={150} className="w-fit hidden sm:block">
+                <LinkCustom href={`/${language}/about-us`}>
                     <span className={cn(
                         "font-medium text-(--text-invert) flex items-center gap-2",
                         "bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs",
@@ -74,9 +77,26 @@ const HeroSection = ( { language }: HeroSectionProps ) => {
                         )} />
                     </span>
                 </LinkCustom>
+                </FadeIn>
+
+                {/* the overlay is absolute, so it is this element's containing block */}
+                <div className="hidden xl:block">
+                    <div className={cn(
+                        "absolute bottom-10 flex flex-col items-center gap-2 text-(--text-invert)",
+                        "left-1/2 -translate-x-1/2",
+                        "sm:left-12 sm:translate-x-0 md:left-16"
+                    )}>
+                        <Mouse
+                            aria-hidden
+                            strokeWidth={1.5}
+                            className="size-8 animate-bounce motion-reduce:animate-none"
+                        />
+                        <span className="text-sm font-medium whitespace-nowrap">{"Scroll down"}</span>
+                    </div>
+                </div>
             </div>
         </section>
-    )
-}
+    );
+};
 
 export default HeroSection;
