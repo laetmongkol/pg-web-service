@@ -11,39 +11,48 @@
    ========================================================= */
 
 :root {
-  /* PRIMARY (cyan) */
-  --color-primary-50: #EFF9FE;
-  --color-primary-100: #D9F3FD;
-  --color-primary-150: #C5EDFC;
-  --color-primary-200: #AFEBFF;
-  --color-primary-250: #96E0F9;
-  --color-primary-300: #7ED8F7;
-  --color-primary-350: #101F37;
-  /* base */
+  /* PRIMARY (navy) — Figma light → dark, extras below 50 */
+  --color-primary-10: #E7E9EB;
+  --color-primary-25: #CFD2D7;
+  --color-primary-50: #B7BCC3;
+  --color-primary-100: #9FA5AF;
+  --color-primary-150: #878F9B;
+  --color-primary-200: #707987;
+  --color-primary-250: #586273;
+  --color-primary-300: #404C5F;
+  --color-primary-350: #28354B;
+  /* brand/primary + background/dark */
   --color-primary-400: #101F37;
-  /* hover */
-  --color-primary-500: #09AFE7;
-  /* active */
-  --color-primary-600: #078FC3;
-  --color-primary-650: #0782B2;
-  --color-primary-700: #0674A0;
-  --color-primary-750: #05668D;
-  --color-primary-800: #04587A;
-  --color-primary-850: #044A67;
-  --color-primary-900: #033C54;
-  --color-primary-950: #022638;
 
-  /* SECONDARY (gray) */
-  --color-secondary-50: #F9FAFB;
-  --color-secondary-100: #F3F4F6;
-  --color-secondary-200: #E5E7EB;
-  --color-secondary-300: #D1D5DB;
-  --color-secondary-400: #9CA3AF;
-  --color-secondary-500: #6B7280;
-  --color-secondary-600: #4B5563;
-  --color-secondary-700: #374151;
-  --color-secondary-800: #1F2937;
-  --color-secondary-900: #111827;
+  /* SECONDARY (gold) — Figma light → dark */
+  --color-secondary-50: #FAF4EC;
+  --color-secondary-100: #F4E9D9;
+  --color-secondary-200: #EFDDC6;
+  --color-secondary-300: #EAD2B3;
+  --color-secondary-400: #E4C79F;
+  --color-secondary-500: #DFBC8C;
+  --color-secondary-600: #DAB179;
+  /* brand/accent + interactive/pressed */
+  --color-secondary-700: #D5A566;
+  /* interactive/hover */
+  --color-secondary-800: #CF9A53;
+  /* brand/secondary + interactive/default */
+  --color-secondary-900: #CA8F40;
+
+  /* SURFACE cream — Figma light → dark */
+  --surface-50: #FEFEFD;
+  --surface-100: #FEFDFB;
+  /* surface/card */
+  --surface-200: #FDFCF9;
+  --surface-300: #FCFBF7;
+  /* background/secondary */
+  --surface-400: #FBFAF5;
+  --surface-500: #FBF9F3;
+  --surface-600: #FAF8F1;
+  --surface-700: #F9F7EF;
+  --surface-800: #F9F6ED;
+  /* background/primary + surface/default */
+  --surface-900: #F8F5EB;
 
   /* SUCCESS */
   --color-success-50: #ECFDF5;
@@ -94,40 +103,38 @@
      muted    = form inputs, secondary sections inside a card
      elevated = floating elements (tooltip, modal)
   */
-  --surface-page: #E7E9EB;
-  --surface-default: #E7E9EB;
-  --surface-muted: #F4F3F1;
-  --surface-elevated: #FFFFFF;
-  --surface-code-inline: #f8f5f5;
-  --surface-code-block: #fcfbf9;
-  --surface-blockquote: #F6F6F7;
+  --surface-page: var(--surface-900);
+  --surface-default: var(--surface-200);
+  --surface-muted: var(--surface-400);
+  --surface-elevated: var(--surface-50);
+  --surface-code-inline: var(--surface-300);
+  --surface-code-block: var(--surface-200);
+  --surface-blockquote: var(--surface-400);
   --surface-navbar: var(--color-primary-50);
-  --surface-invert: #14181C;
+  --surface-invert: var(--color-primary-400);
 
   /* TEXT */
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
+  --text-primary: var(--color-primary-400);
+  --text-secondary: var(--color-primary-250);
+  --text-muted: var(--color-primary-100);
   --text-invert: #FFFFFF;
   /* text on a dark/inverted surface */
-  --text-disabled: #9CA3AF;
+  --text-disabled: var(--color-primary-50);
 
   /* BORDER */
-  --border-default: #D1D5DB;
-  --border-muted: #E5E7EB;
-  --border-strong: #6B7280;
+  --border-default: var(--color-primary-25);
+  --border-muted: var(--color-primary-10);
+  --border-strong: var(--color-primary-150);
 
   /* BRAND MAPPING */
   --color-primary: var(--color-primary-400);
-  --color-primary-hover: var(--color-primary-500);
-  --color-primary-active: var(--color-primary-600);
-  /* primary accent readable as text on light surfaces (navbar = primary-50);
-     primary-400 only scores 2.58:1 there, primary-700 scores ~4.9:1 (WCAG AA) */
-  --color-primary-readable: var(--color-primary-700);
+  --color-primary-hover: var(--color-primary-350);
+  --color-primary-active: var(--color-primary-300);
+  --color-primary-readable: var(--color-primary-400);
 
-  --color-secondary: var(--color-secondary-200);
-  --color-secondary-hover: var(--color-secondary-300);
-  --color-secondary-active: var(--color-secondary-400);
+  --color-secondary: var(--color-secondary-900);
+  --color-secondary-hover: var(--color-secondary-800);
+  --color-secondary-active: var(--color-secondary-700);
 
   /* STATE */
   --state-hover-opacity: 0.9;
@@ -172,23 +179,22 @@
   color-scheme: dark;
 
   /* SURFACE */
-  --surface-page: #161B21;
-  --surface-default: #14181C;
-  --surface-muted: #1F2937;
-  --surface-elevated: #191B23;
-  --surface-code-inline: #1E2734;
-  --surface-code-block: #1D2632;
-  --surface-blockquote: #283140;
-  --surface-navbar: #14181C;
-  --surface-invert: #E1E1E1;
+  --surface-page: var(--color-primary-400);
+  --surface-default: var(--color-primary-350);
+  --surface-muted: var(--color-primary-300);
+  --surface-elevated: var(--color-primary-350);
+  --surface-code-inline: var(--color-primary-300);
+  --surface-code-block: var(--color-primary-350);
+  --surface-blockquote: var(--color-primary-300);
+  --surface-navbar: var(--color-primary-400);
+  --surface-invert: var(--surface-900);
 
   /* TEXT */
-  --text-primary: #E1E1E1;
-  --text-secondary: #9CA3AF;
-  --text-muted: #6B7280;
-  --text-invert: #161B21;
-  /* text on a light/inverted surface */
-  --text-disabled: #4B5563;
+  --text-primary: var(--color-primary-10);
+  --text-secondary: var(--color-primary-50);
+  --text-muted: var(--color-primary-150);
+  --text-invert: var(--color-primary-400);
+  --text-disabled: var(--color-primary-200);
 
   /* TOAST ACCENTS — see the light block above. */
   --gray-a3: #ffffff12;
@@ -197,20 +203,19 @@
   --amber-11: #ffca16;
 
   /* BORDER */
-  --border-default: #374151;
-  --border-muted: #1F2937;
-  --border-strong: #6B7280;
+  --border-default: var(--color-primary-250);
+  --border-muted: var(--color-primary-300);
+  --border-strong: var(--color-primary-150);
 
   /* BRAND MAPPING */
   --color-primary: var(--color-primary-400);
-  --color-primary-hover: var(--color-primary-500);
-  --color-primary-active: var(--color-primary-600);
-  /* on the dark navbar surface (#14181C) a light shade is the readable one */
-  --color-primary-readable: var(--color-primary-300);
+  --color-primary-hover: var(--color-primary-350);
+  --color-primary-active: var(--color-primary-300);
+  --color-primary-readable: var(--color-primary-50);
 
-  --color-secondary: var(--color-secondary-800);
-  --color-secondary-hover: var(--color-secondary-700);
-  --color-secondary-active: var(--color-secondary-600);
+  --color-secondary: var(--color-secondary-900);
+  --color-secondary-hover: var(--color-secondary-800);
+  --color-secondary-active: var(--color-secondary-700);
 
   /* STATE */
   --state-hover-opacity: 0.9;

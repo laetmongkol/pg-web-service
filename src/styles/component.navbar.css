@@ -88,7 +88,7 @@
 }
 
 .navbar-nav-scroll:hover::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-primary-500);
+  background-color: var(--color-primary-350);
 }
 
 /* Circular flag crop — overrides react-country-flag inline img styles */
