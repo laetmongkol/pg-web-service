@@ -37,8 +37,8 @@ const PublicLayout = async ({ children, params }: PublicLayoutProps) => {
 
   return (
     <div className="relative flex min-h-screen w-full overflow-x-hidden flex-col bg-(--surface-default)">
-      <Navbar language={language} languages={languages} menuItems={NAV_LINKS} showLogo />
       <main className="flex flex-1">
+      <Navbar language={language} languages={languages} menuItems={NAV_LINKS} showLogo />
         <section className="w-full whitespace-pre-line">{children}</section>
       </main>
       <Footer language={language} />

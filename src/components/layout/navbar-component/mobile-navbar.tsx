@@ -17,7 +17,6 @@ import AppLogo from "../logo"
 import { NavbarLabels,NavLinkItem } from "../navbar"
 import LanguageSelector from "./language-selector"
 import { NavMenuLinks } from "./nav-links"
-import { getNavbarHref } from "./navbar-actions"
 
 interface MobileNavbarProps {
   language: LANGUAGE
@@ -59,14 +58,11 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
         )}
 
         <div className="flex shrink-0 items-center gap-2">
-          <LinkCustom href={getNavbarHref(language, "signIn")} className={MOBILE_SIGN_IN_CLASSNAME}>
-            {labels.signIn}
-          </LinkCustom>
           <button
             onClick={() => setIsOpen(true)}
             className={cn(
               "inline-flex h-10 w-10 items-center justify-center rounded-lg",
-              "bg-(--color-primary-400) hover:bg-(--color-primary-hover)",
+              "hover:bg-(--color-primary-hover)",
               "hover:cursor-pointer text-white",
             )}
             aria-label="Open menu"
@@ -104,9 +100,6 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
               )}
 
               <div className="flex shrink-0 items-center gap-2">
-                <LinkCustom href={getNavbarHref(language, "signIn")} onClick={close} className={MOBILE_SIGN_IN_CLASSNAME}>
-                  {labels.signIn}
-                </LinkCustom>
                 <button
                   onClick={close}
                   className={cn(

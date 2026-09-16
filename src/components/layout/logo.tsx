@@ -15,8 +15,8 @@ const AppLogo = ({ width = 80 }: AppLogoProps) => {
         <FillImage
           wrapperClassName="aspect-[5/2] w-full"
           className="object-contain"
-          src="/logo.svg"
-          alt=""
+          src="/logo-pipgroup.png"
+          alt="PIP Group Logo"
           sizes={`${width}px`}
           unoptimized
           priority
@@ -26,8 +26,8 @@ const AppLogo = ({ width = 80 }: AppLogoProps) => {
         <FillImage
           wrapperClassName="aspect-[5/2] w-full"
           className="object-contain"
-          src="/logo.svg"
-          alt=""
+          src="/logo-pipgroup.png"
+          alt="PIP Group Logo"
           sizes={`${width}px`}
           unoptimized
           priority

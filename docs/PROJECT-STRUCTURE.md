@@ -962,7 +962,7 @@ hook นับเลขวิ่งขึ้น
 | `NEXT_PUBLIC_APP_URL`                                              | URL สาธารณะของเว็บ (canonical, `x-domain-name`) มี `NEXT_PUBLIC_` = เบราว์เซอร์เห็นได้ |
 | `NEXT_PUBLIC_DEV_DOMAIN_CODE`                                      | รหัส tenant ตอน dev เท่านั้น                                                           |
 | `REVALIDATE_SECRET`                                                | กันคนแปลกหน้าเรียก bust cache                                                          |
-| `NEXT_CONTENT_REVALIDATE_SECONDS` / `NEXT_BLOG_REVALIDATE_SECONDS` | อายุ cache ฝั่ง Next                                                                   |
+| `NEXT_BLOG_REVALIDATE_SECONDS` | อายุ cache ฝั่ง Next (content window ถูก hardcode 300 วิ ใน `server-cache.ts`)                                                                   |
 | `NEXT_BROWSER_CACHE_SECONDS` / `NEXT_BROWSER_STALE_SECONDS`        | Cache-Control ที่ proxy ใส่                                                            |
 | `NEXT_PUBLIC_GA_ID` ฯลฯ                                            | analytics ถ้าใส่                                                                       |
 

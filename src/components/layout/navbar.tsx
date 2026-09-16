@@ -54,13 +54,12 @@ const Navbar = async ({ language, languages, menuItems = [], showLogo = false }:
     <>
       <nav
         className={cn(
-          "fixed inset-x-0 top-0 z-100 w-full border-b py-2",
-          "max-lg:border-(--border-muted) max-lg:bg-(--surface-default)",
-          "lg:border-transparent lg:bg-(--surface-navbar)",
+          "fixed inset-x-0 top-0 z-100 border-b",
+          "bg-(--color-primary) lg:bg-transparent lg:border-transparent",
         )}
       >
-        <div className={cn("mx-auto flex min-h-14 w-full items-center justify-between gap-3 py-2 px-6")}>
-          <DesktopNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels} />
+        <div className={cn("mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-3 px-6 p-4")}>
+          <DesktopNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels}/>
           <MobileNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels} />
         </div>
       </nav>

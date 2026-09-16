@@ -103,11 +103,12 @@ const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: 
     return (
       <button
         disabled
-        className="inline-flex items-center gap-1.5 px-1 py-1.5 opacity-50 cursor-not-allowed"
+        className="inline-flex items-center gap-1.5 px-1 py-1.5 opacity-50 cursor-not-allowed "
         aria-label="language selector"
       >
-        <FlagIcon countryCode={currentFlag} size={16} />
-        <ChevronDown size={14} strokeWidth={3.5} />
+        {/* <FlagIcon countryCode={currentFlag} size={16} /> */}
+        <span className="text-sm text-(--text-invert)">{currentLanguage.toUpperCase()}</span>
+        <ChevronDown size={14} strokeWidth={3.5} className="text-(--text-invert)" />
       </button>
     )
   }
@@ -117,14 +118,16 @@ const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: 
       <DropdownMenu.Trigger asChild>
         <button
           className={cn(
-            "inline-flex shrink-0 items-center gap-1.5 px-1 py-1.5",
+            "inline-flex shrink-0 items-center gap-1.5 px-6 py-1.5",
             "text-(--text-primary) transition-opacity outline-none",
             "hover:opacity-80",
+            "bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs"
           )}
           aria-label="language selector"
         >
-          <FlagIcon countryCode={currentFlag} size={16} />
-          <ChevronDown size={16} strokeWidth={3.5} className="text-(--color-primary-400) ml-2" />
+          {/* <FlagIcon countryCode={currentFlag} size={16} /> */}
+          <span className="text-sm text-(--text-invert)">{currentLanguage.toUpperCase()}</span>
+          <ChevronDown size={16} strokeWidth={3.5} className="text-(--text-invert) ml-2" />
         </button>
       </DropdownMenu.Trigger>
 
@@ -133,7 +136,7 @@ const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: 
         sideOffset={6}
         collisionPadding={10}
         className={cn(
-          "min-w-35 rounded-md border border-(--border-default) bg-(--surface-default)",
+          "min-w-35 bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs",
           "p-1 shadow-lg",
           "max-h-[min(var(--radix-dropdown-menu-content-available-height),20rem)] overflow-y-auto overscroll-contain",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
@@ -147,7 +150,7 @@ const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: 
             onSelect={() => handleLanguageChange(language.languageCode as LANGUAGE)}
             className={cn(
               "flex items-center justify-between gap-2 px-2 py-1.5 rounded-sm",
-              "text-sm text-(--text-primary) cursor-pointer outline-none",
+              "text-sm text-(--text-invert) cursor-pointer outline-none",
               "hover:bg-(--color-primary)/10 focus:bg-(--color-primary)/10",
               "mb-0.5 last:mb-0",
             )}
@@ -157,7 +160,7 @@ const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: 
               <span>{language.languageLabel}</span>
             </div>
             {language.languageCode === currentLanguage && (
-              <Check size={14} className="text-(--color-primary)" />
+              <Check size={14} className="text-(--text-invert)" />
             )}
           </DropdownMenu.Item>
         ))}
