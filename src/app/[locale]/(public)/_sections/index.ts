@@ -1,5 +1,5 @@
 import HeroSection from "./hero-section";
 import AboutUs from "./about-us";
-import WhyChooseUsSection from "./why-choose-us-section";
+import ConsiderationSection from "./consideration-section";
 
-export { HeroSection, AboutUs, WhyChooseUsSection };
+export { HeroSection, AboutUs, ConsiderationSection };
