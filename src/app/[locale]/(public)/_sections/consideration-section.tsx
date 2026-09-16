@@ -1,6 +1,6 @@
 import FadeIn from "@/app/component/fade-in.components";
 import cn from "@/lib/tw-merge";
-import { Clock, Share2, SquareStack, TrendingUp, type LucideIcon } from "lucide-react";
+import { Clock, Share2, AlignVerticalJustifyEnd, TrendingUp, type LucideIcon } from "lucide-react";
 
 interface ConsiderationSectionProps {
     data: any;
@@ -8,18 +8,18 @@ interface ConsiderationSectionProps {
 }
 
 const CONSIDERATION_ICONS: Record<string, LucideIcon> = {
-    SquareStack,
+    AlignVerticalJustifyEnd,
     TrendingUp,
     Share2,
     Clock,
 };
 
 const resolveConsiderationIcon = (icon?: string | null): LucideIcon =>
-    (icon && CONSIDERATION_ICONS[icon]) || SquareStack;
+    (icon && CONSIDERATION_ICONS[icon]) || AlignVerticalJustifyEnd;
 
 const ITEMS = [
 {
-    icon: "SquareStack",
+    icon: "AlignVerticalJustifyEnd",
     number: "01",
     title: "รากฐานที่แข็งแกร่ง",
     description: "วางรากฐานที่มั่นคงให้กับทุกธุรกิจในกลุ่มด้วยระบบ บริหารจัดการที่มีวินัยและการวาง แผนระยะยาว"
