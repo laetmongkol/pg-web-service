@@ -31,59 +31,53 @@ const renderClause = (clause: string[], clauseIndex: number): ReactNode[] =>
 
 const BannerSection = () => {
     return (
-        <FadeIn>
-            <section
-                className={cn(
-                    "relative mt-(--navbar-height) lg:mt-0 flex h-fit w-full flex-col",
-                    "overflow-hidden bg-(--color-primary)",
-                )}
-                id="banner"
-            >
-                <div className="hidden w-full lg:block">
-                    <FillImage
-                        src={mockUpImage}
-                        alt="Contact Us banner"
-                        width={2560}
-                        height={1440}
-                        sizes="100vw"
-                        className={cn(
-                            "w-full object-cover object-right aspect-[5/2]",
-                            BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                        )}
-                    />
-                </div>
-                <div className="block w-full lg:hidden">
-                    <FillImage
-                        src={mockUpImage}
-                        alt="Contact Us banner"
-                        width={2560}
-                        height={1440}
-                        sizes="100vw"
-                        priority
-                        className={cn(
-                            "w-full object-cover object-center aspect-square",
-                            BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                        )}
-                    />
-                </div>
-
-                <div
-                    aria-hidden
+        <section
+            className={cn(
+                "relative mt-(--navbar-height) lg:mt-0 flex h-[1080px] w-full flex-col",
+                "overflow-hidden bg-(--color-primary)",
+            )}
+            id="banner"
+        >
+            <div className="absolute inset-0 hidden w-full lg:block">
+                <FillImage
+                    src={mockUpImage}
+                    alt="Contact Us banner"
+                    width={2560}
+                    height={1440}
+                    sizes="100vw"
+                    wrapperClassName="h-full w-full"
                     className={cn(
-                        "absolute inset-0",
-                        "bg-linear-to-r from-(--color-primary) from-0% via-(--color-primary)/80 via-40% to-transparent",
+                        "h-full w-full object-cover object-right",
+                        BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
                     )}
                 />
+            </div>
+            <div className="absolute inset-0 block w-full lg:hidden">
+                <FillImage
+                    src={mockUpImage}
+                    alt="Contact Us banner"
+                    width={2560}
+                    height={1440}
+                    sizes="100vw"
+                    wrapperClassName="h-full w-full"
+                    priority
+                    className={cn(
+                        "h-full w-full object-cover object-center",
+                        BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
+                    )}
+                />
+            </div>
 
+            <FadeIn className="absolute inset-0 z-10">
                 <div
                     className={cn(
-                        "absolute inset-0 z-10 mx-auto grid h-full w-full max-w-6xl",
+                        "mx-auto grid h-full w-full max-w-6xl",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >
                     <div
                         className={cn(
-                            "col-start-1 row-start-1 flex flex-col justify-center gap-4 sm:gap-6",
+                            "col-start-1 row-start-1 -mt-16 flex flex-col justify-center gap-4 sm:-mt-24 sm:gap-8",
                             "text-center items-center",
                             "sm:text-start sm:items-start",
                         )}
@@ -104,7 +98,6 @@ const BannerSection = () => {
                                 "text-xl sm:text-5xl sm:leading-tight xl:text-6xl",
                             )}
                         >
-                            {/* Both halves on one line, unlike the Our Businesses headline. */}
                             <span className="text-(--color-secondary)">{"ติดต่อ"}</span>
                             <span className="text-(--text-invert)">{"พูดคุยกับเรา"}</span>
                         </h1>
@@ -123,13 +116,12 @@ const BannerSection = () => {
                             ))}
                         </p>
                     </div>
-
                     <a
                         href="#contact-us-content"
                         className={cn(
                             "col-start-1 row-start-1 self-end",
                             "justify-self-center sm:justify-self-start",
-                            "flex w-fit flex-col items-center gap-2 pb-6 lg:pb-12",
+                            "mb-16 flex w-fit flex-col items-center gap-2 sm:mb-24 pb-6 lg:pb-32",
                             "hidden sm:flex",
                             "text-(--text-invert)/75",
                             "text-xs tracking-wide hover:text-(--text-invert) transition-colors",
@@ -139,8 +131,8 @@ const BannerSection = () => {
                         {"Scroll down"}
                     </a>
                 </div>
-            </section>
-        </FadeIn>
+            </FadeIn>
+        </section>
     );
 };
 
