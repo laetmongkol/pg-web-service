@@ -4,9 +4,13 @@ import { Clock, Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 
 import cn from "@/lib/tw-merge";
 
-const OFFICE_NAME = "PIP GROUP HOLDINGS CO., LTD.";
-const OFFICE_ADDRESS =
-    "502 อาคารเกษร อัมรินทร์ ห้องเลขที่ 8A ชั้น 9 ถนนเพลินจิต แขวงลุมพินี เขตปทุมวัน กรุงเทพมหานคร 10330";
+import {
+    COMPANY_ADDRESS,
+    COMPANY_EMAIL,
+    COMPANY_LEGAL_NAME,
+    COMPANY_OFFICE_HOURS,
+    COMPANY_PHONE,
+} from "@/shared/constants/company.constants";
 
 const nowrapTokens = (text: string): ReactNode[] =>
     text.split(" ").flatMap((token, index) => {
@@ -26,10 +30,10 @@ type OfficeDetail = {
 };
 
 const OFFICE_DETAILS: OfficeDetail[] = [
-    { key: "address", Icon: MapPin, label: "ที่อยู่", value: OFFICE_ADDRESS },
-    { key: "phone", Icon: Phone, label: "เบอร์โทร", value: "02 000 0000" },
-    { key: "email", Icon: Mail, label: "อีเมล", value: "support@pipgroup.com" },
-    { key: "hours", Icon: Clock, label: "เวลาทำการ", value: "จันทร์ - ศุกร์: 10:00น. - 19:00น." },
+    { key: "address", Icon: MapPin, label: "ที่อยู่", value: COMPANY_ADDRESS },
+    { key: "phone", Icon: Phone, label: "เบอร์โทร", value: COMPANY_PHONE },
+    { key: "email", Icon: Mail, label: "อีเมล", value: COMPANY_EMAIL },
+    { key: "hours", Icon: Clock, label: "เวลาทำการ", value: COMPANY_OFFICE_HOURS },
 ];
 
 /** Google ยังไม่มี listing ของ PIP Group เอง — หมุดจึงชี้อาคารเกษรอัมรินทร์ ซึ่งเป็นที่ตั้งจริง */
@@ -81,7 +85,7 @@ const HeadOffice = () => {
             <div className="relative overflow-hidden rounded-2xl">
                 <iframe
                     src={MAP_EMBED_SRC}
-                    title={`แผนที่ ${OFFICE_NAME}`}
+                    title={`แผนที่ ${COMPANY_LEGAL_NAME}`}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     allowFullScreen
