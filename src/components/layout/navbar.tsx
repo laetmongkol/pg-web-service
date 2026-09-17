@@ -1,12 +1,12 @@
 import { getTranslations } from "next-intl/server"
 
-import cn from "@/lib/tw-merge"
 import { LanguageResponseDto } from "@/services/generated-cli/api-app-service"
 
 import { LANGUAGE } from "@/shared/constants/common.constants"
 
 import DesktopNavbar from "./navbar-component/desktop-navbar"
 import MobileNavbar from "./navbar-component/mobile-navbar"
+import NavbarShell from "./navbar-component/navbar-shell"
 
 export interface NavLinkItem {
   key: string
@@ -52,17 +52,10 @@ const Navbar = async ({ language, languages, menuItems = [], showLogo = false }:
 
   return (
     <>
-      <nav
-        className={cn(
-          "fixed inset-x-0 top-0 z-100 border-b",
-          "bg-(--color-primary) lg:bg-transparent lg:border-transparent",
-        )}
-      >
-        <div className={cn("mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-3 px-6 p-4")}>
-          <DesktopNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels}/>
-          <MobileNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels} />
-        </div>
-      </nav>
+      <NavbarShell>
+        <DesktopNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels}/>
+        <MobileNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels} />
+      </NavbarShell>
       <div aria-hidden className="h-(--navbar-height) shrink-0" />
     </>
   )

@@ -1,22 +1,20 @@
 import type { NavLinkItem } from "@/components/layout/navbar";
 
-import { BLOG_BASE_PATH } from "./seo.constants";
-
 const NAV_LINKS: NavLinkItem[] = [
   {
-    key: "Home",
+    key: "หน้าแรก",
     href: "",
   },
   {
-    key: "About Us",
+    key: "เกี่ยวกับเรา",
     href: "about-us",
   },
   {
-    key: "Our Businesses",
+    key: "บริการของเรา",
     href: "our-businesses",
   },
   {
-    key: "Contact Us",
+    key: "ติดต่อเรา",
     href: "contact-us",
   },
 ];
