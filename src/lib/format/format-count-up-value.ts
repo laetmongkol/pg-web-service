@@ -56,3 +56,18 @@ export function formatCountUpTarget(config: CountUpNumberConfig) {
 
     return formatCountUpValue(config.target, config);
 }
+
+export function parseCountUpValue(raw: string): CountUpNumberConfig | null {
+    const match = raw.trim().match(/^(.*?)(\d+(?:\.\d+)?)(.*)$/);
+    if (!match) return null;
+    const [, prefix, digits, suffix] = match;
+    const target = Number(digits);
+    if (!Number.isFinite(target)) return null;
+    const decimalPart = digits.split(".")[1];
+    return {
+        target,
+        ...(prefix ? { prefix } : {}),
+        ...(suffix ? { suffix } : {}),
+        ...(decimalPart ? { decimals: decimalPart.length } : {}),
+    };
+}

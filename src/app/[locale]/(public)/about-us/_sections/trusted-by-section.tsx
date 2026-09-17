@@ -1,20 +1,20 @@
 import FadeIn from "@/app/component/fade-in.components";
+import PartnerMarquee from "@/app/[locale]/(public)/_sections/components/partner-marquee";
 import cn from "@/lib/tw-merge";
-
-import TrustedMarquee from "./components/trusted-marquee";
 
 interface TrustedBySectionProps {
     data: any;
     language: string;
 }
 
-const TRUSTED_BY = [
-    "Logobase",
-    "Stackcraft",
-    "Auratool",
-    "Polywork",
-    "Logoflow",
-    "Pulsewave",
+/** The same logos the homepage partner card runs. */
+const TRUSTED_BY_LOGOS = [
+    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
+    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
+    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
+    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
+    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
+    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
 ];
 
 const TrustedBySection = ({ data, language }: TrustedBySectionProps) => {
@@ -42,9 +42,9 @@ const TrustedBySection = ({ data, language }: TrustedBySectionProps) => {
                 </FadeIn>
             </FadeIn>
 
-            {/* full-bleed: only the header above is centred, the row runs edge to edge */}
+            {/* full-bleed: only the header above is centred, the logo row runs edge to edge */}
             <FadeIn delay={300}>
-                <TrustedMarquee items={TRUSTED_BY} />
+                <PartnerMarquee items={TRUSTED_BY_LOGOS} />
             </FadeIn>
         </section>
     );

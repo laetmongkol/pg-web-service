@@ -2,6 +2,7 @@ import { Fragment, type ReactNode } from "react";
 
 import { Building2, LayoutGrid, TrendingUp, type LucideIcon } from "lucide-react";
 
+import CountUpNumber from "@/app/component/count-up-number.component";
 import FadeIn from "@/app/component/fade-in.components";
 import cn from "@/lib/tw-merge";
 
@@ -106,9 +107,10 @@ const OurEcosystemSection = () => {
                                 )}
                                 strokeWidth={1.6}
                             />
-                            <span className="text-2xl font-bold text-(--text-primary) sm:text-3xl">
-                                {value}
-                            </span>
+                            <CountUpNumber
+                                value={value}
+                                className="text-2xl font-bold text-(--text-primary) sm:text-3xl"
+                            />
                             <span
                                 className={cn(
                                     "text-(--text-secondary)",

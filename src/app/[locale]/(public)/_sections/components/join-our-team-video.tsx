@@ -9,6 +9,9 @@ import FadeIn from "@/app/component/fade-in.components";
 interface JoinOurTeamVideoProps {
     className?: string;
     title?: string;
+    onSurfaceClick?: () => void;
+    surfaceClickLabel?: string;
+    surfaceExpanded?: boolean;
 }
 
 const YOUTUBE_ID = "qxOkaU6RVz4";
@@ -39,7 +42,13 @@ const EMBED_PARAMS = new URLSearchParams({
     enablejsapi: "1",
 }).toString();
 
-const JoinOurTeamVideo = ({ className, title = "Join our team" }: JoinOurTeamVideoProps) => {
+const JoinOurTeamVideo = ({
+    className,
+    title = "Join our team",
+    onSurfaceClick,
+    surfaceClickLabel = "ขยายคลิป",
+    surfaceExpanded,
+}: JoinOurTeamVideoProps) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [isMuted, setIsMuted] = useState(true);
     // the auto-unmute listener runs outside React, so it needs the live value, not a closure
@@ -72,6 +81,15 @@ const JoinOurTeamVideo = ({ className, title = "Join our team" }: JoinOurTeamVid
 
     return (
         <FadeIn direction="left" delay={100} className={cn("relative aspect-4/3 w-full overflow-hidden rounded-3xl bg-black", className)}>
+            {onSurfaceClick ? (
+                <button
+                    type="button"
+                    onClick={onSurfaceClick}
+                    aria-label={surfaceClickLabel}
+                    aria-expanded={surfaceExpanded}
+                    className="absolute inset-0 z-[1] cursor-pointer"
+                />
+            ) : null}
             <iframe
                 ref={iframeRef}
                 src={`${EMBED_ORIGIN}/embed/${YOUTUBE_ID}?${EMBED_PARAMS}`}
@@ -86,11 +104,14 @@ const JoinOurTeamVideo = ({ className, title = "Join our team" }: JoinOurTeamVid
 
             <button
                 type="button"
-                onClick={() => setMuted(!mutedRef.current)}
+                onClick={(event) => {
+                    event.stopPropagation();
+                    setMuted(!mutedRef.current);
+                }}
                 aria-label={isMuted ? "เปิดเสียง" : "ปิดเสียง"}
                 aria-pressed={!isMuted}
                 className={cn(
-                    "absolute right-4 bottom-4 flex size-11 items-center justify-center rounded-full",
+                    "absolute right-4 bottom-4 z-[2] flex size-11 items-center justify-center rounded-full",
                     "bg-black/50 text-white backdrop-blur-sm",
                     "transition hover:bg-black/70 hover:scale-105",
                 )}

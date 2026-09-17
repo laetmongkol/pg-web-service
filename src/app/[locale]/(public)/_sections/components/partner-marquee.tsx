@@ -4,17 +4,24 @@ import { useEffect, useRef } from "react";
 
 import cn from "@/lib/tw-merge";
 
+import FillImage from "@/components/fill-image.component";
+
 import type { PointerEvent as ReactPointerEvent } from "react";
 
-interface TrustedMarqueeProps {
+interface PartnerMarqueeProps {
     items: string[];
     /** Idle drift speed in px per second. */
     speed?: number;
+    /** Drift right instead of left. */
+    reverse?: boolean;
 }
 
+/** Row height — every logo locks to this and keeps its own ratio. */
+const ROW_HEIGHT = "h-12 sm:h-14";
+
 /**
- * Copies of the list per half of the track. A handful of names only spans ~900px, so a single
- * copy would leave a visible hole on a wide screen.
+ * Copies of the row per half of the track. A handful of logos only spans ~700px, so a single
+ * copy would leave a visible hole inside the card on a wide screen.
  */
 const COPIES_PER_HALF = 3;
 
@@ -24,7 +31,7 @@ const FLING_MAX = 2500;
 /** A flick older than this was really a hold, so don't coast on release. */
 const FLING_STALE_MS = 80;
 
-const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
+const PartnerMarquee = ({ items, speed = 30, reverse = false }: PartnerMarqueeProps) => {
     const trackRef = useRef<HTMLDivElement>(null);
     /** Pixels scrolled, kept normalised into one half-track so the loop is seamless. */
     const offset = useRef(0);
@@ -38,7 +45,7 @@ const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
         const track = trackRef.current;
         if (!track || items.length === 0) return;
 
-        // widths depend on the loaded font, so re-measure whenever the track resizes
+        // widths come from the loaded logos, so re-measure whenever the track resizes
         const measure = () => {
             halfWidth.current = track.scrollWidth / 2;
         };
@@ -56,7 +63,9 @@ const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
             previous = now;
 
             if (!isDragging.current) {
-                if (!reduceMotion.matches) offset.current += (speed * delta) / 1000;
+                if (!reduceMotion.matches) {
+                    offset.current += ((reverse ? -1 : 1) * speed * delta) / 1000;
+                }
                 if (fling.current !== 0) {
                     offset.current += (fling.current * delta) / 1000;
                     fling.current *= FLING_DECAY ** (delta / 16);
@@ -78,7 +87,7 @@ const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
             cancelAnimationFrame(frame);
             observer.disconnect();
         };
-    }, [items.length, speed]);
+    }, [items.length, reverse, speed]);
 
     const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
         isDragging.current = true;
@@ -95,7 +104,7 @@ const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
         const dt = Math.max(now - lastMoveAt.current, 1);
         lastX.current = event.clientX;
         lastMoveAt.current = now;
-        // dragging right reveals earlier names, so the offset moves the other way
+        // dragging right reveals earlier logos, so the offset moves the other way
         offset.current -= dx;
         fling.current = Math.max(-FLING_MAX, Math.min(FLING_MAX, (-dx / dt) * 1000));
     };
@@ -114,9 +123,9 @@ const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
     return (
         <div
             className={cn(
-                "relative w-full cursor-grab touch-pan-y overflow-hidden select-none active:cursor-grabbing",
-                // the names fade out into the page instead of being cut mid-letter
-                "[mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]",
+                "w-full cursor-grab touch-pan-y overflow-hidden select-none active:cursor-grabbing",
+                // the row is clipped inside the card, so its ends fade instead of being cut off
+                "[mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]",
             )}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
@@ -126,18 +135,22 @@ const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
             <div ref={trackRef} className="flex w-max items-center will-change-transform">
                 {/* two identical halves — normalising the offset into one half loops with no seam */}
                 {Array.from({ length: COPIES_PER_HALF * 2 }, (_, copy) =>
-                    items.map((name, position) => (
-                        <span
+                    items.map((image, position) => (
+                        <FillImage
                             key={`${copy}-${position}`}
                             aria-hidden={copy > 0}
-                            className={cn(
-                                "shrink-0 whitespace-nowrap",
-                                "px-8 sm:px-12",
-                                "text-xl sm:text-2xl font-bold text-(--text-secondary)/60",
-                            )}
-                        >
-                            {name}
-                        </span>
+                            src={image}
+                            alt={copy > 0 ? "" : "Partner"}
+                            width={400}
+                            height={160}
+                            sizes="180px"
+                            /* eager: an unloaded logo measures 0 wide and would collapse the track */
+                            loading="eager"
+                            draggable={false}
+                            wrapperClassName={cn("mx-6 w-auto shrink-0 sm:mx-8", ROW_HEIGHT)}
+                            /* aspect-auto drops the ratio implied by width/height so the real file decides */
+                            className="aspect-auto h-full w-auto max-w-none object-contain"
+                        />
                     )),
                 )}
             </div>
@@ -145,4 +158,4 @@ const TrustedMarquee = ({ items, speed = 40 }: TrustedMarqueeProps) => {
     );
 };
 
-export default TrustedMarquee;
+export default PartnerMarquee;

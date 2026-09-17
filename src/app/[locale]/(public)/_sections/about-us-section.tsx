@@ -1,3 +1,4 @@
+import CountUpNumber from "@/app/component/count-up-number.component";
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 import LinkCustom from "@/components/link-custom.component";
@@ -40,7 +41,7 @@ const aboutUsData = [
 
 const AboutUs = ({ data, language }: AboutUsProps) => {
     return (
-        <section className={cn("flex flex-col max-w-7xl mx-auto pt-30 px-6 sm:px-12 md:px-16",
+        <section id="about-us" className={cn("flex flex-col max-w-7xl mx-auto pt-30 px-6 sm:px-12 md:px-16",
             "pb-16 gap-8"
         )}>
             <div className={cn(
@@ -93,7 +94,10 @@ const AboutUs = ({ data, language }: AboutUsProps) => {
                                 <FadeIn key={item.title} delay={index * 150} className="flex flex-row items-center gap-4">
                                     <Icon className="size-8 shrink-0 text-(--color-secondary) bg-(--surface-50) p-3 rounded-xl w-13 h-13" strokeWidth={1.5} />
                                     <span className="flex flex-col gap-1">
-                                        <span className="text-xl font-bold text-(--text-primary)">{item.value}</span>
+                                        <CountUpNumber
+                                            value={item.value}
+                                            className="text-xl font-bold text-(--text-primary)"
+                                        />
                                         <span className="text-sm font-medium text-(--text-secondary)">{item.title}</span>
                                     </span>
                                 </FadeIn>
@@ -125,7 +129,10 @@ const AboutUs = ({ data, language }: AboutUsProps) => {
                             "text-(--text-invert)",
                             "flex flex-row lg:flex-col lg:items-start items-center gap-3"
                         )}>
-                            <span className={cn("text-3xl lg:text-2xl font-bold")}>{"100%"}</span>
+                            <CountUpNumber
+                                value="100%"
+                                className={cn("text-3xl lg:text-2xl font-bold")}
+                            />
                             <span className={cn("text-base lg:text-xs")}>{"ความสำเร็จของลูกค้า"}</span>
                         </span>
                         <span
