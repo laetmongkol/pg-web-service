@@ -91,20 +91,33 @@ const hoverRevealClass = (isOpen: boolean) =>
         isOpen && "lg:translate-y-0 lg:opacity-100",
     );
 
+/** A finger that travelled further than this was swiping the track, not tapping a card. */
+const TAP_SLOP = 8;
+
 const SubsidiaryCard = ({ item, className }: { item: SubsidiaryItem; className?: string }) => {
     const { ref, inView } = useInView();
     const [isOpen, setIsOpen] = useState(false);
+    const pressRef = useRef<{ x: number; y: number } | null>(null);
+
+    const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+        pressRef.current = { x: event.clientX, y: event.clientY };
+    };
 
     // mouse users already get this from hover; only touch/pen need the tap
     const onPointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+        const press = pressRef.current;
+        pressRef.current = null;
         if (event.pointerType === "mouse") return;
         if ((event.target as HTMLElement).closest("a")) return;
+        // a swipe that drags the track past the card must not also flip the card open
+        if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > TAP_SLOP) return;
         setIsOpen((current) => !current);
     };
 
     return (
         <div
             ref={ref}
+            onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             className={cn("group relative shrink-0 overflow-hidden rounded-3xl", className)}
         >
@@ -186,6 +199,8 @@ const SubsidiariesScroller = ({ items, header }: SubsidiariesScrollerProps) => {
     const progressRef = useRef<HTMLDivElement>(null);
     /** Horizontal overflow in px — also how much extra page height the section claims. */
     const [distance, setDistance] = useState(0);
+    /** Finger origin for the touch path; null while no swipe is in progress. */
+    const swipeRef = useRef<{ pointerId: number; x: number; scrollY: number } | null>(null);
 
     useEffect(() => {
         const wrapper = wrapperRef.current;
@@ -239,6 +254,37 @@ const SubsidiariesScroller = ({ items, header }: SubsidiariesScrollerProps) => {
         };
     }, [items.length]);
 
+    /**
+     * A landscape iPad renders the desktop track, but the track only moves when the *page*
+     * scrolls — and a finger swiped sideways scrolls nothing. Translate that sideways swipe
+     * into the page scroll the track is already listening to.
+     */
+    const onSwipeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+        if (event.pointerType === "mouse") return;
+        swipeRef.current = { pointerId: event.pointerId, x: event.clientX, scrollY: window.scrollY };
+    };
+
+    const onSwipeMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+        const swipe = swipeRef.current;
+        const wrapper = wrapperRef.current;
+        const sticky = stickyRef.current;
+        const track = trackRef.current;
+        if (!swipe || swipe.pointerId !== event.pointerId || !wrapper || !sticky || !track) return;
+
+        const overflow = Math.max(0, track.scrollWidth - sticky.clientWidth);
+        const scrollable = wrapper.offsetHeight - sticky.offsetHeight;
+        if (overflow <= 0 || scrollable <= 0) return;
+
+        // dragging the cards left (negative dx) means moving forward, i.e. further down the page
+        const dx = event.clientX - swipe.x;
+        // `instant` because html has scroll-behavior: smooth, which would lag behind the finger
+        window.scrollTo({ top: swipe.scrollY - (dx / overflow) * scrollable, behavior: "instant" });
+    };
+
+    const onSwipeEnd = (event: ReactPointerEvent<HTMLDivElement>) => {
+        if (swipeRef.current?.pointerId === event.pointerId) swipeRef.current = null;
+    };
+
     return (
         <>
             {/* mobile-first: plain stack */}
@@ -258,7 +304,12 @@ const SubsidiariesScroller = ({ items, header }: SubsidiariesScrollerProps) => {
             >
                 <div
                     ref={stickyRef}
-                    className="sticky top-0 -mx-6 flex h-screen flex-col gap-6 overflow-hidden py-10 sm:-mx-12 md:-mx-16"
+                    onPointerDown={onSwipeStart}
+                    onPointerMove={onSwipeMove}
+                    onPointerUp={onSwipeEnd}
+                    onPointerCancel={onSwipeEnd}
+                    // pan-y keeps the normal vertical page scroll; sideways gestures reach us instead
+                    className="sticky top-0 -mx-6 flex h-screen touch-pan-y flex-col gap-6 overflow-hidden py-10 sm:-mx-12 md:-mx-16"
                 >
                     {/* pinned with the cards so the heading stays on screen for the whole scroll */}
                     <div className={SIDE_PADDING}>{header}</div>
