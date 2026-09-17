@@ -1,6 +1,7 @@
 import FadeIn from "@/app/component/fade-in.components";
-import FillImage from "@/components/fill-image.component";
 import cn from "@/lib/tw-merge";
+
+import PartnerMarquee from "./components/partner-marquee";
 
 interface PartnerSectionProps {
     data: any;
@@ -19,7 +20,12 @@ const partnerImages = [
     "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
 ];
 
-const GRID_COLUMNS = 3;
+const MARQUEE_ROWS = 3;
+
+/** Dealt round-robin so the rows stay even however many partners there end up being. */
+const PARTNER_ROWS = Array.from({ length: MARQUEE_ROWS }, (_, row) =>
+    partnerImages.filter((_image, index) => index % MARQUEE_ROWS === row),
+);
 
 const PartnerSection = ({ data, language }: PartnerSectionProps) => {
     return (
@@ -35,7 +41,7 @@ const PartnerSection = ({ data, language }: PartnerSectionProps) => {
             )}>
                 <FadeIn direction="left" delay={100} className={cn("flex flex-col gap-6",
                     "items-center text-center",
-                    "lg:w-5/12 lg:items-start lg:text-start"
+                    "lg:w-1/2 lg:items-start lg:text-start"
                 )}>
                     <FadeIn delay={100} className={cn("hidden lg:block",
                         "text-(--color-secondary) text-sm font-bold tracking-[0.25em]"
@@ -66,25 +72,24 @@ const PartnerSection = ({ data, language }: PartnerSectionProps) => {
                     "lg:h-72 lg:w-px"
                 )} />
 
-                <FadeIn direction="right" delay={300} className="grid grid-cols-3 lg:flex-1">
-                    {partnerImages.map((image, index) => (
-                        <FadeIn delay={index * 150}
-                            key={`${image}-${index}`}
-                            className={cn("flex items-center justify-center px-2 py-6 sm:px-4 sm:py-8",
+                {/* three looping rows instead of a 3x3 grid — the partner list keeps growing,
+                    and a fixed grid would either cut it off or stretch the card */}
+                <FadeIn direction="right" delay={300} className="flex lg:w-1/2 flex-col lg:flex-1">
+                    {PARTNER_ROWS.map((row, index) => (
+                        <div
+                            key={`row-${index}`}
+                            className={cn(
+                                "py-5 sm:py-6",
                                 // rows after the first carry the divider, so the line runs unbroken
-                                index >= GRID_COLUMNS && "border-t border-(--text-primary)/15"
+                                index > 0 && "border-t border-(--text-primary)/15",
                             )}
                         >
-                            <FillImage
-                                src={image}
-                                alt="Partner"
-                                width={400}
-                                height={160}
-                                sizes="(max-width: 1024px) 30vw, 180px"
-                                wrapperClassName="w-full aspect-5/2"
-                                className="object-contain"
+                            <PartnerMarquee
+                                items={row}
+                                speed={26 + index * 6}
+                                reverse={index % 2 === 1}
                             />
-                        </FadeIn>
+                        </div>
                     ))}
                 </FadeIn>
             </div>

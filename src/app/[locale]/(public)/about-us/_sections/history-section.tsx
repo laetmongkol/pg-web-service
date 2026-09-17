@@ -1,3 +1,4 @@
+import CountUpNumber from "@/app/component/count-up-number.component";
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 import cn from "@/lib/tw-merge";
@@ -41,7 +42,7 @@ const HISTORY_STATS = [
 
 const HistorySection = ({ data, language }: HistorySectionProps) => {
     return (
-        <section className={cn("flex flex-col max-w-7xl mx-auto pt-30 px-6 sm:px-12 md:px-16",
+        <section id="history" className={cn("flex flex-col max-w-7xl mx-auto pt-30 px-6 sm:px-12 md:px-16",
             "pb-16 gap-8"
         )}>
             <FadeIn className={cn(
@@ -124,7 +125,10 @@ const HistorySection = ({ data, language }: HistorySectionProps) => {
                     )}>
                         {HISTORY_STATS.map((item, index) => (
                             <FadeIn key={item.title} delay={index * 150} className="flex flex-col gap-1">
-                                <span className="text-3xl font-bold text-(--color-secondary)">{item.value}</span>
+                                <CountUpNumber
+                                    value={item.value}
+                                    className="text-3xl font-bold text-(--color-secondary)"
+                                />
                                 <span className="text-base font-medium text-(--text-primary)">{item.title}</span>
                                 <span className="text-xs text-(--text-secondary)">{item.description}</span>
                             </FadeIn>

@@ -12,7 +12,8 @@ const BannerSection = () => {
     return (
         <section
             className={cn(
-                "relative mt-(--navbar-height) lg:mt-0 flex h-[1080px] w-full flex-col",
+                // below lg the frame is a square — a fixed 1080px is far taller than a phone or tablet screen
+                "relative mt-(--navbar-height) lg:mt-0 flex aspect-square w-full flex-col lg:aspect-auto lg:h-[1080px]",
                 "overflow-hidden bg-(--color-primary)",
             )}
             id="banner"
