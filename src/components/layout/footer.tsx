@@ -1,217 +1,221 @@
-import { IoLogoFacebook } from "react-icons/io5"
-import { getTranslations } from "next-intl/server"
+import { IoLogoFacebook, IoLogoLinkedin } from "react-icons/io5"
 
-import { MessageSquare } from "lucide-react"
+import { Mail, MapPin, MessageSquare, Phone, type LucideIcon } from "lucide-react"
 
-import { resolveMediaDisplayUrl } from "@/lib/media/media-display-url"
 import cn from "@/lib/tw-merge"
 
-import FillImage from "@/components/fill-image.component"
 import LinkCustom from "@/components/link-custom.component"
 
-import type { IconType } from "react-icons"
+import type { ComponentType } from "react"
 
 import { LANGUAGE } from "@/shared/constants/common.constants"
-import { BLOG_BASE_PATH } from "@/shared/constants/seo.constants";
+import {
+  COMPANY_ADDRESS,
+  COMPANY_EMAIL,
+  COMPANY_LEGAL_NAME,
+  COMPANY_NAME,
+  COMPANY_PHONE,
+  COMPANY_SUMMARY,
+} from "@/shared/constants/company.constants"
 
-const LINE_QR_STORAGE_KEY = ""
+import AppLogo from "./logo"
 
 interface FooterProps {
   language?: LANGUAGE
 }
 
 interface FooterLinkItem {
-  key: string
+  label: string
   href: string
 }
+
+interface FooterLinkGroup {
+  heading: string
+  links: FooterLinkItem[]
+}
+
+const LINK_GROUPS: FooterLinkGroup[] = [
+  {
+    heading: "เกี่ยวกับเรา",
+    links: [
+      { label: "ภาพรวมบริษัท", href: "/about-us" },
+      { label: "ประวัติของเรา", href: "/about-us" },
+      { label: "วิสัยทัศน์และพันธกิจ", href: "/about-us" },
+      { label: "ทีมผู้บริหาร", href: "/about-us" },
+    ],
+  },
+  {
+    heading: "ธุรกิจของเรา",
+    links: [
+      { label: "อสังหาริมทรัพย์", href: "/our-businesses" },
+      { label: "บริการทางการเงิน", href: "/our-businesses" },
+      { label: "เทคโนโลยี", href: "/our-businesses" },
+      { label: "การบริการและไลฟ์สไตล์", href: "/our-businesses" },
+    ],
+  },
+  {
+    heading: "แหล่งข้อมูล",
+    links: [
+      { label: "ข่าวสารและอัปเดต", href: "#" },
+      { label: "นักลงทุนสัมพันธ์", href: "#" },
+      { label: "ร่วมงานกับเรา", href: "#" },
+      { label: "ความยั่งยืน", href: "#" },
+    ],
+  },
+]
+
+interface FooterContactItem {
+  key: string
+  Icon: LucideIcon
+  value: string
+  href?: string
+}
+
+const CONTACT_ITEMS: FooterContactItem[] = [
+  { key: "address", Icon: MapPin, value: COMPANY_ADDRESS },
+  { key: "phone", Icon: Phone, value: COMPANY_PHONE, href: `tel:${COMPANY_PHONE.replace(/\s/g, "")}` },
+  { key: "email", Icon: Mail, value: COMPANY_EMAIL, href: `mailto:${COMPANY_EMAIL}` },
+]
 
 interface FooterSocialItem {
   label: string
   href: string
-  icon: IconType
+  Icon: ComponentType<{ className?: string }>
 }
 
 const SOCIAL_LINKS: FooterSocialItem[] = [
-  { label: "page-path", href: "#", icon: IoLogoFacebook },
-]
-
-const COMPANY_LINKS: FooterLinkItem[] = [
-  { key: "page-path", href: "#" },
-]
-
-const GROUP_COMPANY_LINKS: FooterLinkItem[] = [
-  { key: "page-path", href: "#" },
+  { label: "LinkedIn", href: "#", Icon: IoLogoLinkedin },
+  { label: "Facebook", href: "#", Icon: IoLogoFacebook },
+  { label: "Line", href: "#", Icon: MessageSquare },
 ]
 
 const LEGAL_LINKS: FooterLinkItem[] = [
-  { key: "page-path", href: "#" },
+  { label: "นโยบายความเป็นส่วนตัว", href: "#" },
+  { label: "ข้อกำหนดและเงื่อนไข", href: "#" },
+  { label: "ธรรมาภิบาล", href: "#" },
 ]
-async function FooterLinkList({
-  label,
-  links,
-  language,
-}: {
-  label: string
-  links: FooterLinkItem[]
-  language: LANGUAGE
-}) {
-  const t = await getTranslations()
-  return (
-    <div className="flex w-1/2 min-w-0 flex-col gap-4">
-      <h3 className="text-base font-bold text-white">
-        {t(label)}
-      </h3>
-      <ul className="flex flex-col gap-2.5">
-        {links.map((link) => (
-          <li key={link.key}>
-            <LinkCustom
-              href={link.href === "#" ? "#" : `/${language}${link.href}`}
-              className="text-sm text-white/85 transition-colors hover:text-white"
-            >
-              {t(link.key)}
-            </LinkCustom>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
+
+function resolveHref(language: LANGUAGE, href: string) {
+  return href.startsWith("/") ? `/${language}${href}` : href
 }
 
-function LineQr() {
-  const src = resolveMediaDisplayUrl(undefined, LINE_QR_STORAGE_KEY)
+const HEADING_CLASSNAME = "text-sm font-bold text-(--color-secondary) xl:text-base"
+const SECTION_DIVIDER_CLASSNAME = "max-lg:border-t max-lg:border-(--text-invert)/12 max-lg:pt-6"
+const BODY_LINK_CLASSNAME = cn(
+  "text-xs text-(--text-invert)/80 xl:text-sm",
+  "transition-colors hover:text-(--text-invert)",
+)
 
-  if (!src) {
-    return (
+export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
+  return (
+    <footer
+      className={cn(
+        "relative w-full overflow-hidden text-(--text-invert)",
+        "bg-linear-to-b from-(--color-primary) to-(--color-primary-350)",
+      )}
+    >
       <div
-        aria-hidden="true"
-        className="h-14 w-14 shrink-0 rounded bg-(--surface-default)"
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-0 opacity-[0.06]",
+          "[background-image:radial-gradient(circle,#fff_1px,transparent_1px)]",
+          "[background-size:22px_22px]",
+        )}
       />
-    )
-  }
 
-  return (
-    <FillImage
-      src={src}
-      alt="Line QR"
-      wrapperClassName="h-14 w-14 shrink-0 overflow-hidden rounded"
-      className="object-cover"
-      sizes="300px"
-    />
-  )
-}
-
-export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
-  const t = await getTranslations()
-
-  return (
-    <footer className="w-full bg-(--color-primary-350) text-white">
-      <div className="mx-auto px-6 py-8">
-        <div className="flex w-full flex-col gap-10 lg:flex-row">
-          {/* Brand & Socials */}
-          <div className="flex w-full flex-col gap-5 lg:w-2/5">
-            <h2 className="text-2xl font-bold">Name</h2>
-            <p className="max-w-xs text-sm leading-relaxed text-white/85">
-              Description
-            </p>
-            <div className="flex items-center gap-2.5">
-              {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
-                <LinkCustom
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-(--surface-default)/15 text-white transition-colors hover:bg-(--surface-default)/25"
-                >
-                  <Icon size={18} aria-hidden="true" />
-                </LinkCustom>
-              ))}
+      <div className="relative mx-auto max-w-6xl px-6 py-8 xl:py-10">
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-8 xl:gap-12">
+          <div className="flex flex-col gap-3 lg:w-[28%]">
+            <div className="flex items-center gap-3">
+              <AppLogo width={64} />
+              <span className="text-lg font-bold xl:text-2xl">{COMPANY_NAME}</span>
             </div>
+            <p className="max-w-sm text-xs leading-relaxed text-(--text-invert)/75 xl:text-sm">
+              {COMPANY_SUMMARY}
+            </p>
           </div>
 
-          <div className="flex w-full min-w-0 flex-col gap-4 lg:flex-1 lg:flex-row lg:justify-around">
-            <div className="flex w-full min-w-0 flex-row justify-between gap-4 sm:gap-6 lg:w-2/3">
-              <FooterLinkList
-                label="title"
-                links={COMPANY_LINKS}
-                language={language}
-              />
-              <FooterLinkList
-                label="title"
-                links={GROUP_COMPANY_LINKS}
-                language={language}
-              />
+          <div className="flex flex-1 flex-col gap-6 lg:flex-row lg:gap-5 xl:gap-6">
+            <div className={cn(SECTION_DIVIDER_CLASSNAME, "grid flex-1 gap-6 sm:grid-cols-3 sm:gap-x-6")}>
+              {LINK_GROUPS.map(({ heading, links }) => (
+                <div key={heading} className="flex min-w-0 flex-col gap-3">
+                  <h3 className={HEADING_CLASSNAME}>{heading}</h3>
+                  <ul className="flex flex-col gap-2">
+                    {links.map(({ label, href }) => (
+                      <li key={label}>
+                        <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
+                          {label}
+                        </LinkCustom>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
 
-            {/* Support */}
-            <div className="flex w-full min-w-0 flex-col gap-4 lg:w-1/3">
-              <h3 className="text-base font-bold text-white lg:block hidden">
-                title
-              </h3>
-              <div
-                className={cn(
-                  "relative overflow-hidden rounded-xl p-4",
-                  "border border-(--surface-default)/10 bg-(--surface-default)/10",
-                  "backdrop-blur-sm supports-backdrop-filter:backdrop-blur-sm",
-                  "shadow-sm shadow-white/10",
-                  "flex min-w-0 flex-col gap-4",
-                )}
-              >
-                <div className="relative hidden min-w-0 items-center gap-3 lg:flex">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--surface-default)/10">
-                    <MessageSquare size={20} className="text-white" />
-                  </div>
-                  <div className="flex min-w-0 flex-col gap-1">
-                    <p className="text-sm font-bold">
-                      title
-                    </p>
-                    <p className="text-sm text-white/75">
-                      subtitle
-                    </p>
-                  </div>
-                </div>
-                <div className="relative flex min-w-0 items-center gap-3">
-                  <LineQr />
-                  <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <div className="flex flex-row gap-0.5 lg:hidden">
-                      <p className="text-sm font-bold">
-                        title
-                      </p>
-                      <p className="text-sm font-bold text-white">
-                        subtitle
-                      </p>
-                    </div>
-                    <div className="flex min-w-0 flex-col">
-                      <p className="text-xs leading-relaxed wrap-break-word text-white/85">
-                        subtitle
-                      </p>
-                      <p className="text-xs leading-relaxed wrap-break-word text-white/85">
-                        subtitle
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            <div className={cn(SECTION_DIVIDER_CLASSNAME, "flex min-w-0 flex-col gap-3 lg:w-[34%]")}>
+              <h3 className={HEADING_CLASSNAME}>{"ติดต่อเรา"}</h3>
+              <ul className="flex flex-col gap-2">
+                {CONTACT_ITEMS.map(({ key, Icon, value, href }) => (
+                  <li key={key} className="flex items-start gap-2.5">
+                    <Icon
+                      className="mt-0.5 size-3.5 shrink-0 text-(--color-secondary) xl:size-4"
+                      strokeWidth={1.8}
+                    />
+                    {href ? (
+                      <LinkCustom href={href} className={BODY_LINK_CLASSNAME}>
+                        {value}
+                      </LinkCustom>
+                    ) : (
+                      <span className="text-xs text-(--text-invert)/80 xl:text-sm">{value}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-1 flex items-center gap-2.5">
+                {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+                  <LinkCustom
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className={cn(
+                      "flex size-9 items-center justify-center rounded-full",
+                      "border border-(--color-secondary)/60 text-(--color-secondary)",
+                      "transition-colors hover:bg-(--color-secondary) hover:text-(--color-primary)",
+                    )}
+                  >
+                    <Icon className="size-4.5" />
+                  </LinkCustom>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-center gap-4 border-t border-(--surface-default)/20 pt-4 lg:flex-row lg:items-center lg:justify-between">
-          <p className="text-xs text-white/75">
-              © {new Date().getFullYear()} rights.
+        <div
+          className={cn(
+            "mt-8 flex flex-col items-start gap-3 border-t border-(--text-invert)/15 pt-5 lg:mt-6 lg:pt-4 xl:mt-8 xl:pt-5",
+            "lg:flex-row lg:items-center lg:justify-between",
+          )}
+        >
+          <p className="text-xs text-(--text-invert)/70 xl:text-sm">
+            {`© ${new Date().getFullYear()} ${COMPANY_LEGAL_NAME} สงวนลิขสิทธิ์`}
           </p>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/75">
-            {LEGAL_LINKS.map((link) => (
-              <LinkCustom
-                key={link.key}
-                href={t(link.href)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-white"
-              >
-                {t(link.key)}
-              </LinkCustom>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            {LEGAL_LINKS.map(({ label, href }, index) => (
+              <div key={label} className="flex items-center gap-3">
+                {index > 0 && (
+                  <span aria-hidden className="text-(--text-invert)/30">
+                    {"|"}
+                  </span>
+                )}
+                <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
+                  {label}
+                </LinkCustom>
+              </div>
             ))}
           </div>
         </div>
