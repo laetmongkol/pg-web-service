@@ -15,13 +15,14 @@ const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64c
 
 const HeroSection = ({ data, language }: HeroSectionProps) => {
     return (
-        <section className="relative mt-14 lg:mt-0 h-fit flex flex-col h-[1080px] max-h-[1080px] items-center">
+        <section className="relative mt-(--navbar-height) h-[1080px] lg:mt-0 h-fit flex flex-col items-center">
             <div className="hidden lg:block w-full">
                 <FillImage
                     src={mockUpImage}
                     alt="Hero Section Desktop"
                     width={2560}
                     height={1440}
+                    draggable={false}
                     className={cn("object-cover aspect-[16/8] w-full max-h-[1080px]",
                     )} />
             </div>
@@ -31,6 +32,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                     alt="Hero Section Mobile"
                     width={2560}
                     height={1440}
+                    draggable={false}
                     className={cn("object-cover aspect-square object-left w-full max-h-[1080px]",
                     )} />
             </div>
@@ -80,7 +82,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                 </FadeIn>
 
                 {/* the overlay is absolute, so it is this element's containing block */}
-                <div className="hidden xl:block">
+                <div className="lg:hidden xl:block">
                     <div className={cn(
                         "absolute bottom-10 flex flex-col items-center gap-2 text-(--text-invert)",
                         "left-1/2 -translate-x-1/2",
