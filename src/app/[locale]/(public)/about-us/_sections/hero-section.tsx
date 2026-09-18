@@ -1,19 +1,25 @@
 import { Mouse } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
 interface HeroSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
+const HeroSection = ({ data }: HeroSectionProps) => {
+    if (!data) return null;
 
-const HeroSection = ({ data, language }: HeroSectionProps) => {
+    const banner = extractAttributes<PictureAttributes>(data?.bgImg);
+    const bannerImage = banner?.mediaStorageKey ?? "";
+    const bannerAlt = banner?.mediaAltText ?? "About us banner";
+
     return (
         <section
             className={cn(
@@ -25,10 +31,10 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
         >
             <div className="absolute inset-0 hidden w-full lg:block">
                 <FillImage
-                    src={mockUpImage}
-                    alt="About us banner"
-                    width={2560}
-                    height={1440}
+                    src={bannerImage}
+                    alt={bannerAlt}
+                    width={banner?.width}
+                    height={banner?.height}
                     sizes="100vw"
                     wrapperClassName="h-full w-full"
                     className={cn(
@@ -39,10 +45,10 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
             </div>
             <div className="absolute inset-0 block w-full lg:hidden">
                 <FillImage
-                    src={mockUpImage}
-                    alt="About us banner"
-                    width={2560}
-                    height={1440}
+                    src={bannerImage}
+                    alt={bannerAlt}
+                    width={banner?.width}
+                    height={banner?.height}
                     sizes="100vw"
                     wrapperClassName="h-full w-full aspect-square"
                     className={cn(
@@ -55,7 +61,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
             <FadeIn className="absolute inset-0 z-10">
                 <div
                     className={cn(
-                        "mx-auto grid h-full w-full max-w-6xl",
+                        "mx-auto grid h-full w-full max-w-screen-2xl",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >
@@ -74,7 +80,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                             )}
                         >
                             <span className="bg-(--color-secondary) size-2 shrink-0 inline-block" />
-                            {"เรียนรู้เกี่ยวกับ PIP Group Holding"}
+                            {data?.eyebrow?.value}
                         </span>
                         <h1
                             className={cn(
@@ -83,10 +89,10 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                             )}
                         >
                             <span className="block text-(--color-secondary)">
-                                {"ความเชี่ยวชาญระดับสากล"}
+                                {data?.title1?.value}
                             </span>
                             <span className="block text-(--text-invert)">
-                                {"เพื่อรากฐานและอนาคตที่ยั่งยืน"}
+                                {data?.title2?.value}
                             </span>
                         </h1>
                         <p
@@ -95,7 +101,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                                 "text-xs md:text-sm lg:text-base",
                             )}
                         >
-                            {"เราคือกลุ่มบริษัทโฮลดิ้งชั้นนำที่ขับเคลื่อนการเติบโตเชิงกลยุทธ์ \nด้วยการบริหารสินทรัพย์และการดำเนินงานในธุรกิจที่มีศักยภาพสูงอย่างมืออาชีพ"}
+                            {data?.subTitle?.value}
                         </p>
                     </div>
 
@@ -111,7 +117,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                         )}
                     >
                         <Mouse className="size-6 animate-bounce" strokeWidth={1.4} />
-                        {"Scroll down"}
+                        {data?.scrollDown?.value}
                     </a>
                 </div>
             </FadeIn>

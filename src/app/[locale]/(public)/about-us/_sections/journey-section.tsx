@@ -1,48 +1,34 @@
-import FadeIn from "@/app/component/fade-in.components";
+import { convertObjectToArrayByPrefix } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
+
+import FadeIn from "@/app/component/fade-in.components";
 
 import JourneyScroller, { type JourneyItem } from "./components/journey-scroller";
 import { OurValueContent } from "./our-value-section";
 
 interface JourneySectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
+    /** OUR VALUE lives in its own CMS section but renders inside this one's pinned viewport. */
+    valueData?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const JOURNEY_ITEMS: JourneyItem[] = [
-    {
-        year: "2018",
-        title: "ก่อตั้ง Pip Group",
-        description: "เริ่มต้นจากทีมเล็ก ๆ ที่มีเป้าหมายสร้างซอฟต์แวร์ที่ดีกว่า เพื่อแก้ปัญหาการทำงานร่วมกันและประสิทธิภาพขององค์กร",
-    },
-    {
-        year: "2020",
-        title: "ขยายทีมและผลิตภัณฑ์",
-        description: "เพิ่มทีมวิศวกรรมและออกแบบ ขยายฟีเจอร์หลักและปรับปรุงประสบการณ์ผู้ใช้ให้ดียิ่งขึ้น",
-    },
-    {
-        year: "2022",
-        title: "ขยายธุรกิจระดับโลก",
-        description: "ขยายบริการไปยังลูกค้าหลายภูมิภาค พร้อมเสริมความสามารถด้านความปลอดภัยและความน่าเชื่อถือ",
-    },
-    {
-        year: "2023",
-        title: "ความสำเร็จระดับองค์กร",
-        description: "ติดอันดับพันธมิตรที่เชื่อถือได้ ร่วมงานกับองค์กรขนาดใหญ่และขยายฐานลูกค้าอย่างต่อเนื่อง",
-    },
-    {
-        year: "2024",
-        title: "ขยายนวัตกรรม",
-        description: "เพิ่มฟีเจอร์ใหม่ มาตรฐานความปลอดภัยระดับสูง เพื่อรองรับธุรกิจที่เติบโตอย่างรวดเร็ว",
-    },
-    {
-        year: "2025",
-        title: "ก้าวสู่อนาคต",
-        description: "มุ่งสู่การเป็นแพลตฟอร์มชั้นนำด้านเทคโนโลยีที่ขับเคลื่อนนวัตกรรมสำหรับทุกองค์กร",
-    },
-];
+/** attributes on `milestone*` — the year is the row value. */
+interface MilestoneAttributes {
+    title?: string;
+    description?: string;
+}
 
-const JourneySection = ({ data, language }: JourneySectionProps) => {
+const JourneySection = ({ data, valueData }: JourneySectionProps) => {
+    if (!data) return null;
+
+    const items: JourneyItem[] = convertObjectToArrayByPrefix<MilestoneAttributes>(data, "milestone").map((item) => ({
+        year: item.value ?? "",
+        title: item.attributes?.title ?? "",
+        description: item.attributes?.description ?? "",
+    }));
+
     const header = (
         <FadeIn className={cn(
             "flex flex-col gap-4 items-center",
@@ -52,16 +38,16 @@ const JourneySection = ({ data, language }: JourneySectionProps) => {
                 "text-(--color-secondary) border border-(--color-secondary) px-4 py-1 rounded-full text-center font-bold",
                 "text-xs tracking-wide",
             )}>
-                {"OUR JOURNEY"}
+                {data?.badge?.value}
             </FadeIn>
             <h2 className={cn(
                 "font-bold text-(--text-primary)",
                 "text-3xl sm:text-4xl text-center leading-tight",
                 "lg:text-start",
             )}>
-                {"เส้นทาง"}
+                {data?.title1?.value}
                 <span className="text-(--color-secondary)">
-                    {"การเติบโตของเรา"}
+                    {data?.title2?.value}
                 </span>
             </h2>
             <FadeIn delay={200} className={cn(
@@ -69,7 +55,7 @@ const JourneySection = ({ data, language }: JourneySectionProps) => {
                 "text-base sm:text-lg text-center max-w-3xl",
                 "lg:text-start",
             )}>
-                {"เรื่องราวสำคัญที่พาเรามาถึงจุดนี้"}
+                {data?.subTitle?.value}
             </FadeIn>
         </FadeIn>
     );
@@ -80,7 +66,7 @@ const JourneySection = ({ data, language }: JourneySectionProps) => {
             // the desktop scroller carries its own vertical padding while pinned
             "pt-8 pb-16 gap-8 lg:py-0",
         )}>
-            <JourneyScroller items={JOURNEY_ITEMS} header={header} footer={<OurValueContent />} />
+            <JourneyScroller items={items} header={header} footer={<OurValueContent data={valueData} />} />
         </section>
     );
 };

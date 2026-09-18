@@ -1,20 +1,21 @@
 import type { NavLinkItem } from "@/components/layout/navbar";
 
+// key = translation key. Labels come from translate_values (CMS), not from this file.
 const NAV_LINKS: NavLinkItem[] = [
   {
-    key: "หน้าแรก",
+    key: "navbar.home",
     href: "",
   },
   {
-    key: "เกี่ยวกับเรา",
+    key: "navbar.about",
     href: "about-us",
   },
   {
-    key: "บริการของเรา",
+    key: "navbar.ourBusinesses",
     href: "our-businesses",
   },
   {
-    key: "ติดต่อเรา",
+    key: "navbar.contactUs",
     href: "contact-us",
   },
 ];

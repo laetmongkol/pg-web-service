@@ -8,7 +8,6 @@ import FillImage from "@/components/fill-image.component";
 import cn from "@/lib/tw-merge";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
-const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
 const CYCLE_MS = 3000;
 const LG_MEDIA_QUERY = "(min-width: 1024px)";
 
@@ -26,12 +25,25 @@ function useIsLg() {
     );
 }
 
-const Tile = ({ className, alt }: { className?: string; alt: string }) => (
+export type MosaicPicture = { src: string; alt: string; width?: number; height?: number };
+export type MosaicStat = { value: string; label: string };
+
+export interface OurImpactMosaicProps {
+    videoTitle?: string;
+    expandLabel?: string;
+    collapseLabel?: string;
+    /** [top-left stat, bottom-right stat] — the two coloured tiles. */
+    stats: MosaicStat[];
+    /** [team photo, collaboration photo] — the two picture tiles. */
+    pictures: MosaicPicture[];
+}
+
+const Tile = ({ className, picture }: { className?: string; picture?: MosaicPicture }) => (
     <FillImage
-        src={mockUpImage}
-        alt={alt}
-        width={1200}
-        height={900}
+        src={picture?.src ?? ""}
+        alt={picture?.alt ?? ""}
+        width={picture?.width}
+        height={picture?.height}
         sizes="(max-width: 1024px) 100vw, 33vw"
         draggable={false}
         wrapperClassName={cn("overflow-hidden rounded-2xl", className)}
@@ -57,39 +69,39 @@ const StatTile = ({
     </div>
 );
 
-const StatPhotoColumn = () => (
+const StatPhotoColumn = ({ stat, picture }: { stat?: MosaicStat; picture?: MosaicPicture }) => (
     <div className="flex h-full min-h-0 flex-col gap-4">
         <StatTile
-            value="90%"
-            label="ความพึงพอใจของพนักงาน"
+            value={stat?.value ?? ""}
+            label={stat?.label ?? ""}
             className="bg-(--color-secondary) text-(--text-invert) min-h-0 flex-none h-[calc(33.333%-0.5rem)]"
         />
-        <Tile alt="ทีมงาน" className="min-h-0 flex-1 h-[calc(66.667%-0.5rem)]" />
+        <Tile picture={picture} className="min-h-0 flex-1 h-[calc(66.667%-0.5rem)]" />
     </div>
 );
 
-const PhotoStatColumn = () => (
+const PhotoStatColumn = ({ stat, picture }: { stat?: MosaicStat; picture?: MosaicPicture }) => (
     <div className="flex h-full min-h-0 flex-col gap-4">
-        <Tile alt="การทำงานร่วมกัน" className="min-h-0 flex-1 h-[calc(66.667%-0.5rem)]" />
+        <Tile picture={picture} className="min-h-0 flex-1 h-[calc(66.667%-0.5rem)]" />
         <StatTile
-            value="50%"
-            label="การเติบโตของทีม"
+            value={stat?.value ?? ""}
+            label={stat?.label ?? ""}
             className="bg-(--surface-invert) text-(--text-invert) min-h-0 flex-none h-[calc(33.333%-0.5rem)]"
         />
     </div>
 );
 
-const SIDE_COLUMNS = [
-    <StatPhotoColumn key="stat-photo" />,
-    <PhotoStatColumn key="photo-stat" />,
-];
-
-const OurImpactMosaic = () => {
+const OurImpactMosaic = ({ videoTitle, expandLabel, collapseLabel, stats, pictures }: OurImpactMosaicProps) => {
     const mosaicRef = useRef<HTMLDivElement>(null);
     const isLg = useIsLg();
     const [expanded, setExpanded] = useState(false);
     const [cycleIndex, setCycleIndex] = useState(0);
     const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+
+    const sideColumns = [
+        <StatPhotoColumn key="stat-photo" stat={stats[0]} picture={pictures[0]} />,
+        <PhotoStatColumn key="photo-stat" stat={stats[1]} picture={pictures[1]} />,
+    ];
 
     useEffect(() => {
         if (isLg) return;
@@ -101,7 +113,7 @@ const OurImpactMosaic = () => {
     useEffect(() => {
         if (!expanded) return;
         const id = setInterval(() => {
-            setCycleIndex((index) => (index + 1) % SIDE_COLUMNS.length);
+            setCycleIndex((index) => (index + 1) % 2);
         }, CYCLE_MS);
         return () => clearInterval(id);
     }, [expanded]);
@@ -130,9 +142,9 @@ const OurImpactMosaic = () => {
             )}
         >
             <JoinOurTeamVideo
-                title="บรรยากาศการทำงาน"
+                title={videoTitle}
                 onSurfaceClick={isLg ? toggleExpanded : undefined}
-                surfaceClickLabel={expanded ? "ย่อคลิป" : "ขยายคลิป"}
+                surfaceClickLabel={expanded ? collapseLabel : expandLabel}
                 surfaceExpanded={expanded}
                 className={cn(
                     "min-h-0 rounded-2xl",
@@ -142,12 +154,12 @@ const OurImpactMosaic = () => {
 
             {expanded ? (
                 <div className="h-full min-h-0 self-stretch">
-                    {SIDE_COLUMNS[cycleIndex]}
+                    {sideColumns[cycleIndex]}
                 </div>
             ) : (
                 <>
-                    <StatPhotoColumn />
-                    <PhotoStatColumn />
+                    <StatPhotoColumn stat={stats[0]} picture={pictures[0]} />
+                    <PhotoStatColumn stat={stats[1]} picture={pictures[1]} />
                 </>
             )}
         </div>

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
 
-import { Home, LucideIcon, ChevronDown } from "lucide-react"
+import { Briefcase, ChevronDown, Home, Info, LucideIcon, MessageCircleQuestion } from "lucide-react"
 
 import cn from "@/lib/tw-merge"
 
@@ -23,7 +23,10 @@ interface NavLinksProps {
 }
 
 const NAV_LINK_ICONS: Partial<Record<NavLinkKey, LucideIcon>> = {
-  "Home": Home,
+  "navbar.home": Home,
+  "navbar.about": Info,
+  "navbar.ourBusinesses": Briefcase,
+  "navbar.contactUs": MessageCircleQuestion,
 }
 
 const NAV_LINK_ACTIVE_CLASS = "text-(--text-invert) bg-(--surface-default)/8 rounded-full px-3 py-1"

@@ -1,3 +1,5 @@
+import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
+
 import { isSupportedLanguage } from "@/proxies/language.proxy";
 import { LANGUAGE } from "@/shared/constants/common.constants";
 
@@ -15,13 +17,16 @@ export default async function OurBusinesses({ params }: OurBusinessesPageProps) 
     const { locale: routeLocale } = await params;
     const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."5", in page order.
+    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "OurBusinesses");
+
     return (
         <div className="flex flex-col">
-            <BannerSection />
-            <OurEcosystemSection />
-            <OurCompanySection />
-            <OurPhilosophySection />
-            <ContactSection language={language} />
+            <BannerSection data={data?.["1"]} />
+            <OurEcosystemSection data={data?.["2"]} />
+            <OurCompanySection data={data?.["3"]} />
+            <OurPhilosophySection data={data?.["4"]} />
+            <ContactSection data={data?.["5"]} language={language} />
         </div>
     );
 }

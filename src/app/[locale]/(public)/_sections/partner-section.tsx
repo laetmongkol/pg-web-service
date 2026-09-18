@@ -1,33 +1,30 @@
-import FadeIn from "@/app/component/fade-in.components";
+import { convertObjectToArrayByPrefix, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
+
+import FadeIn from "@/app/component/fade-in.components";
 
 import PartnerMarquee from "./components/partner-marquee";
 
 interface PartnerSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const partnerImages = [
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-    "/api/app/image/contents/2026-06-20T06-16-45_ae03dc50-fba6-4fac-b83e-46440adc58ac.png",
-];
-
 const MARQUEE_ROWS = 3;
 
-/** Dealt round-robin so the rows stay even however many partners there end up being. */
-const PARTNER_ROWS = Array.from({ length: MARQUEE_ROWS }, (_, row) =>
-    partnerImages.filter((_image, index) => index % MARQUEE_ROWS === row),
-);
+const PartnerSection = ({ data }: PartnerSectionProps) => {
+    if (!data) return null;
 
-const PartnerSection = ({ data, language }: PartnerSectionProps) => {
+    const partnerImages = convertObjectToArrayByPrefix<PictureAttributes>(data, "logo")
+        .map((item) => item.attributes?.mediaStorageKey ?? "")
+        .filter(Boolean);
+
+    /** Dealt round-robin so the rows stay even however many partners there end up being. */
+    const partnerRows = Array.from({ length: MARQUEE_ROWS }, (_, row) =>
+        partnerImages.filter((_image, index) => index % MARQUEE_ROWS === row),
+    );
+
     return (
         <section className={cn("flex flex-col max-w-7xl mx-auto px-6 sm:px-12 md:px-16 w-full",
             "py-16"
@@ -46,15 +43,15 @@ const PartnerSection = ({ data, language }: PartnerSectionProps) => {
                     <FadeIn delay={100} className={cn("hidden lg:block",
                         "text-(--color-secondary) text-sm font-bold tracking-[0.25em]"
                     )}>
-                        {"PARTNERS"}
+                        {data?.eyebrow?.value}
                     </FadeIn>
 
                     <h2 className={cn("font-bold text-(--text-primary)",
                         "text-3xl sm:text-4xl leading-tight"
                     )}>
-                        {"พาร์ทเนอร์ที่ไว้วางใจ"}
+                        {data?.title1?.value}
                         <p className="text-(--color-secondary)">
-                            {"เติบโตไปด้วยกัน"}
+                            {data?.title2?.value}
                         </p>
                     </h2>
 
@@ -62,7 +59,7 @@ const PartnerSection = ({ data, language }: PartnerSectionProps) => {
                         "text-sm sm:text-base leading-relaxed",
                         "lg:border-l-2 lg:border-(--color-secondary) lg:pl-5"
                     )}>
-                        {"\"การร่วมมือกับทีมงานของเราช่วยขยายธุรกิจในตลาดเอเชียตะวันออกเฉียงใต้ได้อย่างมีประสิทธิภาพ ด้วยกลยุทธ์ที่แม่นยำและวิสัยทัศน์ที่ชัดเจน\""}
+                        {data?.quote?.value}
                     </FadeIn>
                 </FadeIn>
 
@@ -75,7 +72,7 @@ const PartnerSection = ({ data, language }: PartnerSectionProps) => {
                 {/* three looping rows instead of a 3x3 grid — the partner list keeps growing,
                     and a fixed grid would either cut it off or stretch the card */}
                 <FadeIn direction="right" delay={300} className="flex lg:w-1/2 flex-col lg:flex-1">
-                    {PARTNER_ROWS.map((row, index) => (
+                    {partnerRows.map((row, index) => (
                         <div
                             key={`row-${index}`}
                             className={cn(

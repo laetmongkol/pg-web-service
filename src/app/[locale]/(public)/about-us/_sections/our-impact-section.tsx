@@ -1,14 +1,36 @@
-import FadeIn from "@/app/component/fade-in.components";
+import { convertObjectToArrayByPrefix, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
-import OurImpactMosaic from "./components/our-impact-mosaic";
+import FadeIn from "@/app/component/fade-in.components";
+
+import OurImpactMosaic, { type MosaicPicture, type MosaicStat } from "./components/our-impact-mosaic";
 
 interface OurImpactSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const OurImpactSection = ({ data, language }: OurImpactSectionProps) => {
+/** attributes on `stat*` — the number itself is the row value. */
+interface ImpactStatAttributes {
+    label?: string;
+}
+
+const OurImpactSection = ({ data }: OurImpactSectionProps) => {
+    if (!data) return null;
+
+    const stats: MosaicStat[] = convertObjectToArrayByPrefix<ImpactStatAttributes>(data, "stat").map((item) => ({
+        value: item.value ?? "",
+        label: item.attributes?.label ?? "",
+    }));
+
+    const pictures: MosaicPicture[] = convertObjectToArrayByPrefix<PictureAttributes>(data, "image").map((item) => ({
+        src: item.attributes?.mediaStorageKey ?? "",
+        alt: item.attributes?.mediaAltText ?? "",
+        width: item.attributes?.width,
+        height: item.attributes?.height,
+    }));
+
     return (
         <section className={cn("flex flex-col max-w-7xl mx-auto px-6 sm:px-12 md:px-16 w-full",
             "py-16 gap-10",
@@ -18,25 +40,31 @@ const OurImpactSection = ({ data, language }: OurImpactSectionProps) => {
                     "text-(--color-secondary) border border-(--color-secondary) px-4 py-1 rounded-full text-center font-bold",
                     "text-xs tracking-wide",
                 )}>
-                    {"OUR IMPACT"}
+                    {data?.badge?.value}
                 </FadeIn>
                 <h2 className={cn(
                     "font-bold text-(--text-primary)",
                     "text-3xl sm:text-4xl text-center leading-tight",
                 )}>
-                    {"ทำงานร่วมกัน"}
-                    <span className="text-(--color-secondary)">{"สร้างสรรค์สิ่งที่ยิ่งใหญ่"}</span>
+                    {data?.title1?.value}
+                    <span className="text-(--color-secondary)">{data?.title2?.value}</span>
                 </h2>
                 <FadeIn delay={200} className={cn(
                     "text-(--text-secondary)",
                     "text-base sm:text-lg text-center max-w-3xl",
                 )}>
-                    {"วัฒนธรรมของเราส่งเสริมความคิดสร้างสรรค์ การทำงานเป็นทีม และการพัฒนาตนเองอย่างต่อเนื่อง เพื่อสร้างผลงานที่ยั่งยืนและเติบโตไปด้วยกัน"}
+                    {data?.subTitle?.value}
                 </FadeIn>
             </FadeIn>
 
             <FadeIn delay={300}>
-                <OurImpactMosaic />
+                <OurImpactMosaic
+                    videoTitle={data?.videoTitle?.value}
+                    expandLabel={data?.expandLabel?.value}
+                    collapseLabel={data?.collapseLabel?.value}
+                    stats={stats}
+                    pictures={pictures}
+                />
             </FadeIn>
         </section>
     );

@@ -1,46 +1,30 @@
+import { convertObjectToArrayByPrefix, convertObjectToValuesByPrefix, extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
+import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
+import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
+
 import CountUpNumber from "@/app/component/count-up-number.component";
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
-import cn from "@/lib/tw-merge";
-import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 interface HistorySectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
+/** attributes on `stat*` — the number itself is the row value. */
+interface HistoryStatAttributes {
+    title?: string;
+    description?: string;
+}
 
-const HISTORY_PARAGRAPHS = [
-    "Pip Group เกิดขึ้นจากความเชื่อที่ว่าซอฟต์แวร์ไม่ควรยุ่งยากจนเสียเวลา เราเริ่มต้นจากทีมเล็ก ๆ ที่ต้องการแก้ปัญหาการทำงานร่วมกันและประสิทธิภาพให้กับองค์กรที่เติบโตอย่างรวดเร็ว โดยมีวิสัยทัศน์หลักคือการเปลี่ยนความซับซ้อนให้เป็นระบบที่แข็งแกร่งและสวยงาม",
-    "ผู้ก่อตั้งเห็นโอกาสที่จะเชื่อมช่องว่างระหว่างทีมวิศวกรรมและทีมออกแบบ โดยไม่บังคับให้ทีมต้องประนีประนอม เราเริ่มสร้างเครื่องมือภายในเพื่อแก้ปัญหาของเราเอง — และสุดท้ายก็กลายเป็นแพลตฟอร์มที่หลาย ๆ องค์กรต้องการ",
-    "วันนี้ Pip Group เติบโตเป็นแพลตฟอร์มที่ช่วยให้ธุรกิจสร้างนวัตกรรมอย่างปลอดภัย ขยายขนาดด้วยความมั่นใจ และสร้างความสัมพันธ์ที่ยั่งยืน เรายังคงยึดค่านิยมเรื่องความเรียบง่าย ความโปร่งใส และความพยายามอย่างไม่หยุดยั้งเพื่อความพึงพอใจของผู้ใช้",
-];
+const HistorySection = ({ data }: HistorySectionProps) => {
+    if (!data) return null;
 
-const HISTORY_STATS = [
-    {
-        value: "10+",
-        title: "ปีแห่งความสำเร็จ",
-        description: "มั่นคงและเติบโตอย่างต่อเนื่อง",
-    },
-    {
-        value: "20+",
-        title: "บุคลากรผู้เชี่ยวชาญ",
-        description: "ทำงานอย่างมืออาชีพ",
-    },
-    {
-        value: "5",
-        title: "บริษัทในเครือ",
-        description: "เชื่อมโยงระบบธุรกิจที่แข็งแกร่ง",
-    },
-    {
-        value: "50+",
-        title: "พาร์ทเนอร์ระดับสากล",
-        description: "ร่วมสร้างโอกาสระดับสากล",
-    },
-];
+    const paragraphs = convertObjectToValuesByPrefix(data, "paragraph");
+    const stats = convertObjectToArrayByPrefix<HistoryStatAttributes>(data, "stat");
+    const picture = extractAttributes<PictureAttributes>(data?.image);
 
-const HistorySection = ({ data, language }: HistorySectionProps) => {
     return (
         <section id="history" className={cn("flex flex-col max-w-7xl mx-auto pt-30 px-6 sm:px-12 md:px-16",
             "pb-16 gap-8"
@@ -52,22 +36,22 @@ const HistorySection = ({ data, language }: HistorySectionProps) => {
                     "text-(--color-secondary) border border-(--color-secondary) px-4 py-1 rounded-full text-center font-bold",
                     "text-xs tracking-wide"
                 )}>
-                    {"HISTORY"}
+                    {data?.badge?.value}
                 </FadeIn>
                 <h2 className={cn(
                     "font-bold text-(--text-primary)",
                     "text-3xl sm:text-4xl text-center leading-tight",
                 )}>
-                    {"ประวัติ"}
+                    {data?.title1?.value}
                     <span className="text-(--color-secondary)">
-                        {"ความเป็นมา"}
+                        {data?.title2?.value}
                     </span>
                 </h2>
                 <FadeIn delay={200} className={cn(
                     "text-(--text-secondary)",
                     "text-base sm:text-lg text-center max-w-3xl",
                 )}>
-                    {"เรื่องราวของ Pip Group จากจุดเริ่มต้นจนถึงการเติบโตที่ยั่งยืน"}
+                    {data?.subTitle?.value}
                 </FadeIn>
             </FadeIn>
 
@@ -81,10 +65,10 @@ const HistorySection = ({ data, language }: HistorySectionProps) => {
                     "lg:w-1/2"
                 )}>
                     <FillImage
-                        src={mockUpImage}
-                        alt="Pip Group History"
-                        width={1000}
-                        height={1000}
+                        src={picture?.mediaStorageKey ?? ""}
+                        alt={picture?.mediaAltText ?? ""}
+                        width={picture?.width}
+                        height={picture?.height}
                         sizes="(max-width: 1024px) 100vw, 50vw"
                         wrapperClassName="aspect-video lg:aspect-square"
                         className={cn(
@@ -103,9 +87,9 @@ const HistorySection = ({ data, language }: HistorySectionProps) => {
                         "text-2xl sm:text-3xl text-center leading-tight",
                         "lg:text-start"
                     )}>
-                        {"เริ่มต้นจากความต้องการที่แท้จริง —"}
+                        {data?.heading1?.value}
                         <span className="block">
-                            {"ลดช่องว่างระหว่างทีมและประสิทธิภาพ"}
+                            {data?.heading2?.value}
                         </span>
                     </h3>
 
@@ -115,22 +99,22 @@ const HistorySection = ({ data, language }: HistorySectionProps) => {
                         "text-base sm:text-lg text-center",
                         "lg:text-start"
                     )}>
-                        {HISTORY_PARAGRAPHS.map((paragraph) => (
-                            <p key={paragraph}>{paragraph}</p>
+                        {paragraphs.map((paragraph) => (
+                            <p key={paragraph.key}>{paragraph.value}</p>
                         ))}
                     </FadeIn>
 
                     <div className={cn(
                         "grid grid-cols-2 md:grid-cols-4 gap-4",
                     )}>
-                        {HISTORY_STATS.map((item, index) => (
-                            <FadeIn key={item.title} delay={index * 150} className="flex flex-col gap-1">
+                        {stats.map((item, index) => (
+                            <FadeIn key={item.key} delay={index * 150} className="flex flex-col gap-1">
                                 <CountUpNumber
-                                    value={item.value}
+                                    value={item.value ?? ""}
                                     className="text-3xl font-bold text-(--color-secondary)"
                                 />
-                                <span className="text-base font-medium text-(--text-primary)">{item.title}</span>
-                                <span className="text-xs text-(--text-secondary)">{item.description}</span>
+                                <span className="text-base font-medium text-(--text-primary)">{item.attributes?.title}</span>
+                                <span className="text-xs text-(--text-secondary)">{item.attributes?.description}</span>
                             </FadeIn>
                         ))}
                     </div>

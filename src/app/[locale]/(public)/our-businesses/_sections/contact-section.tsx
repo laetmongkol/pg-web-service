@@ -1,23 +1,29 @@
 import { ArrowUpRight } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
+import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
+import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
+
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 import LinkCustom from "@/components/link-custom.component";
-import cn from "@/lib/tw-merge";
-import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
-
-const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
 
 interface ContactSectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const ContactSection = ({ language }: ContactSectionProps) => {
+const ContactSection = ({ data, language }: ContactSectionProps) => {
+    if (!data) return null;
+
+    const picture = extractAttributes<PictureAttributes>(data?.bgImg);
+
     return (
         <section className="w-full bg-(--surface-page)">
             <FadeIn
                 className={cn(
-                    "max-w-6xl mx-auto px-6 sm:px-12 md:px-16",
+                    "max-w-7xl mx-auto px-6 sm:px-12 md:px-16",
                     "pb-20 lg:pb-28",
                 )}
             >
@@ -28,8 +34,8 @@ const ContactSection = ({ language }: ContactSectionProps) => {
                     )}
                 >
                     <FillImage
-                        src={mockUpImage}
-                        alt=""
+                        src={picture?.mediaStorageKey ?? ""}
+                        alt={picture?.mediaAltText ?? ""}
                         sizes="(max-width: 1024px) 100vw, 1152px"
                         wrapperClassName="absolute inset-0"
                         className={cn(
@@ -61,7 +67,7 @@ const ContactSection = ({ language }: ContactSectionProps) => {
                                 "text-xl sm:text-3xl",
                             )}
                         >
-                            {"ร่วมสร้างอนาคตไปด้วยกัน"}
+                            {data?.title?.value}
                         </h2>
                         <p
                             className={cn(
@@ -71,11 +77,11 @@ const ContactSection = ({ language }: ContactSectionProps) => {
                                 "whitespace-normal lg:whitespace-pre-line",
                             )}
                         >
-                            {"เชื่อมต่อกับ PIP Group Holding เพื่อสำรวจโอกาสใหม่ "}
-                            <span className="whitespace-nowrap">{"ความร่วมมือ"}</span>
-                            {"\nและการเติบโตที่ยั่งยืน"}
+                            {data?.description1?.value}
+                            <span className="whitespace-nowrap">{data?.descriptionNowrap?.value}</span>
+                            {data?.description2?.value}
                         </p>
-                        <LinkCustom href={`/${language}/contact-us`} className="w-fit">
+                        <LinkCustom href={`/${language}/${data?.ctaButton?.linkUrl ?? ""}`} className="w-fit">
                             <span
                                 className={cn(
                                     "flex items-center gap-2 rounded-full",
@@ -84,7 +90,7 @@ const ContactSection = ({ language }: ContactSectionProps) => {
                                     "hover:opacity-90 transition-opacity",
                                 )}
                             >
-                                {"ติดต่อเรา"}
+                                {data?.ctaButton?.value}
                                 <ArrowUpRight className="size-4 sm:size-5" strokeWidth={2} />
                             </span>
                         </LinkCustom>

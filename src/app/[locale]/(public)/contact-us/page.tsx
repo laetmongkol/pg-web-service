@@ -1,14 +1,29 @@
-import FadeIn from "@/app/component/fade-in.components";
 import cn from "@/lib/tw-merge";
+import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
+
+import FadeIn from "@/app/component/fade-in.components";
+
+import { isSupportedLanguage } from "@/proxies/language.proxy";
+import { LANGUAGE } from "@/shared/constants/common.constants";
 
 import BannerSection from "./_sections/banner-section";
 import ContactForm from "./_sections/contact-form";
 import HeadOffice from "./_sections/head-office";
 
-export default function ContactUs() {
+interface ContactUsPageProps {
+    params: Promise<{ locale: string }>;
+}
+
+export default async function ContactUs({ params }: ContactUsPageProps) {
+    const { locale: routeLocale } = await params;
+    const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
+
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."3", in page order.
+    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "ContactUs");
+
     return (
         <div className="flex flex-col">
-            <BannerSection />
+            <BannerSection data={data?.["1"]} />
             <section id="contact-us-content" className="w-full bg-(--surface-page)">
                 <FadeIn
                     className={cn(
@@ -17,8 +32,8 @@ export default function ContactUs() {
                         "py-16",
                     )}
                 >
-                    <HeadOffice />
-                    <ContactForm />
+                    <HeadOffice data={data?.["2"]} />
+                    <ContactForm data={data?.["3"]} />
                 </FadeIn>
             </section>
         </div>

@@ -1,6 +1,8 @@
 import { ArrowUpRight, Mouse } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
@@ -8,13 +10,17 @@ import FillImage from "@/components/fill-image.component";
 import LinkCustom from "@/components/link-custom.component";
 
 interface HeroSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
-
 const HeroSection = ({ data, language }: HeroSectionProps) => {
+    if (!data) return null;
+
+    const banner = extractAttributes<PictureAttributes>(data?.bgImg);
+    const bannerImage = banner?.mediaStorageKey ?? "";
+    const bannerAlt = banner?.mediaAltText ?? "Home banner";
+
     return (
         <section
             className={cn(
@@ -26,10 +32,10 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
         >
             <div className="absolute inset-0 hidden w-full lg:block">
                 <FillImage
-                    src={mockUpImage}
-                    alt="Home banner"
-                    width={2560}
-                    height={1440}
+                    src={bannerImage}
+                    alt={bannerAlt}
+                    width={banner?.width}
+                    height={banner?.height}
                     sizes="100vw"
                     wrapperClassName="h-full w-full"
                     className={cn(
@@ -40,10 +46,10 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
             </div>
             <div className="absolute inset-0 block w-full lg:hidden">
                 <FillImage
-                    src={mockUpImage}
-                    alt="Home banner"
-                    width={2560}
-                    height={1440}
+                    src={bannerImage}
+                    alt={bannerAlt}
+                    width={banner?.width}
+                    height={banner?.height}
                     sizes="100vw"
                     wrapperClassName="h-full w-full"
                     className={cn(
@@ -52,11 +58,12 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                     )}
                 />
             </div>
+            <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t sm:bg-gradient-to-r from-(--color-primary)/50 to-transparent" />
 
             <FadeIn className="absolute inset-0 z-10">
                 <div
                     className={cn(
-                        "mx-auto grid h-full w-full max-w-6xl",
+                        "mx-auto grid h-full w-full max-w-screen-2xl",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >
@@ -75,7 +82,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                             )}
                         >
                             <span className="bg-(--color-secondary) size-2 shrink-0 inline-block" />
-                            {"PIP Group Holding"}
+                            {data?.eyebrow?.value}
                         </span>
                         <h1
                             className={cn(
@@ -84,10 +91,10 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                             )}
                         >
                             <span className="block text-(--text-invert)">
-                                {"สร้างรากฐานที่แข็งแกร่ง"}
+                                {data?.title1?.value}
                             </span>
                             <span className="block text-(--color-secondary)">
-                                {"เพื่อการเติบโตอย่างยั่งยืน"}
+                                {data?.title2?.value}
                             </span>
                         </h1>
                         <p
@@ -96,10 +103,10 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                                 "text-xs md:text-sm lg:text-base",
                             )}
                         >
-                            {"PIP Group Holding เชื่อมต่อธุรกิจ โอกาส และศักยภาพเชิงกลยุทธ์ \nเพื่อสร้างคุณค่าระยะยาวให้กับทุกภาคส่วน"}
+                            {data?.subTitle?.value}
                         </p>
 
-                        <LinkCustom href={`/${language}/about-us`} className="w-fit">
+                        <LinkCustom href={`/${language}/${data?.ctaButton?.linkUrl ?? ""}`} className="w-fit">
                             <span
                                 className={cn(
                                     "font-medium text-(--text-invert) flex items-center gap-2",
@@ -108,7 +115,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                                     "text-sm px-5 py-3 lg:text-base lg:px-6 lg:py-4 xl:text-xl xl:px-8 xl:py-6",
                                 )}
                             >
-                                {"ค้นหาข้อมูลของเรา"}
+                                {data?.ctaButton?.value}
                                 <ArrowUpRight className="inline-block size-6 xl:size-8" />
                             </span>
                         </LinkCustom>
@@ -126,7 +133,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                         )}
                     >
                         <Mouse className="size-6 animate-bounce" strokeWidth={1.4} />
-                        {"Scroll down"}
+                        {data?.scrollDown?.value}
                     </a>
                 </div>
             </FadeIn>

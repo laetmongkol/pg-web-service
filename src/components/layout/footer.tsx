@@ -123,7 +123,7 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
         )}
       />
 
-      <div className="relative mx-auto max-w-6xl px-6 py-8 xl:py-10">
+      <div className="relative mx-auto max-w-7xl px-6 py-8 xl:py-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:gap-8 xl:gap-12">
           <div className="flex flex-col gap-3 lg:w-[28%]">
             <div className="flex items-center gap-3">

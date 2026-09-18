@@ -1,24 +1,30 @@
-import FadeIn from "@/app/component/fade-in.components";
+import { convertObjectToArrayByPrefix, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
+
+import FadeIn from "@/app/component/fade-in.components";
 
 import PeopleSlide, { type PersonItem } from "./components/people-slide";
 
 interface OurPeopleSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
+/** attributes on `person*` — the name is the row value. */
+interface PersonAttributes extends PictureAttributes {
+    role?: string;
+}
 
-const PEOPLE: PersonItem[] = [
-    { image: mockUpImage, name: "Ethan Clarke", role: "CEO" },
-    { image: mockUpImage, name: "Grace Turner", role: "หัวหน้าทีมออกแบบ" },
-    { image: mockUpImage, name: "Esther Howard", role: "นักพัฒนาหลักทรัพย์" },
-    { image: mockUpImage, name: "Jhonni Dee", role: "หัวหน้าทีมวิศวกรรม" },
-    { image: mockUpImage, name: "Marcus Reid", role: "ผู้จัดการฝ่ายการตลาด" },
-];
+const OurPeopleSection = ({ data }: OurPeopleSectionProps) => {
+    if (!data) return null;
 
-const OurPeopleSection = ({ data, language }: OurPeopleSectionProps) => {
+    const people: PersonItem[] = convertObjectToArrayByPrefix<PersonAttributes>(data, "person").map((item) => ({
+        image: item.attributes?.mediaStorageKey ?? "",
+        name: item.value ?? "",
+        role: item.attributes?.role ?? "",
+    }));
+
     return (
         <section className={cn("flex flex-col max-w-7xl mx-auto px-6 sm:px-12 md:px-16 w-full",
             "py-16 gap-10",
@@ -28,25 +34,25 @@ const OurPeopleSection = ({ data, language }: OurPeopleSectionProps) => {
                     "text-(--color-secondary) border border-(--color-secondary) px-4 py-1 rounded-full text-center font-bold",
                     "text-xs tracking-wide",
                 )}>
-                    {"OUR PEOPLE"}
+                    {data?.badge?.value}
                 </FadeIn>
                 <h2 className={cn(
                     "font-bold text-(--text-primary)",
                     "text-3xl sm:text-4xl text-center leading-tight",
                 )}>
-                    {"รู้จัก"}
-                    <span className="text-(--color-secondary)">{"ทีมงาน"}</span>
+                    {data?.title1?.value}
+                    <span className="text-(--color-secondary)">{data?.title2?.value}</span>
                 </h2>
                 <FadeIn delay={200} className={cn(
                     "text-(--text-secondary)",
                     "text-base sm:text-lg text-center max-w-3xl",
                 )}>
-                    {"เบื้องหลังทุกโครงการคือทีมงาน Pip Group ที่มุ่งมั่นสร้างสรรค์นวัตกรรม ด้วยประสบการณ์และความเชี่ยวชาญกว่า 15 ปี"}
+                    {data?.subTitle?.value}
                 </FadeIn>
             </FadeIn>
 
             <FadeIn delay={300}>
-                <PeopleSlide items={PEOPLE} />
+                <PeopleSlide items={people} />
             </FadeIn>
         </section>
     );
