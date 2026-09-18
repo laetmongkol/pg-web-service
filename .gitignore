@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — .env.<name> is committed; bare .env and *.local are not
+.env
+.env*.local
 
 # vercel
 .vercel
@@ -39,3 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.claude.env.production
+
+#local files
+*.local.*
+
+/public/morroc
+
+*.local.sh
+*.local
