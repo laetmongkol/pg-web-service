@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import JoinOurTeamVideo from "@/app/[locale]/(public)/_sections/components/join-our-team-video";
 import CountUpNumber from "@/app/component/count-up-number.component";
@@ -10,6 +10,21 @@ import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.cl
 
 const mockUpImage = "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp";
 const CYCLE_MS = 3000;
+const LG_MEDIA_QUERY = "(min-width: 1024px)";
+
+function subscribeLg(onChange: () => void) {
+    const media = window.matchMedia(LG_MEDIA_QUERY);
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+}
+
+function useIsLg() {
+    return useSyncExternalStore(
+        subscribeLg,
+        () => window.matchMedia(LG_MEDIA_QUERY).matches,
+        () => false,
+    );
+}
 
 const Tile = ({ className, alt }: { className?: string; alt: string }) => (
     <FillImage
@@ -71,9 +86,17 @@ const SIDE_COLUMNS = [
 
 const OurImpactMosaic = () => {
     const mosaicRef = useRef<HTMLDivElement>(null);
+    const isLg = useIsLg();
     const [expanded, setExpanded] = useState(false);
     const [cycleIndex, setCycleIndex] = useState(0);
     const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (isLg) return;
+        setExpanded(false);
+        setCycleIndex(0);
+        setLockedHeight(null);
+    }, [isLg]);
 
     useEffect(() => {
         if (!expanded) return;
@@ -84,6 +107,7 @@ const OurImpactMosaic = () => {
     }, [expanded]);
 
     const toggleExpanded = () => {
+        if (!isLg) return;
         if (!expanded) {
             setLockedHeight(mosaicRef.current?.getBoundingClientRect().height ?? null);
             setExpanded(true);
@@ -107,7 +131,7 @@ const OurImpactMosaic = () => {
         >
             <JoinOurTeamVideo
                 title="บรรยากาศการทำงาน"
-                onSurfaceClick={toggleExpanded}
+                onSurfaceClick={isLg ? toggleExpanded : undefined}
                 surfaceClickLabel={expanded ? "ย่อคลิป" : "ขยายคลิป"}
                 surfaceExpanded={expanded}
                 className={cn(
