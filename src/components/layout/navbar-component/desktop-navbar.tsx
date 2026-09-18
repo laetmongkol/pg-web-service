@@ -23,7 +23,7 @@ export default function DesktopNavbar({ language, navLinks, languages, showLogo 
     return (
         <div className={cn("hidden min-w-0 flex-1 items-center gap-4 lg:flex")}>
 
-            <div className={cn("navbar-nav-scroll flex  max-w-screen-2xl mx-auto flex-1 gap-12 justify-between overflow-x-auto overflow-y-clip overscroll-x-contain h-16")}>
+            <div className={cn("navbar-nav-scroll flex  max-w-7xl mx-auto flex-1 gap-12 justify-between overflow-x-auto overflow-y-clip overscroll-x-contain h-16")}>
                 {showLogo && (
                     <LinkCustom href={`/${language}`} className="flex items-center shrink-0 bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs">
                         <AppLogo />

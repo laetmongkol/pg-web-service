@@ -1,8 +1,11 @@
-import FadeIn from "@/app/component/fade-in.components";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
-const PHILOSOPHY_QUOTE =
-    "เราดำเนินงานในกลุ่มบริษัทที่มีความสอดคล้องกัน ในทุกส่วนของการเติบโตที่สำคัญ\nโดยใช้ประโยชน์จากความเชี่ยวชาญร่วมกัน เพื่อขับเคลื่อนความเป็นเลิศขององค์กร\nและสร้างอนาคตที่ยั่งยืนในระยะยาว";
+import FadeIn from "@/app/component/fade-in.components";
+
+interface OurPhilosophySectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
 
 const QuoteMark = () => (
     <span
@@ -17,13 +20,15 @@ const QuoteMark = () => (
     </span>
 );
 
-const OurPhilosophySection = () => {
+const OurPhilosophySection = ({ data }: OurPhilosophySectionProps) => {
+    if (!data) return null;
+
     return (
         <section className="w-full bg-(--surface-page)">
             <FadeIn
                 className={cn(
                     "flex flex-col items-center text-center",
-                    "max-w-6xl mx-auto px-6 sm:px-12 md:px-16",
+                    "max-w-7xl mx-auto px-6 sm:px-12 md:px-16",
                     "py-20 lg:py-28 gap-8",
                 )}
             >
@@ -34,7 +39,7 @@ const OurPhilosophySection = () => {
                         "text-xs tracking-wide",
                     )}
                 >
-                    {"OUR PHILOSOPHY"}
+                    {data?.badge?.value}
                 </span>
 
                 <blockquote className="flex max-w-4xl flex-col items-center gap-5">
@@ -47,7 +52,7 @@ const OurPhilosophySection = () => {
                             "whitespace-normal lg:whitespace-pre-line",
                         )}
                     >
-                        {PHILOSOPHY_QUOTE}
+                        {data?.quote?.value}
                     </p>
                     <QuoteMark />
                 </blockquote>

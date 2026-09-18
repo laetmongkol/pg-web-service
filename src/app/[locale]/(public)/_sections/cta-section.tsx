@@ -1,30 +1,33 @@
 import { ArrowUpRight } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
+import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 import LinkCustom from "@/components/link-custom.component";
-import FadeIn from "@/app/component/fade-in.components";
 
 interface CtaSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-/** Placeholder until the CTA gets its own art. */
-const ctaImage = "/api/app/image/contents/2026-06-23T11-25-00_ab1b23b4-d065-4c2d-97a0-c37c0c5f00ff.png";
-
 const CtaSection = ({ data, language }: CtaSectionProps) => {
+    if (!data) return null;
+
+    const picture = extractAttributes<PictureAttributes>(data?.bgImg);
+
     return (
         <section className={cn("flex flex-col max-w-7xl mx-auto px-6 sm:px-12 md:px-16 w-full",
             "py-16"
         )}>
             <div className="relative overflow-hidden rounded-3xl">
                 <FillImage
-                    src={ctaImage}
-                    alt=""
-                    width={2000}
-                    height={1000}
+                    src={picture?.mediaStorageKey ?? ""}
+                    alt={picture?.mediaAltText ?? ""}
+                    width={picture?.width}
+                    height={picture?.height}
                     sizes="(max-width: 1024px) 100vw, 1152px"
                     wrapperClassName="aspect-4/3 sm:aspect-16/9 lg:aspect-[21/8] w-full"
                     className="h-full w-full object-cover"
@@ -43,26 +46,26 @@ const CtaSection = ({ data, language }: CtaSectionProps) => {
                             <h2 className={cn("font-bold text-(--text-invert)",
                                 "text-2xl sm:text-3xl lg:text-4xl leading-relaxed"
                             )}>
-                                {"เราไม่ได้แค่สร้างธุรกิจ"}
-                                <p>{"เราสร้างรากฐานเพื่อการเติบโตที่ยั่งยืน"}</p>
+                                {data?.title1?.value}
+                                <p>{data?.title2?.value}</p>
                             </h2>
                             <div className="flex flex-col gap-6 items-center text-center">
                                 <FadeIn delay={200} className={cn("hidden items-center gap-3 lg:flex",
                                     "text-(--text-invert)/70 text-xs tracking-[0.25em]"
                                 )}>
                                     <span aria-hidden className="h-px w-10 bg-(--text-invert)/40" />
-                                    {"PIP Group Holding — ประเทศไทย"}
+                                    {data?.caption?.value}
                                     <span aria-hidden className="h-px w-10 bg-(--text-invert)/40" />
                                 </FadeIn>
 
-                                <LinkCustom href={`/${language}/contact-us`} className="w-fit">
+                                <LinkCustom href={`/${language}/${data?.ctaButton?.linkUrl ?? ""}`} className="w-fit">
                                     <FadeIn delay={300} className={cn(
                                         "font-medium text-(--text-invert) flex items-center gap-2",
                                         "bg-(--surface-default)/15 border border-(--surface-default)/30 rounded-full backdrop-blur-xs",
                                         "hover:bg-(--surface-default)/30 hover:scale-105 transition-all duration-300",
                                         "text-base px-8 py-3"
                                     )}>
-                                        {"ติดต่อเรา"}
+                                        {data?.ctaButton?.value}
                                         <ArrowUpRight className="size-5 inline-block" />
                                     </FadeIn>
                                 </LinkCustom>

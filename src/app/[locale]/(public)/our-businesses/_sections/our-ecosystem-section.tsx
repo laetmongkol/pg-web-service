@@ -1,42 +1,37 @@
-import { Fragment, type ReactNode } from "react";
-
 import { Building2, LayoutGrid, TrendingUp, type LucideIcon } from "lucide-react";
+
+import { convertObjectToArrayByPrefix } from "@/lib/cms/content-attributes";
+import cn from "@/lib/tw-merge";
+import { renderNowrapText } from "@/lib/ui/text-utils";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import CountUpNumber from "@/app/component/count-up-number.component";
 import FadeIn from "@/app/component/fade-in.components";
-import cn from "@/lib/tw-merge";
 
-const WORD_BREAK = "​";
+interface OurEcosystemSectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
 
-const ECOSYSTEM_BODY_CLAUSES = [
-    ["ดำเนินธุรกิจ", "ผ่าน", "บริษัทในเครือ", "ที่มี", "ความเชี่ยวชาญ", "ใน", "หลากหลายอุตสาหกรรม"],
-    ["เพื่อสร้าง", "การเติบโต", "อย่างต่อเนื่อง", "และยั่งยืน"],
-];
+/** attributes on `stat*` — the number itself is the row value. */
+interface EcosystemStatAttributes {
+    icon?: string;
+    label?: string;
+}
 
-const renderClause = (clause: string[], clauseIndex: number): ReactNode[] =>
-    clause.flatMap((word, wordIndex) => {
-        const held = (
-            <span key={`${clauseIndex}-${wordIndex}`} className="whitespace-nowrap">
-                {word}
-            </span>
-        );
-        return wordIndex === 0 ? [held] : [WORD_BREAK, held];
-    });
-
-type EcosystemStat = {
-    key: string;
-    Icon: LucideIcon;
-    value: string;
-    label: string;
+const ECOSYSTEM_ICONS: Record<string, LucideIcon> = {
+    Building2,
+    LayoutGrid,
+    TrendingUp,
 };
 
-const ECOSYSTEM_STATS: EcosystemStat[] = [
-    { key: "subsidiaries", Icon: Building2, value: "6 +", label: "บริษัทในเครือ" },
-    { key: "industries", Icon: LayoutGrid, value: "5", label: "กลุ่มอุตสาหกรรม" },
-    { key: "growth", Icon: TrendingUp, value: "99%", label: "โอกาสในการเติบโต" },
-];
+const resolveEcosystemIcon = (icon?: string | null): LucideIcon =>
+    (icon && ECOSYSTEM_ICONS[icon]) || Building2;
 
-const OurEcosystemSection = () => {
+const OurEcosystemSection = ({ data }: OurEcosystemSectionProps) => {
+    if (!data) return null;
+
+    const stats = convertObjectToArrayByPrefix<EcosystemStatAttributes>(data, "stat");
+
     return (
         <section
             id="our-businesses-content"
@@ -45,7 +40,7 @@ const OurEcosystemSection = () => {
             <FadeIn
                 className={cn(
                     "flex flex-col lg:flex-row lg:items-center",
-                    "max-w-6xl mx-auto px-6 sm:px-12 md:px-16",
+                    "max-w-7xl mx-auto px-6 sm:px-12 md:px-16",
                     "py-16 gap-12 lg:gap-16",
                 )}
             >
@@ -62,7 +57,7 @@ const OurEcosystemSection = () => {
                             "text-xs tracking-wide",
                         )}
                     >
-                        {"OUR ECOSYSTEM"}
+                        {data?.badge?.value}
                     </span>
                     <h2
                         className={cn(
@@ -70,8 +65,8 @@ const OurEcosystemSection = () => {
                             "text-xl sm:text-3xl",
                         )}
                     >
-                        <span className="text-(--color-secondary)">{"เชื่อมโยงธุรกิจ "}</span>
-                        <span className="text-(--text-primary) whitespace-nowrap">{"สร้างคุณค่าอย่างยั่งยืน"}</span>
+                        <span className="text-(--color-secondary)">{data?.title1?.value}</span>
+                        <span className="text-(--text-primary) whitespace-nowrap">{data?.title2?.value}</span>
                     </h2>
                     <p
                         className={cn(
@@ -79,13 +74,8 @@ const OurEcosystemSection = () => {
                             "max-w-md",
                         )}
                     >
-                        <span className="block">{"PIP Group Holding"}</span>
-                        {ECOSYSTEM_BODY_CLAUSES.map((clause, clauseIndex) => (
-                            <Fragment key={clauseIndex}>
-                                {clauseIndex > 0 ? " " : null}
-                                {renderClause(clause, clauseIndex)}
-                            </Fragment>
-                        ))}
+                        <span className="block">{data?.descriptionLead?.value}</span>
+                        {renderNowrapText(data?.description?.value)}
                     </p>
                 </div>
 
@@ -95,33 +85,36 @@ const OurEcosystemSection = () => {
                         "gap-2 sm:gap-4",
                     )}
                 >
-                    {ECOSYSTEM_STATS.map(({ key, Icon, value, label }) => (
-                        <div
-                            key={key}
-                            className="flex flex-col items-center gap-2 text-center"
-                        >
-                            <Icon
-                                className={cn(
-                                    "text-(--color-secondary) size-12 shrink-0",
-                                    "bg-(--surface-default) rounded-xl p-3 shadow-sm",
-                                )}
-                                strokeWidth={1.6}
-                            />
-                            <CountUpNumber
-                                value={value}
-                                className="text-2xl font-bold text-(--text-primary) sm:text-3xl"
-                            />
-                            <span
-                                className={cn(
-                                    "text-(--text-secondary)",
-                                    "whitespace-nowrap",
-                                    "text-xs sm:text-sm",
-                                )}
+                    {stats.map((item) => {
+                        const Icon = resolveEcosystemIcon(item.attributes?.icon);
+                        return (
+                            <div
+                                key={item.key}
+                                className="flex flex-col items-center gap-2 text-center"
                             >
-                                {label}
-                            </span>
-                        </div>
-                    ))}
+                                <Icon
+                                    className={cn(
+                                        "text-(--color-secondary) size-12 shrink-0",
+                                        "bg-(--surface-default) rounded-xl p-3 shadow-sm",
+                                    )}
+                                    strokeWidth={1.6}
+                                />
+                                <CountUpNumber
+                                    value={item.value ?? ""}
+                                    className="text-2xl font-bold text-(--text-primary) sm:text-3xl"
+                                />
+                                <span
+                                    className={cn(
+                                        "text-(--text-secondary)",
+                                        "whitespace-nowrap",
+                                        "text-xs sm:text-sm",
+                                    )}
+                                >
+                                    {item.attributes?.label}
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
             </FadeIn>
         </section>

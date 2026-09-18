@@ -1,47 +1,30 @@
+import { convertObjectToArrayByPrefix, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
-import OurServicesSlide from "./components/our-services-slide";
 import FadeIn from "@/app/component/fade-in.components";
 
+import OurServicesSlide, { type OurServiceSlideItem } from "./components/our-services-slide";
+
 interface OurServicesSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const servicesData = [
-    {
-        image: "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp",
-        title: "ให้คำปรึกษาด้านการเทรด1",
-        description: "วิเคราะห์ตลาด วางแผนกลยุทธ์การลงทุน ให้คำปรึกษาแบบตัวต่อตัว เพื่อเพิ่มโอกาสในการทำกำไร1",
-    },
-    {
-        image: "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp",
-        title: "ให้คำปรึกษาด้านการเทรด2",
-        description: "วิเคราะห์ตลาด วางแผนกลยุทธ์การลงทุน ให้คำปรึกษาแบบตัวต่อตัว เพื่อเพิ่มโอกาสในการทำกำไร2",
-    },
-    {
-        image: "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp",
-        title: "ให้คำปรึกษาด้านการเทรด3",
-        description: "วิเคราะห์ตลาด วางแผนกลยุทธ์การลงทุน ให้คำปรึกษาแบบตัวต่อตัว เพื่อเพิ่มโอกาสในการทำกำไร3",
-    },
-    {
-        image: "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp",
-        title: "ให้คำปรึกษาด้านการเทรด4",
-        description: "วิเคราะห์ตลาด วางแผนกลยุทธ์การลงทุน ให้คำปรึกษาแบบตัวต่อตัว เพื่อเพิ่มโอกาสในการทำกำไร4",
-    },
-    {
-        image: "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp",
-        title: "ให้คำปรึกษาด้านการเทรด5",
-        description: "วิเคราะห์ตลาด วางแผนกลยุทธ์การลงทุน ให้คำปรึกษาแบบตัวต่อตัว เพื่อเพิ่มโอกาสในการทำกำไร5",
-    },
-    {
-        image: "/api/app/image/gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp",
-        title: "ให้คำปรึกษาด้านการเทรด6",
-        description: "วิเคราะห์ตลาด วางแผนกลยุทธ์การลงทุน ให้คำปรึกษาแบบตัวต่อตัว เพื่อเพิ่มโอกาสในการทำกำไร6",
-    },
-]
+/** attributes on `service*` — picture + body copy; the card title is the row value. */
+interface ServiceAttributes extends PictureAttributes {
+    description?: string;
+}
 
-const OurServicesSection = ({ data, language }: OurServicesSectionProps) => {
+const OurServicesSection = ({ data }: OurServicesSectionProps) => {
+    if (!data) return null;
+
+    const services: OurServiceSlideItem[] = convertObjectToArrayByPrefix<ServiceAttributes>(data, "service").map((item) => ({
+        image: item.attributes?.mediaStorageKey ?? "",
+        title: item.value ?? "",
+        description: item.attributes?.description ?? "",
+    }));
+
     return (
         <section className={cn("flex flex-col max-w-7xl mx-auto px-6 sm:px-12 md:px-16 ",
             "py-16 gap-8"
@@ -50,32 +33,32 @@ const OurServicesSection = ({ data, language }: OurServicesSectionProps) => {
                 <FadeIn delay={100} className={cn(
                     "text-(--color-secondary) border border-(--color-secondary) px-4 py-1 rounded-full text-center font-bold"
                 )}>
-                    {"บริการของเรา"}
+                    {data?.badge?.value}
                 </FadeIn>
                 <h2 className={cn(
                     "font-bold text-(--text-primary)",
                     "text-3xl sm:text-4xl text-center leading-tight"
                 )}>
                     <p><span className="text-(--color-secondary)">
-                        {"การบริการ"}
+                        {data?.titleHighlight1?.value}
                     </span>
-                        {"และ"}
+                        {data?.titleRest1?.value}
                     </p>
                     <p><span className="text-(--color-secondary)">
-                        {"ความเชี่ยวชาญ"}
+                        {data?.titleHighlight2?.value}
                     </span>
-                        {"ของเรา"}
+                        {data?.titleRest2?.value}
                     </p>
                 </h2>
                 <FadeIn delay={200} className={cn(
                     "text-(--text-secondary)",
                     "text-base sm:text-lg text-center"
                 )}>
-                    {"เรามีบริการที่หลากหลายเพื่อตอบโจทย์ธุรกิจของคุณ ตั้งแต่ให้คำปรึกษาด้านการเทรด ผลิตคอนเทนต์ ดูแลระบบหลังบ้าน ไปจนถึงพัฒนาระบบต่างๆ"}
+                    {data?.description?.value}
                 </FadeIn>
             </FadeIn>
             <FadeIn delay={300} className="-mx-6 overflow-hidden px-6 py-4 sm:-mx-12 sm:px-12">
-                <OurServicesSlide items={servicesData} />
+                <OurServicesSlide items={services} />
             </FadeIn>
         </section>
     )

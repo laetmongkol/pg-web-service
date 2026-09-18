@@ -34,7 +34,7 @@ const NavbarShell = ({ children }: { children: ReactNode }) => {
         ],
       )}
     >
-      <div className={cn("mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-3 px-6 p-4")}>
+      <div className={cn("mx-auto flex min-h-14 max-w-7xl items-center justify-between gap-3 px-6 p-4")}>
         {children}
       </div>
     </nav>

@@ -1,10 +1,21 @@
-import FadeIn from "@/app/component/fade-in.components";
+import { AlignVerticalJustifyEnd, Clock, Share2, TrendingUp, type LucideIcon } from "lucide-react";
+
+import { convertObjectToArrayByPrefix } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
-import { Clock, Share2, AlignVerticalJustifyEnd, TrendingUp, type LucideIcon } from "lucide-react";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
+
+import FadeIn from "@/app/component/fade-in.components";
 
 interface ConsiderationSectionProps {
-    data: any;
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
+}
+
+/** attributes on `item*` — the card title is the row value. */
+interface ConsiderationAttributes {
+    icon?: string;
+    number?: string;
+    description?: string;
 }
 
 const CONSIDERATION_ICONS: Record<string, LucideIcon> = {
@@ -17,34 +28,11 @@ const CONSIDERATION_ICONS: Record<string, LucideIcon> = {
 const resolveConsiderationIcon = (icon?: string | null): LucideIcon =>
     (icon && CONSIDERATION_ICONS[icon]) || AlignVerticalJustifyEnd;
 
-const ITEMS = [
-{
-    icon: "AlignVerticalJustifyEnd",
-    number: "01",
-    title: "รากฐานที่แข็งแกร่ง",
-    description: "วางรากฐานที่มั่นคงให้กับทุกธุรกิจในกลุ่มด้วยระบบ บริหารจัดการที่มีวินัยและการวาง แผนระยะยาว"
-},
-{
-    icon: "TrendingUp",
-    number: "02",
-    title: "เติบโตอย่างมีกลยุทธ์",
-    description: "ขยายธุรกิจอย่างมีแบบแผน ผ่านกลยุทธ์ ที่ยั่งยืนและปรับให้เหมาะกับแต่ละหน่วยธุรกิจ"
-},
-{
-    icon: "Share2",
-    number: "03",
-    title: "โอกาสที่เชื่อมต่อกัน",
-    description: "สร้างพลังร่วมระหว่างกลุ่ม เชื่อมโยง ทรัพยากร บุคลากร และโอกาสที่ธุรกิจเดียวทำไม่ได้"
-},
-{
-    icon: "Clock",
-    number: "04",
-    title: "คุณค่าระยะยาว",
-    description: "สร้างคุณค่าที่ยั่งยืนให้กับธุรกิจ พาร์ทเนอร์ และผู้มี ส่วนได้ส่วนเสีย วัดผลเป็นทศวรรษ ไม่ใช่รายไตรมาส"
-}
-]
+const ConsiderationSection = ({ data }: ConsiderationSectionProps) => {
+    if (!data) return null;
 
-const ConsiderationSection = ( { data, language }: ConsiderationSectionProps ) => {
+    const items = convertObjectToArrayByPrefix<ConsiderationAttributes>(data, "item");
+
     return (
         <section className={cn("flex flex-col max-w-7xl mx-auto px-6 sm:px-12 md:px-16",
             "py-16 gap-8"
@@ -55,35 +43,35 @@ const ConsiderationSection = ( { data, language }: ConsiderationSectionProps ) =
                 <FadeIn delay={100} className={cn(
                     "text-(--color-secondary) border border-(--color-secondary) px-4 py-1 rounded-full text-center font-bold",
                 )}>
-                    {"ทำไมต้องเลือกเรา"}
+                    {data?.badge?.value}
                 </FadeIn>
 
                 <h2 className={cn(
                     "font-bold text-(--text-primary)",
                     "text-3xl sm:text-4xl text-center leading-tight"
                 )}>
-                    {"สร้างขึ้นเพื่อ"}
+                    {data?.title1?.value}
                     <span className="text-(--color-secondary)">
-                        {"คุณค่าระยะยาว"}
+                        {data?.title2?.value}
                     </span>
                 </h2>
                 <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 w-full",
                     "items-center"
                 )}>
-                    {ITEMS.map((item, index)=>{
-                        const Icon = resolveConsiderationIcon(item.icon);
+                    {items.map((item, index)=>{
+                        const Icon = resolveConsiderationIcon(item.attributes?.icon);
                         return (
-                        <FadeIn key={item.number} delay={index * 150} className={cn("flex flex-col gap-4 bg-white p-8 rounded-3xl w-full border border-(--border-default)")}>
+                        <FadeIn key={item.key} delay={index * 150} className={cn("flex flex-col gap-4 bg-white p-8 rounded-3xl w-full border border-(--border-default)")}>
                             <Icon className={"text-(--color-secondary) size-12 w-12 h-12 bg-(--color-secondary)/10 rounded-xl p-3"} />
                             <span className={cn("text-(--text-primary) text-3xl font-bold")}>
-                                {item.number}
+                                {item.attributes?.number}
                             </span>
                             <span className={cn("text-(--text-primary) text-lg font-bold")}>
-                                {item.title}
+                                {item.value}
                             </span>
                             <span className={cn("w-1/10 h-0.5 bg-(--color-secondary)")}/>
                             <span className={cn("text-(--text-secondary) text-base")}>
-                                {item.description}
+                                {item.attributes?.description}
                             </span>
                         </FadeIn>
                         );

@@ -23,25 +23,29 @@ interface SubsidiariesScrollerProps {
     items: SubsidiaryItem[];
     /** Section heading — pinned alongside the track on desktop, so it stays readable while scrolling. */
     header: ReactNode;
+    /** "see more" link — label and target both come from the CMS. */
+    moreLabel?: string;
+    moreHref?: string;
 }
-
-/** TODO: point at the real subsidiaries page once it exists. */
-const MORE_HREF = "https://www.google.com";
 
 const SIDE_PADDING = "px-6 sm:px-12 md:px-16";
 
-const MoreLink = ({ className }: { className?: string }) => (
-    <LinkCustom
-        href={MORE_HREF}
-        target="_blank"
-        className={cn("group text-(--color-secondary) hover:underline", className)}
-    >
-        <span className="flex items-center gap-3 text-xl font-medium whitespace-nowrap">
-            {"ดูข้อมูลบริษัทในเครือเพิ่มเติม"}
-            <ArrowUpRight className="h-9 w-9 shrink-0 rounded-full border border-(--color-secondary) p-1 transition-transform duration-300 group-hover:scale-105" />
-        </span>
-    </LinkCustom>
-);
+const MoreLink = ({ className, label, href }: { className?: string; label?: string; href?: string }) => {
+    if (!label || !href) return null;
+
+    return (
+        <LinkCustom
+            href={href}
+            target="_blank"
+            className={cn("group text-(--color-secondary) hover:underline", className)}
+        >
+            <span className="flex items-center gap-3 text-xl font-medium whitespace-nowrap">
+                {label}
+                <ArrowUpRight className="h-9 w-9 shrink-0 rounded-full border border-(--color-secondary) p-1 transition-transform duration-300 group-hover:scale-105" />
+            </span>
+        </LinkCustom>
+    );
+};
 
 /** Fires once, the first time the card is actually on screen — the track's transform counts. */
 const useInView = (threshold = 0.35) => {
@@ -192,7 +196,7 @@ const SubsidiaryCard = ({ item, className }: { item: SubsidiaryItem; className?:
     );
 };
 
-const SubsidiariesScroller = ({ items, header }: SubsidiariesScrollerProps) => {
+const SubsidiariesScroller = ({ items, header, moreLabel, moreHref }: SubsidiariesScrollerProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const stickyRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
@@ -293,7 +297,7 @@ const SubsidiariesScroller = ({ items, header }: SubsidiariesScrollerProps) => {
                 {items.map((item) => (
                     <SubsidiaryCard key={item.name} item={item} className="aspect-square md:aspect-4/3 w-full" />
                 ))}
-                {items.length > 0 ? <MoreLink className="self-center" /> : null}
+                {items.length > 0 ? <MoreLink className="self-center" label={moreLabel} href={moreHref} /> : null}
             </div>
 
             {/* desktop: the page scroll drives the track sideways while the viewport is pinned */}
@@ -323,7 +327,7 @@ const SubsidiariesScroller = ({ items, header }: SubsidiariesScrollerProps) => {
                         ))}
                         {/* rides at the end of the track, so it scrolls in after the last card */}
                         <div className="flex shrink-0 items-center pr-10 pl-4">
-                            <MoreLink />
+                            <MoreLink label={moreLabel} href={moreHref} />
                         </div>
                     </div>
 

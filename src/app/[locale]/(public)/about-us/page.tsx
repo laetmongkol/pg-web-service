@@ -34,20 +34,21 @@ export default async function AboutUsPage({ params }: AboutUsPageProps) {
     setRequestLocale(routeLocale);
     const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."10", in page order.
     const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "AboutUs");
 
     return (
         <div className="relative flex flex-col bg-(--surface-page)">
-            <HeroSection data={data} language={language} />
-            <HistorySection data={data} language={language} />
-            {/* OUR VALUE rides inside the journey's pinned viewport — see JourneyScroller */}
-            <JourneySection data={data} language={language} />
-            <TrustedBySection data={data} language={language} />
-            <VisionSection data={data} language={language} />
-            <OurImpactSection data={data} language={language} />
-            <MessageFromFounderSection data={data} language={language} />
-            <OurPeopleSection data={data} language={language} />
-            <CtaSection data={data} language={language} />
+            <HeroSection data={data?.["1"]} language={language} />
+            <HistorySection data={data?.["2"]} language={language} />
+            {/* OUR VALUE (section 4) rides inside the journey's pinned viewport — see JourneyScroller */}
+            <JourneySection data={data?.["3"]} valueData={data?.["4"]} language={language} />
+            <TrustedBySection data={data?.["5"]} language={language} />
+            <VisionSection data={data?.["6"]} language={language} />
+            <OurImpactSection data={data?.["7"]} language={language} />
+            <MessageFromFounderSection data={data?.["8"]} language={language} />
+            <OurPeopleSection data={data?.["9"]} language={language} />
+            <CtaSection data={data?.["10"]} language={language} />
         </div>
     );
 }

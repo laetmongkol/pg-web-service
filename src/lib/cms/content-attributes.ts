@@ -83,3 +83,20 @@ export const convertObjectToArrayByPrefix = <T = Record<string, any>>(
         .filter((entry): entry is KeyedContentAttributes<T> => entry !== undefined)
         .sort((a, b) => (a?.sequence ?? 0) - (b?.sequence ?? 0));
 };
+
+/**
+ * Text-only sibling of `convertObjectToArrayByPrefix` — keeps rows that carry no `attributes`
+ * (a list of paragraphs, for instance), ordered by the same `sequence`.
+ */
+export const convertObjectToValuesByPrefix = (
+    data: Record<string, TranslateContentResponseDto> | null | undefined,
+    prefix: string,
+): { key: string; value: string }[] => {
+    if (!data) return [];
+
+    return Object.entries(data)
+        .filter(([key]) => key.startsWith(prefix))
+        .sort((a, b) => (a[1]?.sequence ?? 0) - (b[1]?.sequence ?? 0))
+        .map(([key, dto]) => ({ key, value: dto?.value ?? "" }))
+        .filter((entry) => entry.value !== "");
+};
