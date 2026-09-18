@@ -13,7 +13,6 @@ import {
   COMPANY_ADDRESS,
   COMPANY_EMAIL,
   COMPANY_LEGAL_NAME,
-  COMPANY_NAME,
   COMPANY_PHONE,
   COMPANY_SUMMARY,
 } from "@/shared/constants/company.constants"
@@ -126,10 +125,7 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
       <div className="relative mx-auto max-w-7xl px-6 py-8 xl:py-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:gap-8 xl:gap-12">
           <div className="flex flex-col gap-3 lg:w-[28%]">
-            <div className="flex items-center gap-3">
-              <AppLogo width={64} />
-              <span className="text-lg font-bold xl:text-2xl">{COMPANY_NAME}</span>
-            </div>
+            <AppLogo width={64} />
             <p className="max-w-sm text-xs leading-relaxed text-(--text-invert)/75 xl:text-sm">
               {COMPANY_SUMMARY}
             </p>

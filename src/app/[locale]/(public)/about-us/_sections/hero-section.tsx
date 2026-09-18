@@ -1,4 +1,4 @@
-import { Mouse } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
@@ -23,100 +23,90 @@ const HeroSection = ({ data }: HeroSectionProps) => {
     return (
         <section
             className={cn(
-                // below lg the frame is a square — a fixed 1080px is far taller than a phone or tablet screen
-                "relative mt-(--navbar-height) lg:mt-0 flex aspect-square w-full flex-col lg:aspect-auto lg:h-[1080px]",
-                "overflow-hidden bg-(--color-primary)",
+                // The navbar floats over the banner as a pill, so the frame runs full-bleed to the top.
+                "relative w-full overflow-hidden bg-(--color-primary)",
+                "h-svh min-h-[32rem] lg:min-h-[45rem]",
             )}
             id="hero"
         >
-            <div className="absolute inset-0 hidden w-full lg:block">
+            <div className="absolute inset-0 w-full">
                 <FillImage
                     src={bannerImage}
                     alt={bannerAlt}
                     width={banner?.width}
                     height={banner?.height}
                     sizes="100vw"
+                    priority
                     wrapperClassName="h-full w-full"
-                    className={cn(
-                        "h-full w-full object-cover object-right",
-                        BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                    )}
-                />
-            </div>
-            <div className="absolute inset-0 block w-full lg:hidden">
-                <FillImage
-                    src={bannerImage}
-                    alt={bannerAlt}
-                    width={banner?.width}
-                    height={banner?.height}
-                    sizes="100vw"
-                    wrapperClassName="h-full w-full aspect-square"
                     className={cn(
                         "h-full w-full object-cover object-center",
                         BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
                     )}
                 />
             </div>
+            {/* Scrim: keeps the white headline readable over the brightest part of the banner. */}
+            <div
+                className={cn(
+                    "pointer-events-none absolute inset-0 z-1",
+                    "bg-gradient-to-b from-(--color-primary)/45 via-(--color-primary)/15 to-(--color-primary)/45",
+                )}
+            />
 
             <FadeIn className="absolute inset-0 z-10">
                 <div
                     className={cn(
                         "mx-auto grid h-full w-full max-w-screen-2xl",
+                        // keeps the copy clear of the floating navbar pill on short screens
+                        "pt-(--navbar-height) lg:pt-0",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >
                     <div
                         className={cn(
-                            "col-start-1 row-start-1 -mt-16 flex flex-col justify-center gap-4 sm:-mt-24 sm:gap-8",
-                            "text-center items-center",
-                            "sm:text-start sm:items-start",
+                            "col-start-1 row-start-1 flex flex-col items-center justify-center text-center",
+                            "gap-4 sm:gap-6",
                         )}
                     >
                         <span
                             className={cn(
-                                "font-light text-(--text-invert) flex flex-wrap items-center justify-center gap-2",
+                                "font-light tracking-wide text-(--text-invert)",
                                 "text-xs md:text-sm lg:text-base",
-                                "sm:justify-start",
                             )}
                         >
-                            <span className="bg-(--color-secondary) size-2 shrink-0 inline-block" />
-                            {data?.eyebrow?.value}
+                            About Us
                         </span>
                         <h1
                             className={cn(
-                                "font-bold leading-snug",
-                                "text-xl sm:text-5xl sm:leading-tight xl:text-6xl",
+                                "font-bold text-(--text-invert) text-balance",
+                                "text-2xl leading-snug sm:text-4xl sm:leading-tight lg:text-5xl xl:text-6xl",
                             )}
                         >
-                            <span className="block text-(--color-secondary)">
-                                {data?.title1?.value}
-                            </span>
-                            <span className="block text-(--text-invert)">
-                                {data?.title2?.value}
+                            <span className="block">
+                                จุดเริ่มต้นที่สร้างความเติบโตอย่างมีความหมาย
                             </span>
                         </h1>
                         <p
                             className={cn(
-                                "text-(--text-invert) whitespace-pre-line",
-                                "text-xs md:text-sm lg:text-base",
+                                "whitespace-nowrap text-(--text-invert)/85",
+                                "text-xs md:text-sm",
                             )}
                         >
-                            {data?.subTitle?.value}
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus imperdiet sed id elementum. Quam vel aliquam sit vulputate. Faucibus nec gravida ipsum.
                         </p>
                     </div>
 
                     <a
-                        href="#history"
+                        href="#our-history"
                         className={cn(
-                            "col-start-1 row-start-1 self-end",
-                            "justify-self-center sm:justify-self-start",
-                            "mb-16 flex w-fit flex-col items-center gap-2 sm:mb-24 pb-6 lg:pb-32",
-                            "hidden sm:flex",
-                            "text-(--text-invert)/75",
-                            "text-xs tracking-wide hover:text-(--text-invert) transition-colors",
+                            "col-start-1 row-start-1 self-end justify-self-center",
+                            "flex w-fit flex-col items-center gap-2 pb-10 lg:pb-14",
+                            "text-(--text-invert)/75 hover:text-(--text-invert) transition-colors",
+                            "text-xs tracking-wide",
                         )}
                     >
-                        <Mouse className="size-6 animate-bounce" strokeWidth={1.4} />
+                        <span className="flex size-8 items-center justify-center rounded-full border border-current">
+                            <ArrowDown className="size-4 animate-bounce" strokeWidth={1.5} />
+                        </span>
                         {data?.scrollDown?.value}
                     </a>
                 </div>

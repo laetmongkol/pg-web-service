@@ -12,7 +12,6 @@ const NavbarShell = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const syncScrolled = () => setIsScrolled(window.scrollY > SCROLLED_OFFSET)
 
-    // Run once: a reload partway down the page starts already scrolled.
     syncScrolled()
     window.addEventListener("scroll", syncScrolled, { passive: true })
 
@@ -23,18 +22,21 @@ const NavbarShell = ({ children }: { children: ReactNode }) => {
     <nav
       data-scrolled={isScrolled}
       className={cn(
-        "fixed inset-x-0 top-0 z-100 border-b",
-        "transition-[background-color,border-color,box-shadow] duration-300",
-        "bg-(--color-primary)",
-        "lg:border-transparent lg:bg-transparent",
-        isScrolled && [
-          "lg:border-(--surface-default)/15 lg:bg-(--color-primary)/30",
-          "lg:shadow-[0_1px_0_0_color-mix(in_oklab,var(--surface-default)_5%,transparent),0_12px_28px_-4px_color-mix(in_oklab,var(--surface-default)_22%,transparent)]",
-          "lg:backdrop-blur-lg",
-        ],
+        "pointer-events-none fixed inset-x-0 top-0 z-100",
+        "px-3 pt-3 sm:px-6 sm:pt-4",
       )}
     >
-      <div className={cn("mx-auto flex min-h-14 max-w-7xl items-center justify-between gap-3 px-6 p-4")}>
+      <div
+        className={cn(
+          "pointer-events-auto mx-auto flex min-h-14 max-w-7xl items-center justify-between gap-4",
+          "rounded-full border border-(--surface-default)/60 backdrop-blur-lg",
+          "px-4 py-2 sm:px-6",
+          "transition-[background-color,box-shadow] duration-300",
+          isScrolled
+            ? "bg-(--surface-default)/95 shadow-[var(--shadow-lg)]"
+            : "bg-(--surface-default)/85 shadow-[var(--shadow-md)]",
+        )}
+      >
         {children}
       </div>
     </nav>

@@ -11,6 +11,7 @@ import NavbarShell from "./navbar-component/navbar-shell"
 export interface NavLinkItem {
   key: string
   href: string
+  label: string
   children?: NavLinkItem[]
 }
 
@@ -18,7 +19,6 @@ export interface NavbarLabels {
   signIn: string
   startTrading: string
   language: string
-  navLinks: Record<string, string>
 }
 
 interface NavbarProps {
@@ -28,26 +28,12 @@ interface NavbarProps {
   showLogo?: boolean
 }
 
-function collectNavKeys(items: NavLinkItem[]): string[] {
-  return items.flatMap((item) => [item.key, ...(item.children ? collectNavKeys(item.children) : [])])
-}
-
-function buildNavLinkLabels(
-  t: Awaited<ReturnType<typeof getTranslations>>,
-  items: NavLinkItem[],
-): Record<string, string> {
-  return Object.fromEntries(
-    collectNavKeys(items).map((key) => [key, t(key)]),
-  )
-}
-
 const Navbar = async ({ language, languages, menuItems = [], showLogo = false }: NavbarProps) => {
   const t = await getTranslations()
   const labels: NavbarLabels = {
     signIn: t("navbar.signIn"),
     startTrading: t("navbar.startTrading"),
     language: t("navbar.language"),
-    navLinks: buildNavLinkLabels(t, menuItems),
   }
 
   return (
