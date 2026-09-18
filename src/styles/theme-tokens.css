@@ -1,0 +1,232 @@
+:root {
+  --default-font-family: var(--font-roboto), var(--font-thai), sans-serif;
+}
+
+@theme {
+  --font-sans: var(--default-font-family);
+}
+
+/* =========================================================
+   COLOR SCALE (derived from your palette)
+   ========================================================= */
+
+:root {
+  /* PRIMARY (navy) — Figma light → dark, extras below 50 */
+  --color-primary-10: #E7E9EB;
+  --color-primary-25: #CFD2D7;
+  --color-primary-50: #B7BCC3;
+  --color-primary-100: #9FA5AF;
+  --color-primary-150: #878F9B;
+  --color-primary-200: #707987;
+  --color-primary-250: #586273;
+  --color-primary-300: #404C5F;
+  --color-primary-350: #28354B;
+  /* brand/primary + background/dark */
+  --color-primary-400: #101F37;
+
+  /* SECONDARY (gold) — Figma light → dark */
+  --color-secondary-50: #FAF4EC;
+  --color-secondary-100: #F4E9D9;
+  --color-secondary-200: #EFDDC6;
+  --color-secondary-300: #EAD2B3;
+  --color-secondary-400: #E4C79F;
+  --color-secondary-500: #DFBC8C;
+  --color-secondary-600: #DAB179;
+  /* brand/accent + interactive/pressed */
+  --color-secondary-700: #D5A566;
+  /* interactive/hover */
+  --color-secondary-800: #CF9A53;
+  /* brand/secondary + interactive/default */
+  --color-secondary-900: #CA8F40;
+
+  /* SURFACE cream — Figma light → dark */
+  --surface-50: #FEFEFD;
+  --surface-100: #FEFDFB;
+  /* surface/card */
+  --surface-200: #FDFCF9;
+  --surface-300: #FCFBF7;
+  /* background/secondary */
+  --surface-400: #FBFAF5;
+  --surface-500: #FBF9F3;
+  --surface-600: #FAF8F1;
+  --surface-700: #F9F7EF;
+  --surface-800: #F9F6ED;
+  /* background/primary + surface/default */
+  --surface-900: #F8F5EB;
+
+  /* SUCCESS */
+  --color-success-50: #ECFDF5;
+  --color-success-100: #D1FAE5;
+  --color-success-200: #A7F3D0;
+  --color-success-300: #6EE7B7;
+  --color-success-400: #34D399;
+  --color-success-500: #22C55E;
+  --color-success-600: #15803D;
+  --color-success-700: #166534;
+
+  /* DANGER */
+  --color-danger-50: #FEF2F2;
+  --color-danger-100: #FEE2E2;
+  --color-danger-200: #FECACA;
+  --color-danger-300: #FCA5A5;
+  --color-danger-400: #F87171;
+  --color-danger-500: #EF4444;
+  --color-danger-600: #B91C1C;
+  --color-danger-700: #991B1B;
+
+  /* INFO */
+  --color-info-50: #EFF6FF;
+  --color-info-100: #DBEAFE;
+  --color-info-200: #BFDBFE;
+  --color-info-300: #93C5FD;
+  --color-info-400: #60A5FA;
+  --color-info-500: #0069FF;
+  --color-info-600: #2563EB;
+  --color-info-700: #1D4ED8;
+
+  /* AMBER */
+  --color-amber-500: #FF9933;
+}
+
+/* =========================================================
+     SEMANTIC TOKENS (LIGHT DEFAULT)
+     ========================================================= */
+
+:root,
+.light,
+.light-theme {
+  color-scheme: light;
+
+  /* SURFACE
+     page     = overall page/body background
+     default  = card, panel, popover background
+     muted    = form inputs, secondary sections inside a card
+     elevated = floating elements (tooltip, modal)
+  */
+  --surface-page: var(--surface-900);
+  --surface-default: var(--surface-200);
+  --surface-muted: var(--surface-400);
+  --surface-elevated: var(--surface-50);
+  --surface-code-inline: var(--surface-300);
+  --surface-code-block: var(--surface-200);
+  --surface-blockquote: var(--surface-400);
+  --surface-navbar: var(--color-primary-50);
+  --surface-invert: var(--color-primary-400);
+
+  /* TEXT */
+  --text-primary: var(--color-primary-400);
+  --text-secondary: var(--color-primary-250);
+  --text-muted: var(--color-primary-100);
+  --text-invert: #FFFFFF;
+  /* text on a dark/inverted surface */
+  --text-disabled: var(--color-primary-50);
+
+  /* BORDER */
+  --border-default: var(--color-primary-25);
+  --border-muted: var(--color-primary-10);
+  --border-strong: var(--color-primary-150);
+
+  /* BRAND MAPPING */
+  --color-primary: var(--color-primary-400);
+  --color-primary-hover: var(--color-primary-350);
+  --color-primary-active: var(--color-primary-300);
+  --color-primary-readable: var(--color-primary-400);
+
+  --color-secondary: var(--color-secondary-900);
+  --color-secondary-hover: var(--color-secondary-800);
+  --color-secondary-active: var(--color-secondary-700);
+
+  /* STATE */
+  --state-hover-opacity: 0.9;
+  --state-active-opacity: 0.8;
+  --state-disabled-opacity: 0.5;
+
+  /* FOCUS */
+  --focus-ring: var(--color-primary-400);
+
+  /* SHADOW — white cards on warm background need visible lift */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.09), 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+
+  /* TOAST ACCENTS — the only four tokens the toasts still borrowed from
+     @radix-ui/themes/styles.css. That import shipped 812 KB of unused CSS
+     (98% of the bundle, render-blocking), so the values are inlined here. */
+  --gray-a3: #0000000f;
+  --gray-a11: #0000009b;
+  --amber-3: #fff7c2;
+  --amber-11: #ab6400;
+
+  /* AUTH LAYOUT */
+  --layout-auth-bg-image: linear-gradient(150deg,
+      #FDFCF8 0%,
+      #F8F2E6 30%,
+      #F3EDD8 55%,
+      #F8F2E6 78%,
+      #FDFCF8 100%);
+  --layout-auth-blob-fill: var(--color-secondary-400);
+  --layout-auth-ring-opacity: 0.25;
+  --layout-auth-gold-blob-opacity: 0.12;
+  --layout-auth-accent-blob-opacity: 0.08;
+}
+
+/* =========================================================
+     DARK THEME
+     ========================================================= */
+
+.dark,
+.dark-theme {
+  color-scheme: dark;
+
+  /* SURFACE */
+  --surface-page: var(--color-primary-400);
+  --surface-default: var(--color-primary-350);
+  --surface-muted: var(--color-primary-300);
+  --surface-elevated: var(--color-primary-350);
+  --surface-code-inline: var(--color-primary-300);
+  --surface-code-block: var(--color-primary-350);
+  --surface-blockquote: var(--color-primary-300);
+  --surface-navbar: var(--color-primary-400);
+  --surface-invert: var(--surface-900);
+
+  /* TEXT */
+  --text-primary: var(--color-primary-10);
+  --text-secondary: var(--color-primary-50);
+  --text-muted: var(--color-primary-150);
+  --text-invert: var(--color-primary-400);
+  --text-disabled: var(--color-primary-200);
+
+  /* TOAST ACCENTS — see the light block above. */
+  --gray-a3: #ffffff12;
+  --gray-a11: #ffffffaf;
+  --amber-3: #302008;
+  --amber-11: #ffca16;
+
+  /* BORDER */
+  --border-default: var(--color-primary-250);
+  --border-muted: var(--color-primary-300);
+  --border-strong: var(--color-primary-150);
+
+  /* BRAND MAPPING */
+  --color-primary: var(--color-primary-400);
+  --color-primary-hover: var(--color-primary-350);
+  --color-primary-active: var(--color-primary-300);
+  --color-primary-readable: var(--color-primary-50);
+
+  --color-secondary: var(--color-secondary-900);
+  --color-secondary-hover: var(--color-secondary-800);
+  --color-secondary-active: var(--color-secondary-700);
+
+  /* STATE */
+  --state-hover-opacity: 0.9;
+  --state-active-opacity: 0.8;
+  --state-disabled-opacity: 0.5;
+
+  /* FOCUS */
+  --focus-ring: var(--color-primary-300);
+
+  /* SHADOW — deeper for dark surfaces */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.55);
+}
