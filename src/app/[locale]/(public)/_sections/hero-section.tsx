@@ -25,7 +25,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
         <section
             className={cn(
                 // below lg the frame is a square — a fixed 1080px is far taller than a phone or tablet screen
-                "relative mt-(--navbar-height) lg:mt-0 flex aspect-square w-full flex-col lg:aspect-auto lg:h-[1080px]",
+                "relative flex aspect-square w-full flex-col lg:aspect-auto lg:h-[1080px]",
                 "overflow-hidden bg-(--color-primary)",
             )}
             id="hero"
@@ -64,6 +64,8 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                 <div
                     className={cn(
                         "mx-auto grid h-full w-full max-w-screen-2xl",
+                        // keeps the copy clear of the floating navbar pill on short screens
+                        "pt-(--navbar-height) lg:pt-0",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >

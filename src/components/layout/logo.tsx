@@ -1,39 +1,26 @@
-import { Fragment } from "react";
-
 import FillImage from "@/components/fill-image.component";
+
+import { COMPANY_BRAND_NAME } from "@/shared/constants/company.constants";
 
 export type AppLogoProps = {
   width?: number;
 };
 
 const AppLogo = ({ width = 80 }: AppLogoProps) => {
-  const widthStyle = { width: `${width}px` };
+  const height = Math.round(width * 0.4);
 
   return (
-    <Fragment>
-      <div style={widthStyle} className="hidden select-none dark:block">
-        <FillImage
-          wrapperClassName="aspect-[5/2] w-full"
-          className="object-contain"
-          src="/logo-pipgroup.png"
-          alt="PIP Group Logo"
-          sizes={`${width}px`}
-          unoptimized
-          priority
-        />
-      </div>
-      <div style={widthStyle} className="select-none dark:hidden">
-        <FillImage
-          wrapperClassName="aspect-[5/2] w-full"
-          className="object-contain"
-          src="/logo-pipgroup.png"
-          alt="PIP Group Logo"
-          sizes={`${width}px`}
-          unoptimized
-          priority
-        />
-      </div>
-    </Fragment>
+    <FillImage
+      src="/sriwilai.png"
+      alt={COMPANY_BRAND_NAME}
+      width={width}
+      height={height}
+      sizes={`${width}px`}
+      wrapperClassName="select-none"
+      className="h-8 w-auto object-contain object-left sm:h-9"
+      unoptimized
+      priority
+    />
   );
 };
 

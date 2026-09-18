@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Check, ChevronDown } from "lucide-react"
 import { DropdownMenu } from "radix-ui"
 
+import { routing } from "@/i18n/routing"
 import cn from "@/lib/tw-merge"
 import { LanguageResponseDto } from "@/services/generated-cli/api-app-service"
 
@@ -14,7 +15,7 @@ import { LANGUAGE } from "@/shared/constants/common.constants"
 interface LanguageSelectorProps {
   currentLanguage: string
   languages: LanguageResponseDto[]
-  variant?: "dropdown" | "mobile"
+  variant?: "dropdown" | "mobile" | "segmented"
 }
 
 const FLAG_ICON_SIZE_CLASS: Record<number, string> = {
@@ -82,6 +83,74 @@ function MobileLanguageToggle({
   )
 }
 
+/**
+ * EN | TH pill toggle. Falls back to the routing locales when the languages API is
+ * unavailable, so the switcher never disappears from the bar.
+ */
+function SegmentedLanguageToggle({
+  currentLanguage,
+  languages,
+}: {
+  currentLanguage: string
+  languages: LanguageResponseDto[]
+}) {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // With the languages table unreachable, `isSupportedLanguage` rejects every non-default
+  // locale, so a non-default chip would navigate straight into a 404. Keep it in the bar for
+  // layout, but disabled, instead of hiding the switcher or shipping a dead link.
+  const hasLanguageTable = languages.length > 0
+  const options = (
+    hasLanguageTable
+      ? languages.map((language) => language.languageCode)
+      : (routing.locales as readonly string[])
+  ).map((code) => ({
+    code,
+    label: code.toUpperCase(),
+    disabled: !hasLanguageTable && code !== currentLanguage,
+  }))
+
+  const handleLanguageChange = (newLanguageCode: string) => {
+    if (newLanguageCode === currentLanguage) return
+    const pathParts = pathname.split("/")
+    pathParts[1] = newLanguageCode
+    router.replace(pathParts.join("/"))
+  }
+
+  return (
+    <div
+      className="flex shrink-0 items-center gap-1 rounded-full bg-(--color-primary)/6 p-1"
+      role="group"
+      aria-label="language selector"
+    >
+      {options.map(({ code, label, disabled }) => {
+        const isActive = code === currentLanguage
+
+        return (
+          <button
+            key={code}
+            type="button"
+            disabled={disabled}
+            onClick={() => handleLanguageChange(code)}
+            aria-pressed={isActive}
+            className={cn(
+              "inline-flex min-w-11 items-center justify-center rounded-full px-3 py-1.5",
+              "text-sm tracking-wide transition-colors outline-none",
+              isActive
+                ? "bg-(--color-primary) text-(--text-invert)"
+                : "text-(--text-secondary) hover:text-(--color-primary)",
+              disabled ? "cursor-not-allowed opacity-40" : "hover:cursor-pointer",
+            )}
+          >
+            {label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: LanguageSelectorProps) => {
   const router = useRouter()
   const pathname = usePathname()
@@ -94,6 +163,10 @@ const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: 
 
   if (variant === "mobile") {
     return <MobileLanguageToggle currentLanguage={currentLanguage} languages={languages} />
+  }
+
+  if (variant === "segmented") {
+    return <SegmentedLanguageToggle currentLanguage={currentLanguage} languages={languages} />
   }
 
   const currentLanguageData = languages.find((l) => l.languageCode === currentLanguage)

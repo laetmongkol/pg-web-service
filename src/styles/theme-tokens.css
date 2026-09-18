@@ -7,52 +7,84 @@
 }
 
 /* =========================================================
-   COLOR SCALE (derived from your palette)
+   BRAND PALETTE — exact values from "Sriwilai - Brand Guidelines",
+   p.8 (COLOR PALETTE). Do not tweak these seven; every scale below
+   is derived from them so the brand values stay traceable.
    ========================================================= */
 
 :root {
-  /* PRIMARY (navy) — Figma light → dark, extras below 50 */
-  --color-primary-10: #E7E9EB;
-  --color-primary-25: #CFD2D7;
-  --color-primary-50: #B7BCC3;
-  --color-primary-100: #9FA5AF;
-  --color-primary-150: #878F9B;
-  --color-primary-200: #707987;
-  --color-primary-250: #586273;
-  --color-primary-300: #404C5F;
-  --color-primary-350: #28354B;
-  /* brand/primary + background/dark */
-  --color-primary-400: #101F37;
+  /* LOGO / HEADER WITH SILVER COLOR */
+  --brand-mid-grey-dark: #8B8B8B;
+  --brand-mid-grey-light: #A3A3A3;
+  --brand-white-grey: #F8F8F8;
 
-  /* SECONDARY (gold) — Figma light → dark */
-  --color-secondary-50: #FAF4EC;
-  --color-secondary-100: #F4E9D9;
-  --color-secondary-200: #EFDDC6;
-  --color-secondary-300: #EAD2B3;
-  --color-secondary-400: #E4C79F;
-  --color-secondary-500: #DFBC8C;
-  --color-secondary-600: #DAB179;
-  /* brand/accent + interactive/pressed */
-  --color-secondary-700: #D5A566;
-  /* interactive/hover */
-  --color-secondary-800: #CF9A53;
-  /* brand/secondary + interactive/default */
-  --color-secondary-900: #CA8F40;
+  /* MAIN THEME / BODY / GENERAL ARTWORK */
+  --brand-light-grey: #F2F2F2;
+  --brand-off-white: #D3D0CB;
+  --brand-grey: #999999;
+  --brand-stone: #3D3E39;
 
-  /* SURFACE cream — Figma light → dark */
-  --surface-50: #FEFEFD;
-  --surface-100: #FEFDFB;
+  /* GRADIENT SILVER — "mix of mid grey dark tone, mid grey light tone,
+     plain white". The guideline calls the silver treatment intentionally
+     flexible, so this is the default sheen, not the only allowed one. */
+  --brand-gradient-silver: linear-gradient(135deg,
+      var(--brand-mid-grey-dark) 0%,
+      var(--brand-mid-grey-light) 28%,
+      #FFFFFF 52%,
+      var(--brand-mid-grey-light) 74%,
+      var(--brand-mid-grey-dark) 100%);
+}
+
+/* =========================================================
+   COLOR SCALE (derived from the brand palette)
+   ========================================================= */
+
+:root {
+  /* PRIMARY (stone) — tints of --brand-stone, light → dark */
+  --color-primary-10: #F3F3F3;
+  --color-primary-25: #E6E6E5;
+  --color-primary-50: #D4D5D3;
+  --color-primary-100: #C1C1C0;
+  --color-primary-150: #A8A8A6;
+  --color-primary-200: #8E8F8C;
+  --color-primary-250: #777874;
+  --color-primary-300: #60615D;
+  --color-primary-350: #4D4D49;
+  /* brand/primary + background/dark — STONE */
+  --color-primary-400: #3D3E39;
+
+  /* SECONDARY (silver) — light → dark, ending on the two logo greys */
+  --color-secondary-50: #FCFCFC;
+  --color-secondary-100: #F8F8F8;
+  /* WHITE GREY ↑ */
+  --color-secondary-200: #F2F2F2;
+  /* LIGHT GREY ↑ */
+  --color-secondary-300: #E4E2DF;
+  /* brand/accent on dark surfaces — OFF WHITE */
+  --color-secondary-400: #D3D0CB;
+  --color-secondary-500: #C2C0BC;
+  --color-secondary-600: #B0AFAC;
+  /* MID GREY LIGHT TONE */
+  --color-secondary-700: #A3A3A3;
+  /* GREY */
+  --color-secondary-800: #999999;
+  /* MID GREY DARK TONE */
+  --color-secondary-900: #8B8B8B;
+
+  /* SURFACE neutral — light → dark, bottoming out on LIGHT GREY */
+  --surface-50: #FFFFFF;
+  --surface-100: #FEFEFE;
   /* surface/card */
-  --surface-200: #FDFCF9;
-  --surface-300: #FCFBF7;
+  --surface-200: #FDFDFD;
+  --surface-300: #FCFCFC;
   /* background/secondary */
-  --surface-400: #FBFAF5;
-  --surface-500: #FBF9F3;
-  --surface-600: #FAF8F1;
-  --surface-700: #F9F7EF;
-  --surface-800: #F9F6ED;
-  /* background/primary + surface/default */
-  --surface-900: #F8F5EB;
+  --surface-400: #FBFBFB;
+  --surface-500: #FAFAFA;
+  --surface-600: #F8F8F8;
+  --surface-700: #F6F6F6;
+  --surface-800: #F4F4F4;
+  /* background/primary + surface/default — LIGHT GREY */
+  --surface-900: #F2F2F2;
 
   /* SUCCESS */
   --color-success-50: #ECFDF5;
@@ -132,9 +164,12 @@
   --color-primary-active: var(--color-primary-300);
   --color-primary-readable: var(--color-primary-400);
 
-  --color-secondary: var(--color-secondary-900);
-  --color-secondary-hover: var(--color-secondary-800);
-  --color-secondary-active: var(--color-secondary-700);
+  /* The accent sits on stone-dark surfaces (hero, footer), so it maps to the
+     off-white end of the silver ramp — the darker logo greys (700–900) would
+     drop below readable contrast there. Hover/active move it up the ramp. */
+  --color-secondary: var(--color-secondary-400);
+  --color-secondary-hover: var(--color-secondary-300);
+  --color-secondary-active: var(--color-secondary-500);
 
   /* STATE */
   --state-hover-opacity: 0.9;
@@ -144,7 +179,7 @@
   /* FOCUS */
   --focus-ring: var(--color-primary-400);
 
-  /* SHADOW — white cards on warm background need visible lift */
+  /* SHADOW — white cards on a light grey background need visible lift */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.09), 0 2px 4px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
@@ -159,11 +194,11 @@
 
   /* AUTH LAYOUT */
   --layout-auth-bg-image: linear-gradient(150deg,
-      #FDFCF8 0%,
-      #F8F2E6 30%,
-      #F3EDD8 55%,
-      #F8F2E6 78%,
-      #FDFCF8 100%);
+      #FFFFFF 0%,
+      var(--brand-white-grey) 30%,
+      var(--brand-light-grey) 55%,
+      var(--brand-white-grey) 78%,
+      #FFFFFF 100%);
   --layout-auth-blob-fill: var(--color-secondary-400);
   --layout-auth-ring-opacity: 0.25;
   --layout-auth-gold-blob-opacity: 0.12;
@@ -213,9 +248,9 @@
   --color-primary-active: var(--color-primary-300);
   --color-primary-readable: var(--color-primary-50);
 
-  --color-secondary: var(--color-secondary-900);
-  --color-secondary-hover: var(--color-secondary-800);
-  --color-secondary-active: var(--color-secondary-700);
+  --color-secondary: var(--color-secondary-400);
+  --color-secondary-hover: var(--color-secondary-300);
+  --color-secondary-active: var(--color-secondary-500);
 
   /* STATE */
   --state-hover-opacity: 0.9;

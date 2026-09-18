@@ -9,11 +9,12 @@ import { LanguageResponseDto } from "@/services/generated-cli/api-app-service"
 
 import LinkCustom from "@/components/link-custom.component"
 
+import AppLogo from "@/components/layout/logo"
+
 import { LANGUAGE } from "@/shared/constants/common.constants"
 import { BUTTON_BASE_CLASSNAME } from "@/shared/ui/classes/button.classes"
 
 // import ToggleTheme from "./toggle-theme"
-import AppLogo from "../logo"
 import { NavbarLabels,NavLinkItem } from "../navbar"
 import LanguageSelector from "./language-selector"
 import { NavMenuLinks } from "./nav-links"
@@ -51,7 +52,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
       <div className="flex w-full flex-1 items-center justify-between gap-3 lg:hidden">
         {showLogo ? (
           <LinkCustom href={`/${language}`} className="shrink-0">
-            <AppLogo />
+            <AppLogo width={80} />
           </LinkCustom>
         ) : (
           <div aria-hidden="true" />
@@ -63,7 +64,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
             className={cn(
               "inline-flex h-10 w-10 items-center justify-center rounded-lg",
               "hover:bg-(--color-primary-hover)",
-              "hover:cursor-pointer text-white",
+              "hover:cursor-pointer text-(--color-primary)",
             )}
             aria-label="Open menu"
           >
@@ -93,7 +94,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
             <div className="flex min-h-14 items-center justify-between gap-3">
               {showLogo ? (
                 <LinkCustom href={`/${language}`} className="shrink-0" onClick={close}>
-                  <AppLogo />
+                  <AppLogo width={80} />
                 </LinkCustom>
               ) : (
                 <div aria-hidden="true" />
@@ -116,14 +117,14 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
             <hr className="my-3 border-0 border-t border-dashed border-(--border-default)" />
 
             <nav className="min-h-0 flex-1 overflow-y-auto pr-1">
-              <NavMenuLinks language={language} links={navLinks} labels={labels.navLinks} isMobile onLinkClick={close} />
+              <NavMenuLinks language={language} links={navLinks} isMobile onLinkClick={close} />
             </nav>
 
             <div className="mt-4 shrink-0 border-t border-(--border-muted) pt-4 pb-1">
               <p className="mb-2 px-1 text-xs font-medium tracking-wide text-(--text-muted) uppercase">
                 {labels.language}
               </p>
-              <LanguageSelector currentLanguage={language} languages={languages} variant="mobile" />
+              <LanguageSelector currentLanguage={language} languages={languages} variant="segmented" />
             </div>
           </aside>
         </>

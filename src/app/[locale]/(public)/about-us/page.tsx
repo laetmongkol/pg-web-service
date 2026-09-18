@@ -9,15 +9,8 @@ import { isSupportedLanguage } from "@/proxies/language.proxy";
 import { LANGUAGE } from "@/shared/constants/common.constants";
 
 import {
-    CtaSection,
     HeroSection,
-    HistorySection,
-    JourneySection,
-    MessageFromFounderSection,
-    OurImpactSection,
-    OurPeopleSection,
-    TrustedBySection,
-    VisionSection,
+    OurHistory
 } from "./_sections";
 
 interface AboutUsPageProps {
@@ -40,15 +33,7 @@ export default async function AboutUsPage({ params }: AboutUsPageProps) {
     return (
         <div className="relative flex flex-col bg-(--surface-page)">
             <HeroSection data={data?.["1"]} language={language} />
-            <HistorySection data={data?.["2"]} language={language} />
-            {/* OUR VALUE (section 4) rides inside the journey's pinned viewport — see JourneyScroller */}
-            <JourneySection data={data?.["3"]} valueData={data?.["4"]} language={language} />
-            <TrustedBySection data={data?.["5"]} language={language} />
-            <VisionSection data={data?.["6"]} language={language} />
-            <OurImpactSection data={data?.["7"]} language={language} />
-            <MessageFromFounderSection data={data?.["8"]} language={language} />
-            <OurPeopleSection data={data?.["9"]} language={language} />
-            <CtaSection data={data?.["10"]} language={language} />
+            <OurHistory />
         </div>
     );
 }

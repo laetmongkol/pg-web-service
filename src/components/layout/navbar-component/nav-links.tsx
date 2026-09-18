@@ -17,7 +17,6 @@ import { NavLinkItem } from "../navbar"
 interface NavLinksProps {
   language: LANGUAGE
   links: NavLinkItem[]
-  labels: Record<string, string>
   isMobile?: boolean
   onLinkClick?: () => void
 }
@@ -29,8 +28,8 @@ const NAV_LINK_ICONS: Partial<Record<NavLinkKey, LucideIcon>> = {
   "navbar.contactUs": MessageCircleQuestion,
 }
 
-const NAV_LINK_ACTIVE_CLASS = "text-(--text-invert) bg-(--surface-default)/8 rounded-full px-3 py-1"
-const NAV_LINK_INACTIVE_CLASS = "text-(--text-invert) rounded-full px-3 py-1 rounded-full px-3 py-1"
+const NAV_LINK_ACTIVE_CLASS = "font-semibold text-(--color-primary) px-3 py-1"
+const NAV_LINK_INACTIVE_CLASS = "text-(--text-secondary) hover:text-(--color-primary) px-3 py-1"
 
 function getNavHref(language: LANGUAGE, href: string) {
   return `/${language}${href ? `/${href}` : ""}`
@@ -70,12 +69,10 @@ function DesktopNavLink({
   language,
   link,
   pathname,
-  labels,
 }: {
   language: LANGUAGE
   link: NavLinkItem
   pathname: string
-  labels: Record<string, string>
 }) {
   const itemRef = useRef<HTMLLIElement>(null)
   const [open, setOpen] = useState(false)
@@ -133,7 +130,7 @@ function DesktopNavLink({
     return (
       <li className="shrink-0">
         <LinkCustom href={getNavHref(language, link.href)} className={linkClassName}>
-          {labels[link.key]}
+          {link.label}
         </LinkCustom>
       </li>
     )
@@ -147,7 +144,7 @@ function DesktopNavLink({
       onMouseLeave={scheduleClose}
     >
       <LinkCustom href={getNavHref(language, link.href)} className={linkClassName}>
-        {labels[link.key]}
+        {link.label}
         <ChevronDown
           size={14}
           strokeWidth={2.5}
@@ -155,12 +152,6 @@ function DesktopNavLink({
         />
       </LinkCustom>
 
-      {/*
-        Rendered unconditionally and hidden with CSS: `{open && …}` kept the child links out of
-        the server HTML entirely, so the child pages had zero incoming links and read as orphans.
-        `invisible` rather than `display:none` keeps full link weight; the panel is
-        `position: fixed`, so it costs no layout while hidden.
-      */}
       <div
         className={cn(
           "fixed z-110 w-max pt-2 transition-opacity",
@@ -189,7 +180,7 @@ function DesktopNavLink({
                       : "text-(--text-primary) hover:bg-(--color-primary)/10",
                   )}
                 >
-                  {labels[child.key]}
+                  {child.label}
                 </LinkCustom>
               )
             })}
@@ -203,13 +194,11 @@ function MobileNavLink({
   language,
   link,
   pathname,
-  labels,
   onLinkClick,
 }: {
   language: LANGUAGE
   link: NavLinkItem
   pathname: string
-  labels: Record<string, string>
   onLinkClick?: () => void
 }) {
   const [expanded, setExpanded] = useState(() => isLinkActive(pathname, language, link))
@@ -244,7 +233,7 @@ function MobileNavLink({
             )}
           >
             {Icon && <Icon size={20} strokeWidth={1.75} className="shrink-0 text-(--color-primary-400)" />}
-            <span className="flex-1 text-left">{labels[link.key]}</span>
+            <span className="flex-1 text-left">{link.label}</span>
           </LinkCustom>
           <button
             type="button"
@@ -254,7 +243,7 @@ function MobileNavLink({
               "text-(--color-primary-400) hover:bg-(--color-primary)/5 hover:cursor-pointer",
             )}
             aria-expanded={expanded}
-            aria-label={`Toggle ${labels[link.key]} submenu`}
+            aria-label={`Toggle ${link.label} submenu`}
           >
             <ChevronDown
               size={18}
@@ -281,7 +270,7 @@ function MobileNavLink({
                         : "text-(--text-secondary) hover:bg-(--color-primary)/5 hover:text-(--text-primary)",
                     )}
                   >
-                    {labels[child.key]}
+                    {child.label}
                   </LinkCustom>
                 </li>
               )
@@ -296,13 +285,13 @@ function MobileNavLink({
     <li>
       <LinkCustom href={getNavHref(language, link.href)} onClick={onLinkClick} className={rowClassName}>
         {Icon && <Icon size={20} strokeWidth={1.75} className="shrink-0 text-(--color-primary-400)" />}
-        <span className="flex-1">{labels[link.key]}</span>
+        <span className="flex-1">{link.label}</span>
       </LinkCustom>
     </li>
   )
 }
 
-export function NavMenuLinks({ language, links, labels, isMobile, onLinkClick }: NavLinksProps) {
+export function NavMenuLinks({ language, links, isMobile, onLinkClick }: NavLinksProps) {
   const pathname = usePathname()
 
   if (isMobile) {
@@ -314,7 +303,6 @@ export function NavMenuLinks({ language, links, labels, isMobile, onLinkClick }:
             language={language}
             link={link}
             pathname={pathname}
-            labels={labels}
             onLinkClick={onLinkClick}
           />
         ))}
@@ -323,9 +311,9 @@ export function NavMenuLinks({ language, links, labels, isMobile, onLinkClick }:
   }
 
   return (
-    <ul className={cn("flex w-max items-center gap-3 px-2 bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs")}>
+    <ul className={cn("flex w-max items-center gap-2 xl:gap-4")}>
       {links.map((link) => (
-        <DesktopNavLink key={link.key} language={language} link={link} pathname={pathname} labels={labels} />
+        <DesktopNavLink key={link.key} language={language} link={link} pathname={pathname} />
       ))}
     </ul>
   )
