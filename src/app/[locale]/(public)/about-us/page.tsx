@@ -10,7 +10,10 @@ import { LANGUAGE } from "@/shared/constants/common.constants";
 
 import {
     HeroSection,
-    OurHistory
+    MissionAndVision,
+    OurHistory,
+    OurJourney,
+    OurValue
 } from "./_sections";
 
 interface AboutUsPageProps {
@@ -34,6 +37,9 @@ export default async function AboutUsPage({ params }: AboutUsPageProps) {
         <div className="relative flex flex-col bg-(--surface-page)">
             <HeroSection data={data?.["1"]} language={language} />
             <OurHistory />
+            <OurJourney />
+            <MissionAndVision data={data} />
+            <OurValue data={data} />
         </div>
     );
 }
