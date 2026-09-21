@@ -47,6 +47,17 @@ const SUB_TITLE =
 
 const COVER_ALT = "บรรยากาศการทำงานของทีม";
 
+const PILLARS = [
+    {
+        title: "Our mission",
+        body: "ยกระดับศักยภาพของธุรกิจผ่านกลยุทธ์ที่เฉียบคมและการวิเคราะห์ข้อมูลเชิงลึก เรามุ่งมั่นที่จะเป็นหุ้นส่วนเชิงกลยุทธ์ที่น่าเชื่อถือที่สุด สร้างความได้เปรียบทางการแข่งขันที่ยั่งยืนในทุกอุตสาหกรรม",
+    },
+    {
+        title: "Our vision",
+        body: "เป็นผู้นำด้านที่ปรึกษาธุรกิจระดับภูมิภาคที่กำหนดนิยามใหม่ของความสำเร็จด้วยนวัตกรรมทางความคิดและการปฏิบัติที่ส่งมอบผลลัพธ์ที่จับต้องได้ในระดับสากล",
+    },
+];
+
 const MEDIA_CARDS = [
     { key: "image1", label: "บรรยากาศการทำงาน", progress: 45 },
     { key: "image2", label: "ความเชี่ยวชาญ", progress: 75 },
@@ -60,7 +71,6 @@ interface StatCard {
     title: string;
     value: string;
     lines: string[];
-    /** Swaps the plain heading for the avatars + star rating header. */
     review?: boolean;
 }
 
@@ -87,6 +97,10 @@ const STATS: StatCard[] = [
         lines: ["ความเชี่ยวชาญที่", "นำไปสู่ผลลัพธ์ที่", "มีความหมาย"],
     },
 ];
+
+const REVEAL_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
+
+const PILLAR_DELAY = ["lg:group-hover:delay-200", "lg:group-hover:delay-300"];
 
 const CARD_CLASSNAME = "flex min-h-45 flex-col rounded-2xl border border-(--border-default) p-5 sm:p-6";
 
@@ -145,52 +159,94 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
 
                     <hr className="mt-10 border-t border-(--border-default)" />
 
-                    <div
-                        className={cn(
-                            "relative mt-10 w-full overflow-hidden rounded-3xl",
-                            "aspect-4/3 sm:aspect-16/10 lg:aspect-21/9",
-                            // silver wash behind the photo — what shows while the CMS image is missing
-                            "bg-linear-to-br from-(--color-primary-25) via-(--surface-muted) to-(--color-primary-50)",
-                        )}
-                    >
-                        <FillImage
-                            src={cover.src}
-                            alt={cover.alt}
-                            sizes="(max-width: 1280px) 100vw, 1280px"
-                            wrapperClassName="absolute inset-0 h-full w-full"
-                            className="h-full w-full object-cover object-center"
-                        />
-
-                        <div className="absolute inset-x-3 bottom-3 flex gap-3 sm:inset-x-auto sm:right-6 sm:bottom-6">
-                            {mediaCards.map(({ label, picture, progress }) => (
-                                <div
-                                    key={label}
+                    <div className="group relative mt-10 w-full">
+                        <div
+                            className={cn(
+                                "relative w-full",
+                                "aspect-4/3 sm:aspect-16/10 lg:aspect-21/9",
+                            )}
+                        >
+                            <div
+                                className={cn(
+                                    "absolute inset-y-0 right-0 left-0 overflow-hidden rounded-3xl",
+                                    "bg-linear-to-br from-(--color-primary-25) via-(--surface-muted) to-(--color-primary-50)",
+                                    "transition-[left]! duration-700! motion-reduce:transition-none!",
+                                    REVEAL_EASE,
+                                    "lg:group-hover:left-1/2",
+                                )}
+                            >
+                                <FillImage
+                                    src={cover.src}
+                                    alt={cover.alt}
+                                    sizes="(max-width: 1280px) 100vw, 1280px"
+                                    wrapperClassName="absolute inset-0 h-full w-full"
                                     className={cn(
-                                        "flex-1 rounded-xl p-3 sm:w-44 sm:flex-none",
-                                        "bg-(--color-primary)/85 text-(--text-invert) backdrop-blur-sm",
+                                        "h-full w-full object-cover object-center",
+                                        "transition-[object-position]! duration-700!",
+                                        REVEAL_EASE,
+                                        "lg:group-hover:object-right",
                                     )}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <span className="relative size-8 shrink-0 overflow-hidden rounded-md bg-(--text-invert)/20">
-                                            <FillImage
-                                                src={picture.src}
-                                                alt={picture.alt}
-                                                sizes="32px"
-                                                wrapperClassName="absolute inset-0 h-full w-full"
-                                                className="h-full w-full object-cover"
-                                            />
-                                        </span>
-                                        <span className="truncate text-xs">{label}</span>
-                                    </div>
+                                />
+                            </div>
 
-                                    <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-(--text-invert)/25">
-                                        <div
-                                            className="h-full rounded-full bg-(--text-invert)"
-                                            style={{ width: `${progress}%` }}
-                                        />
+                            <div className="absolute inset-x-3 bottom-3 flex gap-3 sm:inset-x-auto sm:right-6 sm:bottom-6">
+                                {mediaCards.map(({ label, progress }) => (
+                                    <div
+                                        key={label}
+                                        className={cn(
+                                            "min-w-0 flex-1 rounded-xl p-3 sm:w-44 sm:flex-none",
+                                            "bg-(--color-primary)/85 text-(--text-invert) backdrop-blur-sm",
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span className="truncate text-xs">{label}</span>
+                                        </div>
+
+                                        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-(--text-invert)/25">
+                                            <div
+                                                className="h-full rounded-full bg-(--text-invert)"
+                                                style={{ width: `${progress}%` }}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
+                        </div>
+
+                        <div
+                            className={cn(
+                                "mt-8 w-full",
+                                "lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:flex lg:w-1/2 lg:items-center lg:px-16",
+                                "lg:pointer-events-none lg:group-hover:pointer-events-auto",
+                            )}
+                        >
+                            <dl className="grid w-full grid-cols-1 gap-8 text-center sm:grid-cols-2 sm:gap-6 lg:text-left">
+                                {PILLARS.map(({ title, body }, index) => (
+                                    <div
+                                        key={title}
+                                        className={cn(
+                                            "lg:translate-y-4 lg:opacity-0",
+                                            "transition-[opacity,translate]! duration-500!",
+                                            REVEAL_EASE,
+                                            PILLAR_DELAY[index],
+                                            "lg:group-hover:translate-y-0 lg:group-hover:opacity-100",
+                                            "motion-reduce:translate-y-0 motion-reduce:transition-none!",
+                                        )}
+                                    >
+                                        <dt className="font-bold text-(--text-primary) text-base sm:text-lg">
+                                            {title}
+                                        </dt>
+                                        <dd
+                                            className={cn(
+                                                "mt-3 text-xs leading-relaxed sm:mt-4 sm:text-sm",
+                                                "text-(--text-secondary)",
+                                            )}
+                                        >
+                                            {body}
+                                        </dd>
+                                    </div>
+                                ))}
+                            </dl>
                         </div>
                     </div>
 

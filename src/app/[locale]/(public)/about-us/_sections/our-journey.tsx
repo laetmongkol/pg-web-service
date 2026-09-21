@@ -15,46 +15,29 @@ const TITLE_PARTS = [
 interface JourneyStep {
     icon: LucideIcon;
     title: string;
-    lines: string[];
+    body: string;
 }
 
 const STEPS: JourneyStep[] = [
     {
         icon: Wrench,
         title: "ก่อตั้งบริษัท",
-        lines: [
-            "เริ่มต้นด้วยทีมงานขนาดเล็กที่",
-            "มีวิสัยทัศน์กว้างไกลในการ",
-            "พลิกโฉมวงการที่ปรึกษา",
-        ],
+        body: "เริ่มต้นด้วยทีมงานขนาดเล็กที่มีวิสัยทัศน์กว้างไกลในการพลิกโฉมวงการที่ปรึกษา",
     },
     {
         icon: Expand,
         title: "ขยายฐานลูกค้า",
-        lines: [
-            "ขยายการให้บริการสู่องค์กร",
-            "ระดับองค์กรข้ามชาติ",
-            "สร้างผลกระทบเชิงบวกใน",
-            "หลายอุตสาหกรรม",
-        ],
+        body: "ขยายการให้บริการสู่องค์กรระดับองค์กรข้ามชาติ สร้างผลกระทบเชิงบวกในหลายอุตสาหกรรม",
     },
     {
         icon: UserRoundPlus,
         title: "ขยายขีดความสามารถ",
-        lines: [
-            "ต่อยอดองค์ความรู้",
-            "และพัฒนากระบวนการทำงาน",
-            "ด้วยเทคโนโลยีและเครื่องมือ",
-            "ที่ทันสมัย",
-        ],
+        body: "ต่อยอดองค์ความรู้และพัฒนากระบวนการทำงานด้วยเทคโนโลยีและเครื่องมือที่ทันสมัย",
     },
     {
         icon: ChartNoAxesCombined,
         title: "เติบโตอย่างไม่หยุดยั้ง",
-        lines: [
-            "ได้รับความไว้วางใจจากแบรนด์",
-            "และองค์กรชั้นนำในหลากหลาย",
-        ],
+        body: "ได้รับความไว้วางใจจากแบรนด์และองค์กรชั้นนำในหลากหลาย",
     },
 ];
 
@@ -108,7 +91,7 @@ const OurJourney = () => {
                             "lg:grid-cols-4",
                         )}
                     >
-                        {STEPS.map(({ icon: Icon, title, lines }, index) => (
+                        {STEPS.map(({ icon: Icon, title, body }, index) => (
                             <li key={title} className="flex flex-col items-center text-center">
                                 <div className="relative flex w-full items-center justify-center">
                                     {index > 0 && (
@@ -148,11 +131,11 @@ const OurJourney = () => {
 
                                 <p
                                     className={cn(
-                                        "mt-4 max-w-[17rem] whitespace-pre-line text-(--text-secondary)",
+                                        "mt-4 max-w-[19rem] text-(--text-secondary)",
                                         "text-xs leading-loose md:text-sm",
                                     )}
                                 >
-                                    {lines.join("\n")}
+                                    {body}
                                 </p>
                             </li>
                         ))}

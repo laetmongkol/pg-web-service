@@ -8,8 +8,6 @@ import FillImage from "@/components/fill-image.component";
 type ContentSections = Record<string, Record<string, TranslateContentResponseDto>>;
 
 interface OurValueProps {
-    /** The whole AboutUs content map — the cards borrow artwork from the sections
-     *  that already carry media, until this one gets CMS fields of its own. */
     data?: ContentSections;
 }
 
@@ -22,41 +20,49 @@ const TITLE_PARTS = [
 
 interface ValueCard {
     title: string;
-    /** Shown over the blurred photo on hover — one entry per line. */
-    lines: string[];
-    /** Which CMS section + field the photo comes from. */
+    body: string;
     image: { section: string; key: string };
-    /** Puts the label under the card and drops it half a step, for the zigzag. */
     labelBelow?: boolean;
 }
 
 const VALUES: ValueCard[] = [
     {
         title: "ความโปร่งใส",
-        lines: ["เราทำงานด้วยความซื่อสัตย์ ตรวจสอบได้", "และยึดมั่นในจริยธรรมสูงสุด"],
+        body: "เราทำงานด้วยความซื่อสัตย์ ตรวจสอบได้และยึดมั่นในจริยธรรมสูงสุด",
         image: { section: "6", key: "visionImage" },
     },
     {
         title: "ความเชี่ยวชาญ",
-        // Placeholder copy — only the first card's text came with the design.
-        lines: ["ทีมที่ปรึกษาที่เข้าใจธุรกิจจากภายใน", "และลงมือทำจริงเคียงข้างคุณ"],
+        body: "ทีมที่ปรึกษาที่เข้าใจธุรกิจจากภายในและลงมือทำจริงเคียงข้างคุณ",
         image: { section: "7", key: "image1" },
         labelBelow: true,
     },
     {
         title: "ความสำเร็จของลูกค้า",
-        // Placeholder copy — only the first card's text came with the design.
-        lines: ["เราวัดความสำเร็จของเรา", "จากผลลัพธ์ที่ลูกค้าได้รับ"],
+        body: "เราวัดความสำเร็จของเราจากผลลัพธ์ที่ลูกค้าได้รับ",
         image: { section: "7", key: "image2" },
     },
     {
         title: "นวัตกรรม",
-        // Placeholder copy — only the first card's text came with the design.
-        lines: ["มองหาวิธีใหม่ที่ทำให้ธุรกิจ", "เติบโตได้เร็วและยั่งยืน"],
+        body: "มองหาวิธีใหม่ที่ทำให้ธุรกิจเติบโตได้เร็วและยั่งยืน",
         image: { section: "6", key: "missionImage" },
         labelBelow: true,
     },
 ];
+
+const HOVER_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
+
+const cornerClasses = (index: number, total: number, labelBelow: boolean) => {
+    const first = index === 0;
+    const last = index === total - 1;
+
+    return cn(
+        first || labelBelow ? "lg:rounded-tl-[3.75rem]" : "lg:rounded-tl-none",
+        last || labelBelow ? "lg:rounded-tr-[3.75rem]" : "lg:rounded-tr-none",
+        first || !labelBelow ? "lg:rounded-bl-[3.75rem]" : "lg:rounded-bl-none",
+        last || !labelBelow ? "lg:rounded-br-[3.75rem]" : "lg:rounded-br-none",
+    );
+};
 
 const OurValue = ({ data }: OurValueProps) => {
     const cards = VALUES.map((card) => {
@@ -111,30 +117,23 @@ const OurValue = ({ data }: OurValueProps) => {
 
                     <ul
                         className={cn(
-                            "mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-5",
+                            "mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-1",
                         )}
                     >
-                        {cards.map(({ title, lines, picture, labelBelow }) => (
+                        {cards.map(({ title, body, picture, labelBelow }, index) => (
                             <li
                                 key={title}
                                 className={cn(
-                                    "flex gap-5",
-                                    labelBelow ? "flex-col-reverse lg:mt-12" : "flex-col",
+                                    "flex flex-col gap-4 lg:gap-8",
+                                    !labelBelow && "lg:flex-col-reverse",
                                 )}
                             >
-                                <h3
-                                    className={cn(
-                                        "text-center font-medium text-(--text-primary)",
-                                        "text-sm md:text-base",
-                                    )}
-                                >
-                                    {title}
-                                </h3>
-
                                 <div
                                     className={cn(
-                                        "group relative aspect-3/4 w-full overflow-hidden rounded-[2.5rem]",
-                                        // silver wash behind the photo — what shows while the CMS image is missing
+                                        "group relative aspect-3/4 w-full overflow-hidden",
+                                        "rounded-[2.5rem]",
+                                        cornerClasses(index, cards.length, !!labelBelow),
+                                        "shadow-[0_8px_20px_-8px_rgb(0_0_0/0.18)]",
                                         "bg-linear-to-br from-(--color-primary-25) via-(--surface-muted) to-(--color-primary-50)",
                                     )}
                                 >
@@ -145,28 +144,54 @@ const OurValue = ({ data }: OurValueProps) => {
                                         wrapperClassName="absolute inset-0 h-full w-full"
                                         className={cn(
                                             "h-full w-full object-cover object-center",
-                                            // scale hides the transparent fringe a blur leaves at the edges
-                                            "transition duration-500 group-hover:scale-105 group-hover:blur-[3px]",
+                                            "transition-[scale,filter]! duration-700! motion-reduce:transition-none!",
+                                            HOVER_EASE,
+                                            "group-hover:scale-105 group-hover:blur-[3px]",
                                         )}
                                     />
 
                                     <div
                                         className={cn(
-                                            "absolute inset-0 flex items-center justify-center px-6 text-center",
+                                            "absolute inset-0 hidden items-center justify-center px-6 text-center lg:flex",
                                             "bg-(--color-primary)/45 backdrop-blur-[2px]",
-                                            "opacity-0 transition-opacity duration-500 group-hover:opacity-100",
+                                            "opacity-0 group-hover:opacity-100",
+                                            "transition-opacity! duration-500! motion-reduce:transition-none!",
+                                            HOVER_EASE,
                                         )}
                                     >
                                         <p
                                             className={cn(
-                                                "whitespace-pre-line text-(--text-invert)",
+                                                "text-(--text-invert)",
                                                 "text-xs leading-loose md:text-sm",
+                                                "translate-y-2 opacity-0",
+                                                "transition-[opacity,translate]! duration-500! group-hover:delay-150",
+                                                HOVER_EASE,
+                                                "group-hover:translate-y-0 group-hover:opacity-100",
+                                                "motion-reduce:translate-y-0 motion-reduce:transition-none!",
                                             )}
                                         >
-                                            {lines.join("\n")}
+                                            {body}
                                         </p>
                                     </div>
                                 </div>
+
+                                <h3
+                                    className={cn(
+                                        "text-center font-medium text-(--text-primary)",
+                                        "text-sm md:text-base",
+                                    )}
+                                >
+                                    {title}
+                                </h3>
+
+                                <p
+                                    className={cn(
+                                        "-mt-1 text-center text-(--text-secondary) lg:hidden",
+                                        "text-xs leading-loose",
+                                    )}
+                                >
+                                    {body}
+                                </p>
                             </li>
                         ))}
                     </ul>

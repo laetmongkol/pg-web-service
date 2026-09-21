@@ -23,7 +23,6 @@ const HeroSection = ({ data }: HeroSectionProps) => {
     return (
         <section
             className={cn(
-                // The navbar floats over the banner as a pill, so the frame runs full-bleed to the top.
                 "relative w-full overflow-hidden bg-(--color-primary)",
                 "h-svh min-h-[32rem] lg:min-h-[45rem]",
             )}
@@ -39,12 +38,12 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                     priority
                     wrapperClassName="h-full w-full"
                     className={cn(
-                        "h-full w-full object-cover object-center",
+                        "h-full w-full object-cover",
+                        "object-[80%_center] lg:object-center",
                         BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
                     )}
                 />
             </div>
-            {/* Scrim: keeps the white headline readable over the brightest part of the banner. */}
             <div
                 className={cn(
                     "pointer-events-none absolute inset-0 z-1",
@@ -56,7 +55,6 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                 <div
                     className={cn(
                         "mx-auto grid h-full w-full max-w-screen-2xl",
-                        // keeps the copy clear of the floating navbar pill on short screens
                         "pt-(--navbar-height) lg:pt-0",
                         "px-4 sm:px-12 md:px-16",
                     )}
@@ -87,8 +85,8 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                         </h1>
                         <p
                             className={cn(
-                                "whitespace-nowrap text-(--text-invert)/85",
-                                "text-xs md:text-sm",
+                                "max-w-2xl text-(--text-invert)/85",
+                                "text-xs leading-relaxed md:text-sm",
                             )}
                         >
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus imperdiet sed id elementum. Quam vel aliquam sit vulputate. Faucibus nec gravida ipsum.
