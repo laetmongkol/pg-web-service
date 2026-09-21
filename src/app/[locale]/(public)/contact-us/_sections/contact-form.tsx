@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { parseApiError } from "@/lib/api/parse-api-error";
 import cn from "@/lib/tw-merge";
 
+import FadeIn from "@/app/component/fade-in.components";
 import { errorToast, successToast } from "@/components/toasts";
 import useContactAppService from "@/services/modules/app-service/hooks/contact.app-service.hook";
 
@@ -126,9 +127,11 @@ const ContactForm = () => {
                 "border border-(--border-default) bg-(--surface-elevated)",
             )}
         >
-            <h2 className={cn("font-bold text-(--text-primary)", "text-xl sm:text-2xl")}>{TITLE}</h2>
+            <FadeIn>
+                <h2 className={cn("font-bold text-(--text-primary)", "text-xl sm:text-2xl")}>{TITLE}</h2>
+            </FadeIn>
 
-            <div className="flex flex-col gap-2">
+            <FadeIn delay={100} className="flex flex-col gap-2">
                 <label className={LABEL_CLASSNAME} htmlFor="contact-fullName">
                     ชื่อ-นามสกุล / Name
                 </label>
@@ -143,9 +146,9 @@ const ContactForm = () => {
                     className={FIELD_CLASSNAME}
                 />
                 {renderError("fullName")}
-            </div>
+            </FadeIn>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <FadeIn delay={200} className="grid gap-5 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
                     <label className={LABEL_CLASSNAME} htmlFor="contact-email">
                         อีเมล / Email
@@ -181,9 +184,9 @@ const ContactForm = () => {
                     />
                     {renderError("phone")}
                 </div>
-            </div>
+            </FadeIn>
 
-            <div className="flex flex-col gap-2">
+            <FadeIn delay={300} className="flex flex-col gap-2">
                 <label className={LABEL_CLASSNAME} htmlFor="contact-subject">
                     หัวข้อ / Subject
                 </label>
@@ -197,9 +200,9 @@ const ContactForm = () => {
                     className={FIELD_CLASSNAME}
                 />
                 {renderError("subject")}
-            </div>
+            </FadeIn>
 
-            <div className="flex flex-col gap-2">
+            <FadeIn delay={400} className="flex flex-col gap-2">
                 <label className={LABEL_CLASSNAME} htmlFor="contact-message">
                     ข้อความ / Message
                 </label>
@@ -214,7 +217,7 @@ const ContactForm = () => {
                     className={cn(FIELD_CLASSNAME, "resize-y")}
                 />
                 {renderError("message")}
-            </div>
+            </FadeIn>
 
             {/* honeypot: off-screen and skipped by tab order, so only a bot ever fills it */}
             <input
@@ -228,18 +231,20 @@ const ContactForm = () => {
                 className="pointer-events-none absolute left-[-9999px] size-0 opacity-0"
             />
 
-            <button
-                type="submit"
-                disabled={createContactMessage.isPending}
-                className={cn(
-                    "mt-1 w-full cursor-pointer rounded-xl px-6 py-3.5",
-                    "bg-(--text-primary) text-sm font-medium text-(--text-invert)",
-                    "transition-opacity hover:opacity-90",
-                    "disabled:cursor-not-allowed disabled:opacity-60",
-                )}
-            >
-                {createContactMessage.isPending ? SUBMITTING_LABEL : SUBMIT_LABEL}
-            </button>
+            <FadeIn delay={500}>
+                <button
+                    type="submit"
+                    disabled={createContactMessage.isPending}
+                    className={cn(
+                        "mt-1 w-full cursor-pointer rounded-xl px-6 py-3.5",
+                        "bg-(--text-primary) text-sm font-medium text-(--text-invert)",
+                        "transition-opacity hover:opacity-90",
+                        "disabled:cursor-not-allowed disabled:opacity-60",
+                    )}
+                >
+                    {createContactMessage.isPending ? SUBMITTING_LABEL : SUBMIT_LABEL}
+                </button>
+            </FadeIn>
         </form>
     );
 };

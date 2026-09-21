@@ -49,31 +49,35 @@ const REVIEWS: ReviewItem[] = [
 const ReviewSection = () => {
     // passed into the slide so desktop can line the heading up with the arrows
     const header = (
-        <FadeIn className="flex flex-col gap-4">
-            <span
-                className={cn(
-                    "inline-flex w-fit items-center gap-2 rounded-full",
-                    "border border-(--border-default) bg-(--surface-page)",
-                    "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
-                )}
-            >
-                <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
-                {EYEBROW}
-            </span>
+        <div className="flex flex-col gap-4">
+            <FadeIn>
+                <span
+                    className={cn(
+                        "inline-flex w-fit items-center gap-2 rounded-full",
+                        "border border-(--border-default) bg-(--surface-page)",
+                        "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
+                    )}
+                >
+                    <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
+                    {EYEBROW}
+                </span>
+            </FadeIn>
 
-            <h2
-                className={cn(
-                    "font-bold text-(--text-primary)",
-                    "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
-                )}
-            >
-                {TITLE}
-            </h2>
+            <FadeIn delay={100}>
+                <h2
+                    className={cn(
+                        "font-bold text-(--text-primary)",
+                        "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
+                    )}
+                >
+                    {TITLE}
+                </h2>
+            </FadeIn>
 
-            <p className={cn("text-(--text-secondary)", "text-sm md:text-base")}>
+            <FadeIn delay={200} className={cn("text-(--text-secondary)", "text-sm md:text-base")}>
                 {DESCRIPTION}
-            </p>
-        </FadeIn>
+            </FadeIn>
+        </div>
     );
 
     return (

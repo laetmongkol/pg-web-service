@@ -31,46 +31,51 @@ const AboutStrategySection = () => {
         >
             <div className={cn("mx-auto w-full max-w-7xl", "px-4 sm:px-8")}>
                 {/* one rounded panel: copy and stats on top, the photo bleeding to its bottom edge */}
-                <FadeIn
+                <div
                     className={cn(
                         "flex flex-col items-center overflow-hidden rounded-3xl bg-(--surface-page)",
                         "px-4 pt-12 sm:px-10 sm:pt-16",
                     )}
                 >
-                    <span
-                        className={cn(
-                            "inline-flex items-center gap-2 rounded-full",
-                            "border border-(--border-default) bg-(--surface-elevated)",
-                            "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
-                        )}
-                    >
-                        <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
-                        {EYEBROW}
-                    </span>
+                    <FadeIn>
+                        <span
+                            className={cn(
+                                "inline-flex items-center gap-2 rounded-full",
+                                "border border-(--border-default) bg-(--surface-elevated)",
+                                "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
+                            )}
+                        >
+                            <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
+                            {EYEBROW}
+                        </span>
+                    </FadeIn>
 
-                    <h2
-                        className={cn(
-                            "mt-8 text-center font-bold text-balance text-(--text-primary)",
-                            "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
-                        )}
-                    >
-                        {TITLE}
-                    </h2>
+                    <FadeIn delay={100}>
+                        <h2
+                            className={cn(
+                                "mt-8 text-center font-bold text-balance text-(--text-primary)",
+                                "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
+                            )}
+                        >
+                            {TITLE}
+                        </h2>
+                    </FadeIn>
 
-                    <p
+                    <FadeIn
+                        delay={200}
                         className={cn(
                             "mt-8 max-w-5xl text-center whitespace-pre-line text-(--text-secondary)",
                             "text-xs leading-loose md:text-sm",
                         )}
                     >
                         {DESCRIPTION_LINES}
-                    </p>
+                    </FadeIn>
 
                     <dl className="mt-12 grid w-full grid-cols-2 gap-8 lg:grid-cols-4">
                         {STATS.map((stat, index) => (
                             <FadeIn
                                 key={stat.label}
-                                delay={index * 100}
+                                delay={300 + index * 100}
                                 className="flex flex-col items-center gap-2 text-center"
                             >
                                 <dt className="sr-only">{stat.label}</dt>
@@ -88,7 +93,7 @@ const AboutStrategySection = () => {
                         ))}
                     </dl>
 
-                    <FadeIn delay={150} className="mt-12 w-full">
+                    <FadeIn delay={200} className="mt-12 w-full">
                         <FillImage
                             src={OFFICE_IMAGE}
                             alt={OFFICE_ALT}
@@ -102,7 +107,7 @@ const AboutStrategySection = () => {
                             )}
                         />
                     </FadeIn>
-                </FadeIn>
+                </div>
             </div>
         </section>
     );

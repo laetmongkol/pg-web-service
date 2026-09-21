@@ -56,9 +56,14 @@ const BOARD_MEDIA_ROWS: Record<BoardPictureCode, PictureAttributes> = {
         width: 1536,
         height: 1024,
     },
-    // a building photo would read as a mistake in a person's avatar, so this slot stays empty
-    // until a portrait is uploaded — BoardPhoto falls back to the silver wash
-    consultantImg: {},
+    // mock until a portrait is uploaded — the slot is round and cropped, so any photo holds the
+    // layout; swap the key for a real headshot
+    consultantImg: {
+        mediaStorageKey: "contents/2026-09-18T10-09-01_9d3a7339-94c1-4b4c-969b-c5ee9180c920.png",
+        mediaAltText: "Amara Robinson",
+        width: 1536,
+        height: 1024,
+    },
     timelineImg: {
         mediaStorageKey: "contents/2026-09-18T10-09-01_9d3a7339-94c1-4b4c-969b-c5ee9180c920.png",
         mediaAltText: "ตัวอย่างงานวางกลยุทธ์ที่ผ่านมา",
@@ -90,51 +95,56 @@ const TeamCapabilitySection = () => {
             id="team-capability"
             className={cn("w-full overflow-hidden bg-(--surface-50) surface-noise", "py-16 sm:py-20 lg:py-28")}
         >
-            <FadeIn>
+            <div>
                 <div className={cn("mx-auto flex max-w-7xl flex-col", "px-4 sm:px-8")}>
-                    <span
-                        className={cn(
-                            "inline-flex w-fit items-center gap-2 rounded-full",
-                            "border border-(--border-default)",
-                            "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
-                        )}
-                    >
-                        <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
-                        {EYEBROW}
-                    </span>
+                    <FadeIn>
+                        <span
+                            className={cn(
+                                "inline-flex w-fit items-center gap-2 rounded-full",
+                                "border border-(--border-default)",
+                                "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
+                            )}
+                        >
+                            <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
+                            {EYEBROW}
+                        </span>
+                    </FadeIn>
 
-                    <h2
-                        className={cn(
-                            "mt-6 font-bold text-balance text-(--text-primary)",
-                            "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
-                        )}
-                    >
-                        {TITLE_PARTS.map(({ text, highlight }) => (
-                            <span
-                                key={text}
-                                className={highlight ? "text-(--color-secondary-800)" : undefined}
-                            >
-                                {text}
-                            </span>
-                        ))}
-                    </h2>
+                    <FadeIn delay={100}>
+                        <h2
+                            className={cn(
+                                "mt-6 font-bold text-balance text-(--text-primary)",
+                                "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
+                            )}
+                        >
+                            {TITLE_PARTS.map(({ text, highlight }) => (
+                                <span
+                                    key={text}
+                                    className={highlight ? "text-(--color-secondary-800)" : undefined}
+                                >
+                                    {text}
+                                </span>
+                            ))}
+                        </h2>
+                    </FadeIn>
 
-                    <p
+                    <FadeIn
+                        delay={200}
                         className={cn(
                             "mt-6 max-w-3xl whitespace-pre-line text-(--text-secondary)",
                             "text-sm leading-loose md:text-base",
                         )}
                     >
                         {DESCRIPTION}
-                    </p>
+                    </FadeIn>
                 </div>
-            </FadeIn>
+            </div>
 
             {/* full-bleed on purpose: the board has to overflow the frame for the drag to reveal anything */}
             {/* The board drifts, so any column can pass under the heading: pulling it up far enough
                 to tuck behind the copy collides with it on a wide screen, where the centred heading
                 sits right over the middle columns. mt-0 is as tight as it goes without a collision. */}
-            <FadeIn delay={150} className="mt-6 lg:mt-0">
+            <FadeIn delay={300} className="mt-6 lg:mt-0">
                 <DragMarquee copyWidth={BOARD_WIDTH_PX}>
                     <CapabilityBoardCards media={BOARD_MEDIA} />
                 </DragMarquee>

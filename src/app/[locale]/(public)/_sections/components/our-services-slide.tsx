@@ -5,6 +5,7 @@ import { useKeenSlider } from "keen-slider/react";
 
 import cn from "@/lib/tw-merge";
 
+import FadeIn from "@/app/component/fade-in.components";
 import LinkCustom from "@/components/link-custom.component";
 
 import SectionNavButton from "./section-nav-button";
@@ -93,13 +94,16 @@ const OurServicesSlide = ({ items, header }: OurServicesSlideProps) => {
         <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 {header}
-                <div className="flex shrink-0 gap-3">
+                <FadeIn delay={300} className="flex shrink-0 gap-3">
                     <SectionNavButton direction="prev" onClick={() => slider.current?.prev()} />
                     <SectionNavButton direction="next" onClick={() => slider.current?.next()} />
-                </div>
+                </FadeIn>
             </div>
 
-            <div ref={sliderRef} className="keen-slider">
+            {/* one fade for the whole track: a per-card fade would never fire for the slides
+                parked off-screen, leaving them blank until they are paged in */}
+            <FadeIn delay={400}>
+                <div ref={sliderRef} className="keen-slider">
                 {slides.map((item, index) => (
                     <div
                         key={`${item.title}-${index}`}
@@ -108,8 +112,9 @@ const OurServicesSlide = ({ items, header }: OurServicesSlideProps) => {
                     >
                         <ServiceCard item={item} />
                     </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            </FadeIn>
         </div>
     );
 };

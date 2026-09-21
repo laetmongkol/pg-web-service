@@ -1,17 +1,14 @@
 import { PictureAttributes } from "@/lib/cms/content-attributes";
 import { BACKEND_IMAGE_PREFIX } from "@/lib/media/image-loader";
 import cn from "@/lib/tw-merge";
-import {
-    BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-    BANNER_SECTION_HEIGHT_LARGE_CLASSNAME,
-} from "@/shared/ui/classes/base.classes";
+import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
 const EYEBROW = "Contact Us";
 const TITLE = "ติดต่อเรา";
-const DESCRIPTION = "เริ่มต้นพูดคุยเพื่อวางกลยุทธ์และการตลาดที่เป็นเอกลักษณ์เฉพาะธุรกิจของคุณ";
+const DESCRIPTION = "เริ่มต้นพูดคุยเพื่อสร้างสรรค์งานสถาปัตยกรรมและการก่อสร้างที่เป็นเอกลักษณ์เฉพาะตัวคุณ";
 
 /**
  * Hardcoded stand-in for the banner picture row, in the shape a `translate_contents` picture row
@@ -58,34 +55,40 @@ const HeroSection = () => {
                 className="pointer-events-none absolute inset-0 bg-(--color-primary-400)/55"
             />
 
-            <FadeIn className="absolute inset-0 z-10 flex">
+            <div className="absolute inset-0 z-10 flex">
                 <div
                     className={cn(
                         "mx-auto flex w-full max-w-4xl flex-col items-center justify-center text-center",
                         "px-4 pt-(--navbar-height) sm:px-8",
                     )}
                 >
-                    <span className="text-xs text-(--text-invert)/80 md:text-sm">{EYEBROW}</span>
+                    <FadeIn>
+                        <span className="text-xs text-(--text-invert)/80 md:text-sm">{EYEBROW}</span>
+                    </FadeIn>
 
-                    <h1
-                        className={cn(
-                            "mt-4 font-bold text-balance text-(--text-invert)",
-                            "text-3xl leading-tight sm:text-5xl lg:text-6xl",
-                        )}
-                    >
-                        {TITLE}
-                    </h1>
+                    <FadeIn delay={100}>
+                        <h1
+                            className={cn(
+                                "mt-4 font-bold text-balance text-(--text-invert)",
+                                "text-3xl leading-tight sm:text-5xl lg:text-6xl",
+                            )}
+                        >
+                            {TITLE}
+                        </h1>
+                    </FadeIn>
 
-                    <p
-                        className={cn(
-                            "mt-6 max-w-2xl text-(--text-invert)/85",
-                            "text-xs leading-relaxed md:text-sm",
-                        )}
-                    >
-                        {DESCRIPTION}
-                    </p>
+                    <FadeIn delay={200}>
+                        <p
+                            className={cn(
+                                "mt-6 max-w-2xl text-(--text-invert)/85",
+                                "text-xs leading-relaxed md:text-sm",
+                            )}
+                        >
+                            {DESCRIPTION}
+                        </p>
+                    </FadeIn>
                 </div>
-            </FadeIn>
+            </div>
         </section>
     );
 };

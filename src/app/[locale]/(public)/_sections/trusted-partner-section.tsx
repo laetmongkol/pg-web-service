@@ -78,13 +78,17 @@ const TrustedPartnerSection = () => {
             id="trusted-partner"
             className={cn("w-full bg-(--surface-default)", "py-12 sm:py-16")}
         >
-            <FadeIn className={cn("mx-auto flex max-w-7xl flex-col items-center", "px-4 sm:px-8")}>
-                <span className="text-xs text-(--text-secondary)">{TITLE}</span>
+            <div className={cn("mx-auto flex max-w-7xl flex-col items-center", "px-4 sm:px-8")}>
+                <FadeIn>
+                    <span className="text-xs text-(--text-secondary)">{TITLE}</span>
+                </FadeIn>
 
-                <DragMarquee copiesPerHalf={COPIES_PER_HALF} className="mt-8">
-                    <PartnerRow />
-                </DragMarquee>
-            </FadeIn>
+                <FadeIn delay={100} className="mt-8 w-full">
+                    <DragMarquee copiesPerHalf={COPIES_PER_HALF}>
+                        <PartnerRow />
+                    </DragMarquee>
+                </FadeIn>
+            </div>
         </section>
     );
 };
