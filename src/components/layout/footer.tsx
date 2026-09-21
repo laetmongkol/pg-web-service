@@ -1,6 +1,9 @@
-import { IoLogoFacebook, IoLogoLinkedin } from "react-icons/io5"
-
-import { Mail, MapPin, MessageSquare, Phone, type LucideIcon } from "lucide-react"
+import {
+  IoLogoFacebook,
+  IoLogoGoogle,
+  IoLogoInstagram,
+  IoLogoYoutube,
+} from "react-icons/io5"
 
 import cn from "@/lib/tw-merge"
 
@@ -9,10 +12,11 @@ import LinkCustom from "@/components/link-custom.component"
 import type { ComponentType } from "react"
 
 import { LANGUAGE } from "@/shared/constants/common.constants"
+import { NAV_LINKS } from "@/shared/constants/nav-links.constants"
 import {
   COMPANY_ADDRESS,
+  COMPANY_BRAND_NAME,
   COMPANY_EMAIL,
-  COMPANY_LEGAL_NAME,
   COMPANY_PHONE,
   COMPANY_SUMMARY,
 } from "@/shared/constants/company.constants"
@@ -28,52 +32,29 @@ interface FooterLinkItem {
   href: string
 }
 
-interface FooterLinkGroup {
-  heading: string
-  links: FooterLinkItem[]
-}
+const NAVIGATION_LINKS: FooterLinkItem[] = NAV_LINKS.map(({ label, href }) => ({
+  label,
+  href: href ? `/${href}` : "/",
+}))
 
-const LINK_GROUPS: FooterLinkGroup[] = [
-  {
-    heading: "เกี่ยวกับเรา",
-    links: [
-      { label: "ภาพรวมบริษัท", href: "/about-us" },
-      { label: "ประวัติของเรา", href: "/about-us" },
-      { label: "วิสัยทัศน์และพันธกิจ", href: "/about-us" },
-      { label: "ทีมผู้บริหาร", href: "/about-us" },
-    ],
-  },
-  {
-    heading: "ธุรกิจของเรา",
-    links: [
-      { label: "อสังหาริมทรัพย์", href: "/our-businesses" },
-      { label: "บริการทางการเงิน", href: "/our-businesses" },
-      { label: "เทคโนโลยี", href: "/our-businesses" },
-      { label: "การบริการและไลฟ์สไตล์", href: "/our-businesses" },
-    ],
-  },
-  {
-    heading: "แหล่งข้อมูล",
-    links: [
-      { label: "ข่าวสารและอัปเดต", href: "#" },
-      { label: "นักลงทุนสัมพันธ์", href: "#" },
-      { label: "ร่วมงานกับเรา", href: "#" },
-      { label: "ความยั่งยืน", href: "#" },
-    ],
-  },
+const UTILITY_LINKS: FooterLinkItem[] = [
+  { label: "Property", href: "#" },
+  { label: "Our Mission", href: "/about-us#mission-and-vision" },
+  { label: "Our Vision", href: "/about-us#mission-and-vision" },
+  { label: "Our History", href: "/about-us#our-history" },
+  { label: "404 Not Found", href: "/404" },
 ]
 
 interface FooterContactItem {
   key: string
-  Icon: LucideIcon
   value: string
   href?: string
 }
 
 const CONTACT_ITEMS: FooterContactItem[] = [
-  { key: "address", Icon: MapPin, value: COMPANY_ADDRESS },
-  { key: "phone", Icon: Phone, value: COMPANY_PHONE, href: `tel:${COMPANY_PHONE.replace(/\s/g, "")}` },
-  { key: "email", Icon: Mail, value: COMPANY_EMAIL, href: `mailto:${COMPANY_EMAIL}` },
+  { key: "address", value: COMPANY_ADDRESS },
+  { key: "email", value: COMPANY_EMAIL, href: `mailto:${COMPANY_EMAIL}` },
+  { key: "phone", value: COMPANY_PHONE, href: `tel:${COMPANY_PHONE.replace(/\s/g, "")}` },
 ]
 
 interface FooterSocialItem {
@@ -83,135 +64,133 @@ interface FooterSocialItem {
 }
 
 const SOCIAL_LINKS: FooterSocialItem[] = [
-  { label: "LinkedIn", href: "#", Icon: IoLogoLinkedin },
   { label: "Facebook", href: "#", Icon: IoLogoFacebook },
-  { label: "Line", href: "#", Icon: MessageSquare },
+  { label: "Google", href: "#", Icon: IoLogoGoogle },
+  { label: "Instagram", href: "#", Icon: IoLogoInstagram },
+  { label: "YouTube", href: "#", Icon: IoLogoYoutube },
 ]
 
 const LEGAL_LINKS: FooterLinkItem[] = [
-  { label: "นโยบายความเป็นส่วนตัว", href: "#" },
-  { label: "ข้อกำหนดและเงื่อนไข", href: "#" },
-  { label: "ธรรมาภิบาล", href: "#" },
+  { label: "Term of service", href: "#" },
+  { label: "Privacy Policy", href: "#" },
 ]
 
 function resolveHref(language: LANGUAGE, href: string) {
-  return href.startsWith("/") ? `/${language}${href}` : href
+  return href.startsWith("/") ? `/${language}${href === "/" ? "" : href}` : href
 }
 
-const HEADING_CLASSNAME = "text-sm font-bold text-(--color-secondary) xl:text-base"
-const SECTION_DIVIDER_CLASSNAME = "max-lg:border-t max-lg:border-(--text-invert)/12 max-lg:pt-6"
-const BODY_LINK_CLASSNAME = cn(
-  "text-xs text-(--text-invert)/80 xl:text-sm",
-  "transition-colors hover:text-(--text-invert)",
-)
+const HEADING_CLASSNAME = "text-sm font-semibold text-(--text-primary)"
+const BODY_CLASSNAME = "text-sm leading-relaxed text-(--text-secondary)"
+const BODY_LINK_CLASSNAME = cn(BODY_CLASSNAME, "transition-colors hover:text-(--text-primary)")
 
 export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
   return (
-    <footer
-      className={cn(
-        "relative w-full overflow-hidden text-(--text-invert)",
-        "bg-linear-to-b from-(--color-primary) to-(--color-primary-350)",
-      )}
-    >
+    <footer className="relative w-full overflow-hidden bg-(--surface-default) text-(--text-primary)">
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-0 opacity-[0.06]",
-          "[background-image:radial-gradient(circle,#fff_1px,transparent_1px)]",
-          "[background-size:22px_22px]",
+          "pointer-events-none absolute inset-0",
+          "bg-[radial-gradient(120%_90%_at_50%_0%,var(--color-primary-50)_0%,transparent_70%)]",
         )}
       />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-8 xl:py-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:gap-8 xl:gap-12">
-          <div className="flex flex-col gap-3 lg:w-[28%]">
-            <AppLogo width={64} />
-            <p className="max-w-sm text-xs leading-relaxed text-(--text-invert)/75 xl:text-sm">
-              {COMPANY_SUMMARY}
-            </p>
-          </div>
+      <div className="relative mx-auto max-w-7xl px-6 py-12 lg:py-16">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-15">
+          <div className="flex flex-col items-start">
+            <AppLogo width={140} />
 
-          <div className="flex flex-1 flex-col gap-6 lg:flex-row lg:gap-5 xl:gap-6">
-            <div className={cn(SECTION_DIVIDER_CLASSNAME, "grid flex-1 gap-6 sm:grid-cols-3 sm:gap-x-6")}>
-              {LINK_GROUPS.map(({ heading, links }) => (
-                <div key={heading} className="flex min-w-0 flex-col gap-3">
-                  <h3 className={HEADING_CLASSNAME}>{heading}</h3>
-                  <ul className="flex flex-col gap-2">
-                    {links.map(({ label, href }) => (
-                      <li key={label}>
-                        <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
-                          {label}
-                        </LinkCustom>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+            <p className={cn("mt-8 max-w-xs", BODY_CLASSNAME)}>{COMPANY_SUMMARY}</p>
+
+            <p className="mt-10 text-xs text-(--text-secondary)">{"Follow us"}</p>
+
+            <div className="mt-5 flex items-center gap-1.5">
+              {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+                <LinkCustom
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={cn(
+                    "flex size-14 items-center justify-center rounded-full",
+                    "border border-(--border-default) bg-(--surface-default)/60",
+                    "text-(--text-primary)",
+                    "transition-colors! duration-300! motion-reduce:transition-none!",
+                    "hover:border-transparent hover:bg-(--color-primary) hover:text-(--text-invert)",
+                  )}
+                >
+                  <Icon className="size-5" />
+                </LinkCustom>
               ))}
             </div>
+          </div>
 
-            <div className={cn(SECTION_DIVIDER_CLASSNAME, "flex min-w-0 flex-col gap-3 lg:w-[34%]")}>
-              <h3 className={HEADING_CLASSNAME}>{"ติดต่อเรา"}</h3>
-              <ul className="flex flex-col gap-2">
-                {CONTACT_ITEMS.map(({ key, Icon, value, href }) => (
-                  <li key={key} className="flex items-start gap-2.5">
-                    <Icon
-                      className="mt-0.5 size-3.5 shrink-0 text-(--color-secondary) xl:size-4"
-                      strokeWidth={1.8}
-                    />
-                    {href ? (
-                      <LinkCustom href={href} className={BODY_LINK_CLASSNAME}>
-                        {value}
-                      </LinkCustom>
-                    ) : (
-                      <span className="text-xs text-(--text-invert)/80 xl:text-sm">{value}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-1 flex items-center gap-2.5">
-                {SOCIAL_LINKS.map(({ label, href, Icon }) => (
-                  <LinkCustom
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className={cn(
-                      "flex size-9 items-center justify-center rounded-full",
-                      "border border-(--color-secondary)/60 text-(--color-secondary)",
-                      "transition-colors hover:bg-(--color-secondary) hover:text-(--color-primary)",
-                    )}
-                  >
-                    <Icon className="size-4.5" />
+          <div className="flex flex-col">
+            <h3 className={HEADING_CLASSNAME}>{"Navigation"}</h3>
+            <ul className="mt-8 flex flex-col gap-4">
+              {NAVIGATION_LINKS.map(({ label, href }) => (
+                <li key={label}>
+                  <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
+                    {label}
                   </LinkCustom>
-                ))}
-              </div>
-            </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col">
+            <h3 className={HEADING_CLASSNAME}>{"Utility Pages"}</h3>
+            <ul className="mt-8 flex flex-col gap-4">
+              {UTILITY_LINKS.map(({ label, href }) => (
+                <li key={label}>
+                  <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
+                    {label}
+                  </LinkCustom>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col">
+            <h3 className={HEADING_CLASSNAME}>{"Contact"}</h3>
+            <ul className="mt-8 flex flex-col gap-4">
+              {CONTACT_ITEMS.map(({ key, value, href }) => (
+                <li key={key}>
+                  {href ? (
+                    <LinkCustom href={href} className={BODY_LINK_CLASSNAME}>
+                      {value}
+                    </LinkCustom>
+                  ) : (
+                    <span className={BODY_CLASSNAME}>{value}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
         <div
           className={cn(
-            "mt-8 flex flex-col items-start gap-3 border-t border-(--text-invert)/15 pt-5 lg:mt-6 lg:pt-4 xl:mt-8 xl:pt-5",
-            "lg:flex-row lg:items-center lg:justify-between",
+            "mt-14 flex flex-col gap-4 lg:mt-20",
+            "sm:flex-row sm:items-center sm:justify-between",
           )}
         >
-          <p className="text-xs text-(--text-invert)/70 xl:text-sm">
-            {`© ${new Date().getFullYear()} ${COMPANY_LEGAL_NAME} สงวนลิขสิทธิ์`}
+          <p className="text-xs text-(--text-secondary) sm:text-sm">
+            {`© ${COMPANY_BRAND_NAME} ${new Date().getFullYear()}`}
           </p>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            {LEGAL_LINKS.map(({ label, href }, index) => (
-              <div key={label} className="flex items-center gap-3">
-                {index > 0 && (
-                  <span aria-hidden className="text-(--text-invert)/30">
-                    {"|"}
-                  </span>
+
+          <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
+            {LEGAL_LINKS.map(({ label, href }) => (
+              <LinkCustom
+                key={label}
+                href={resolveHref(language, href)}
+                className={cn(
+                  "text-xs text-(--text-secondary) sm:text-sm",
+                  "transition-colors hover:text-(--text-primary)",
                 )}
-                <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
-                  {label}
-                </LinkCustom>
-              </div>
+              >
+                {label}
+              </LinkCustom>
             ))}
           </div>
         </div>

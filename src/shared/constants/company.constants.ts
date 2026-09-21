@@ -5,12 +5,12 @@ const COMPANY_BRAND_NAME = "SRIWILAI"
 const COMPANY_BRAND_TAGLINE = "CONSULTING & MARKETING AGENCY"
 const COMPANY_LEGAL_NAME = "PIP GROUP HOLDINGS CO., LTD."
 const COMPANY_SUMMARY =
-  "ศรีวิไลเป็นที่ปรึกษาด้านกลยุทธ์ แบรนด์ และการตลาด ที่ทำงานเคียงข้างผู้บริหาร เพื่อแปลงข้อมูลให้เป็นแผนงานที่ลงมือทำได้จริง"
+  "Revolutionizing the construction industry with innovative solutions and expert craftsmanship to transform spaces into modern, functional, and sustainable environments."
 
 const COMPANY_ADDRESS =
-  "502 อาคารเกษร อัมรินทร์ ห้องเลขที่ 8A ชั้น 9 ถนนเพลินจิต แขวงลุมพินี เขตปทุมวัน กรุงเทพมหานคร 10330"
+  "1188 อาคารโรงแรมแกรนด์ เซนเตอร์ พอยต์ ลุมพินี ห้องเลขที่ 1606 ถนนพระราม 4 กรุงเทพฯ 10120"
 const COMPANY_PHONE = "02 000 0000"
-const COMPANY_EMAIL = "support@pipgroup.com"
+const COMPANY_EMAIL = "Sriwilai.support@gmail.com"
 const COMPANY_OFFICE_HOURS = "จันทร์ - ศุกร์: 10:00น. - 19:00น."
 
 export {
