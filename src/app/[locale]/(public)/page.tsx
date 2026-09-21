@@ -1,14 +1,22 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
 import type { Metadata } from "next";
 
 import { isSupportedLanguage } from "@/proxies/language.proxy";
 import { LANGUAGE } from "@/shared/constants/common.constants";
 
-import { HeroSection } from "./_sections";
+import {
+    AboutStrategySection,
+    CtaSection,
+    HeroSection,
+    OurMissionSection,
+    OurServicesSection,
+    ReviewSection,
+    TeamCapabilitySection,
+    TrustedPartnerSection
+} from "./_sections";
 
 interface HomePageProps {
     params: Promise<{ locale: string }>;
@@ -24,11 +32,19 @@ export default async function HomePage({ params }: HomePageProps) {
     setRequestLocale(routeLocale);
     const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
-    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "Home");
-
+    // Copy is held in the sections for now — the Home rows in the CMS still carry the seed content
+    // from the project this service was cloned from, so binding them here would print another
+    // brand's text. Swap each section back to `data?.["<n>"]` as its rows are filled in.
     return (
         <div className="relative flex flex-col bg-(--surface-page)">
-            <HeroSection data={data?.["1"]} language={language} />
+            <HeroSection language={language} />
+            <TrustedPartnerSection />
+            <AboutStrategySection />
+            <OurMissionSection />
+            <TeamCapabilitySection />
+            <OurServicesSection language={language} />
+            <ReviewSection />
+            <CtaSection language={language} />
         </div>
     );
 }

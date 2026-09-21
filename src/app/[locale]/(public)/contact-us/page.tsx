@@ -1,41 +1,49 @@
+import { setRequestLocale } from "next-intl/server";
+
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import cn from "@/lib/tw-merge";
-import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
-import FadeIn from "@/app/component/fade-in.components";
+import type { Metadata } from "next";
 
-import { isSupportedLanguage } from "@/proxies/language.proxy";
-import { LANGUAGE } from "@/shared/constants/common.constants";
-
-import BannerSection from "./_sections/banner-section";
-import ContactForm from "./_sections/contact-form";
-import HeadOffice from "./_sections/head-office";
+import { ContactChannels, ContactForm, HeroSection, OfficeMap } from "./_sections";
 
 interface ContactUsPageProps {
     params: Promise<{ locale: string }>;
 }
 
-export default async function ContactUs({ params }: ContactUsPageProps) {
+export async function generateMetadata({ params }: ContactUsPageProps): Promise<Metadata> {
+    const { locale } = await params;
+    return buildPageMetadata({ locale, pathname: "contact-us", pageCode: "ContactUs" });
+}
+
+export default async function ContactUsPage({ params }: ContactUsPageProps) {
     const { locale: routeLocale } = await params;
-    const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
+    setRequestLocale(routeLocale);
 
-    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."3", in page order.
-    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "ContactUs");
-
+    // Copy is held in the sections for now — the ContactUs rows in the CMS still carry the seed
+    // content from the project this service was cloned from, so binding them here would print
+    // another brand's text. Swap each section to `data?.["<n>"]` as its rows are filled in.
     return (
-        <div className="flex flex-col">
-            <BannerSection data={data?.["1"]} />
-            <section id="contact-us-content" className="w-full bg-(--surface-page)">
-                <FadeIn
+        <div className="relative flex flex-col bg-(--surface-elevated)">
+            <HeroSection />
+
+            <section
+                id="contact-us-content"
+                className={cn("w-full bg-(--surface-elevated)", "py-16 sm:py-20 lg:py-24")}
+            >
+                <div
                     className={cn(
-                        "grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-12",
-                        "max-w-7xl mx-auto px-6 sm:px-12 md:px-16",
-                        "py-16",
+                        "mx-auto grid w-full max-w-7xl gap-12",
+                        "px-4 sm:px-8",
+                        "lg:grid-cols-2 lg:gap-16",
                     )}
                 >
-                    <HeadOffice data={data?.["2"]} />
-                    <ContactForm data={data?.["3"]} />
-                </FadeIn>
+                    <ContactChannels />
+                    <ContactForm />
+                </div>
             </section>
+
+            <OfficeMap />
         </div>
     );
 }
