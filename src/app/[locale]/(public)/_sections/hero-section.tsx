@@ -13,7 +13,7 @@ const EYEBROW = "Sriwilai Bangkok";
 const TITLE_LINE_1 = "พาธุรกิจของคุณ";
 const TITLE_LINE_2 = "ไปข้างหน้าอย่างมั่นคง";
 const DESCRIPTION =
-    "ที่ปรึกษาด้านกลยุทธ์ธุรกิจและการตลาดที่ทำงานเคียงข้างคุณตั้งแต่วางแผนจนถึงลงมือทำ เปลี่ยนข้อมูลและความเข้าใจตลาดให้เป็นการเติบโตที่วัดผลได้จริง";
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus imperdiet sed id elementum. Quam vel aliquam sit vulputate. Faucibus nec gravida ipsum.";
 
 const SECONDARY_CTA = { label: "ดูบริการของเรา", path: "services" };
 const PRIMARY_CTA = { label: "ติดต่อปรึกษา", path: "contact-us" };
@@ -53,7 +53,7 @@ const HeroSection = ({ language }: HeroSectionProps) => {
         <section
             id="hero"
             className={cn(
-                "relative flex w-full flex-col overflow-hidden",
+                "relative flex w-full flex-col",
                 // the radial wash in the design: page grey at the rim, near-white in the middle
                 "bg-(--surface-page)",
                 "lg:max-h-[1080px] aspect-square lg:aspect-[16/8] pt-(--navbar-height)",
