@@ -65,45 +65,52 @@ const OurMissionSection = () => {
             className={cn("w-full bg-(--surface-default)", "py-16 sm:py-20 lg:py-28")}
         >
             <div className={cn("mx-auto w-full max-w-7xl", "px-4 sm:px-8")}>
-                <FadeIn className="flex flex-col items-center text-center">
-                    <span
-                        className={cn(
-                            "inline-flex items-center gap-2 rounded-full",
-                            "border border-(--border-default) bg-(--surface-page)",
-                            "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
-                        )}
-                    >
-                        <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
-                        {EYEBROW}
-                    </span>
+                <div className="flex flex-col items-center text-center">
+                    <FadeIn>
+                        <span
+                            className={cn(
+                                "inline-flex items-center gap-2 rounded-full",
+                                "border border-(--border-default) bg-(--surface-page)",
+                                "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
+                            )}
+                        >
+                            <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
+                            {EYEBROW}
+                        </span>
+                    </FadeIn>
 
-                    <h2
-                        className={cn(
-                            "mt-8 font-bold text-balance whitespace-pre-line text-(--text-primary)",
-                            "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
-                        )}
-                    >
-                        {TITLE_PARTS.map(({ text, highlight }) => (
-                            <span
-                                key={text}
-                                className={highlight ? "text-(--color-secondary-800)" : undefined}
-                            >
-                                {text}
-                            </span>
-                        ))}
-                    </h2>
+                    <FadeIn delay={100}>
+                        <h2
+                            className={cn(
+                                "mt-8 font-bold text-balance whitespace-pre-line text-(--text-primary)",
+                                "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
+                            )}
+                        >
+                            {TITLE_PARTS.map(({ text, highlight }) => (
+                                <span
+                                    key={text}
+                                    className={highlight ? "text-(--color-secondary-800)" : undefined}
+                                >
+                                    {text}
+                                </span>
+                            ))}
+                        </h2>
+                    </FadeIn>
 
-                    <p className={cn("mt-6 max-w-4xl text-(--text-secondary)", "text-xs md:text-sm")}>
+                    <FadeIn
+                        delay={200}
+                        className={cn("mt-6 max-w-4xl text-(--text-secondary)", "text-xs md:text-sm")}
+                    >
                         {DESCRIPTION}
-                    </p>
-                </FadeIn>
+                    </FadeIn>
+                </div>
 
                 <div className="mt-12 grid gap-8 md:grid-cols-3">
                     {MISSIONS.map((mission, index) => {
                         return (
                             <FadeIn
                                 key={mission.title}
-                                delay={index * 100}
+                                delay={300 + index * 100}
                                 className="group flex flex-col gap-4"
                             >
                                 <div className={CARD_MEDIA_CLASSNAME}>

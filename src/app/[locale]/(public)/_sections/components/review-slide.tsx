@@ -5,6 +5,8 @@ import { useKeenSlider } from "keen-slider/react";
 
 import cn from "@/lib/tw-merge";
 
+import FadeIn from "@/app/component/fade-in.components";
+
 import SectionNavButton from "./section-nav-button";
 
 import "keen-slider/keen-slider.min.css";
@@ -70,21 +72,25 @@ const ReviewSlide = ({ items, header }: ReviewSlideProps) => {
         <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 {header}
-                <div className="flex shrink-0 gap-3">
+                <FadeIn delay={300} className="flex shrink-0 gap-3">
                     <SectionNavButton direction="prev" onClick={() => slider.current?.prev()} />
                     <SectionNavButton direction="next" onClick={() => slider.current?.next()} />
-                </div>
+                </FadeIn>
             </div>
 
-            <div ref={sliderRef} className="keen-slider">
+            {/* one fade for the whole track: a per-card fade would never fire for the slides
+                parked off-screen, leaving them blank until they are paged in */}
+            <FadeIn delay={400}>
+                <div ref={sliderRef} className="keen-slider">
                 {items.map((item) => (
                     <div key={item.name} className="keen-slider__slide">
                         <ReviewCard item={item} />
                     </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            </FadeIn>
 
-            <div className="flex items-center justify-center gap-2">
+            <FadeIn delay={500} className="flex items-center justify-center gap-2">
                 {items.map((item, dot) => (
                     <button
                         key={item.name}
@@ -99,7 +105,7 @@ const ReviewSlide = ({ items, header }: ReviewSlideProps) => {
                         style={{ width: dot === current ? 24 : 8, opacity: dot === current ? 1 : 0.25 }}
                     />
                 ))}
-            </div>
+            </FadeIn>
         </div>
     );
 };

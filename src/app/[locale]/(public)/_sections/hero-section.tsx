@@ -65,65 +65,75 @@ const HeroSection = ({ language }: HeroSectionProps) => {
             />
             <SparkleDecoration sparkles={SPARKLES} />
 
-            <FadeIn className="relative z-10 flex flex-1 flex-col">
+            <div className="relative z-10 flex flex-1 flex-col">
                 <div
                     className={cn(
-                        "mx-auto flex w-full max-w-5xl flex-1 flex-col items-center text-center",
+                        "mx-auto flex w-full flex-1 flex-col items-center text-center",
                         "px-4 py-16 sm:px-8 sm:py-20",
                     )}
                 >
-                    <span className="text-xs text-(--text-secondary) md:text-sm">{EYEBROW}</span>
+                    <FadeIn>
+                        <span className="text-xs text-(--text-secondary) md:text-sm">{EYEBROW}</span>
+                    </FadeIn>
+                    <FadeIn delay={100}>
+                        <h1
+                            className={cn(
+                                "mt-6 font-bold text-balance text-(--text-primary)",
+                                "text-3xl leading-tight sm:text-5xl lg:text-6xl lg:leading-[1.15]",
+                            )}
+                        >
+                            <span className="block">{TITLE_LINE_1}</span>
+                            <span className="block">{TITLE_LINE_2}</span>
+                        </h1>
+                    </FadeIn>
 
-                    <h1
+                    <FadeIn delay={200}
                         className={cn(
-                            "mt-6 font-bold text-balance text-(--text-primary)",
-                            "text-3xl leading-tight sm:text-5xl lg:text-6xl lg:leading-[1.15]",
-                        )}
-                    >
-                        <span className="block">{TITLE_LINE_1}</span>
-                        <span className="block">{TITLE_LINE_2}</span>
-                    </h1>
-
-                    <p
-                        className={cn(
-                            "mt-8 max-w-3xl text-(--text-secondary)",
+                            "mt-8 text-(--text-secondary)",
                             "text-xs leading-relaxed md:text-sm",
                         )}
                     >
                         {DESCRIPTION}
-                    </p>
+                    </FadeIn>
 
                     <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                        <LinkCustom
-                            href={`/${language}/${SECONDARY_CTA.path}`}
-                            className={cn(
-                                CTA_BASE_CLASSNAME,
-                                "border border-(--border-strong) bg-(--surface-elevated) text-(--text-primary)",
-                            )}
-                        >
-                            {SECONDARY_CTA.label}
-                        </LinkCustom>
-                        <LinkCustom
-                            href={`/${language}/${PRIMARY_CTA.path}`}
-                            className={cn(CTA_BASE_CLASSNAME, "bg-(--text-primary) text-(--text-invert)")}
-                        >
-                            {PRIMARY_CTA.label}
-                        </LinkCustom>
+                        <FadeIn delay={300}>
+                            <LinkCustom
+                                href={`/${language}/${SECONDARY_CTA.path}`}
+                                className={cn(
+                                    CTA_BASE_CLASSNAME,
+                                    "border border-(--border-strong) bg-(--surface-elevated) text-(--text-primary)",
+                                )}
+                            >
+
+                                {SECONDARY_CTA.label}
+                            </LinkCustom>
+                        </FadeIn>
+                        <FadeIn delay={400}>
+                            <LinkCustom
+                                href={`/${language}/${PRIMARY_CTA.path}`}
+                                className={cn(CTA_BASE_CLASSNAME, "bg-(--text-primary) text-(--text-invert)")}
+                            >
+                                {PRIMARY_CTA.label}
+                            </LinkCustom>
+                        </FadeIn>
                     </div>
 
                     {FIGURE_IMAGE ? (
-                        <FillImage
-                            src={FIGURE_IMAGE}
-                            alt={FIGURE_ALT}
-                            width={FIGURE_WIDTH}
-                            height={FIGURE_HEIGHT}
-                            sizes="(max-width: 640px) 200px, 280px"
-                            // mt-auto parks the figure at the bottom of the leftover space, so on a
-                            // tall screen it still sits just above the scroll hint instead of
-                            // riding up under the buttons
-                            wrapperClassName="mt-auto w-[200px] pt-12 sm:w-[280px]"
-                            className={cn("h-auto w-full object-contain", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
-                        />
+                        // mt-auto belongs on the flex child itself — the FadeIn wrapper is that
+                        // child now, so parking it here is what pushes the figure back to the
+                        // bottom of the leftover space, just above the scroll hint
+                        <FadeIn delay={500} className="mt-auto w-[200px] pt-12 sm:w-[280px]">
+                            <FillImage
+                                src={FIGURE_IMAGE}
+                                alt={FIGURE_ALT}
+                                width={FIGURE_WIDTH}
+                                height={FIGURE_HEIGHT}
+                                sizes="(max-width: 640px) 200px, 280px"
+                                wrapperClassName="w-full"
+                                className={cn("h-auto w-full object-contain", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
+                            />
+                        </FadeIn>
                     ) : (
                         // keeps the spacing while the figure is missing
                         <div aria-hidden className="mt-auto h-24 pt-12 sm:h-32" />
@@ -137,19 +147,23 @@ const HeroSection = ({ language }: HeroSectionProps) => {
                             "transition-colors hover:text-(--text-primary)",
                         )}
                     >
-                        <span
-                            className={cn(
-                                "flex size-7 items-center justify-center rounded-full",
-                                "border border-(--border-strong)",
-                            )}
-                        >
-                            <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.6} />
-                        </span>
-                        {SCROLL_HINT}
+                        <FadeIn delay={600}>
+                            <span
+                                className={cn(
+                                    "flex size-7 items-center justify-center rounded-full",
+                                    "border border-(--border-strong)",
+                                )}
+                            >
+                                <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.6} />
+                            </span>
+                        </FadeIn>
+                        <FadeIn delay={700}>
+                            {SCROLL_HINT}
+                        </FadeIn>
                     </a>
                 </div>
-            </FadeIn>
-        </section>
+            </div>
+        </section >
     );
 };
 

@@ -19,7 +19,7 @@ const OfficeMap = () => {
     return (
         <section id="office-map" className="w-full bg-(--surface-elevated) pb-16 sm:pb-20 lg:pb-24">
             <div className={cn("mx-auto w-full max-w-7xl", "px-4 sm:px-8")}>
-                <FadeIn className="overflow-hidden rounded-2xl border border-(--border-default)">
+                <FadeIn delay={100} className="overflow-hidden rounded-2xl border border-(--border-default)">
                     <iframe
                         src={MAP_EMBED_SRC}
                         title={`แผนที่ ${COMPANY_LEGAL_NAME}`}

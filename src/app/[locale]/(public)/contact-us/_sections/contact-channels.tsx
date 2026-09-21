@@ -5,7 +5,7 @@ import cn from "@/lib/tw-merge";
 import FadeIn from "@/app/component/fade-in.components";
 
 const TITLE = "ช่องทางการติดต่อเรา";
-const DESCRIPTION = "เราพร้อมให้คำปรึกษา แนะนำแนวคิด และวางแผนไปด้วยกันในทุกขั้นตอน";
+const DESCRIPTION = "เราพร้อมให้คำปรึกษา แนะนำแนวคิด และอย่างเป็นกันเองในทุกขั้นตอน";
 
 /** `href` turns the value into a tel:/mailto: link; the address is plain text. */
 const CHANNELS: { label: string; value: string; href?: string; Icon: LucideIcon }[] = [
@@ -33,22 +33,30 @@ const OFFICE_HOURS = ["จันทร์ – ศุกร์: 10:00 น. – 19
 
 const ContactChannels = () => {
     return (
-        <FadeIn className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-3">
-                <h2
-                    className={cn(
-                        "font-bold text-(--text-primary)",
-                        "text-2xl leading-snug sm:text-3xl",
-                    )}
-                >
-                    {TITLE}
-                </h2>
-                <p className="text-xs text-(--text-secondary) md:text-sm">{DESCRIPTION}</p>
+                <FadeIn>
+                    <h2
+                        className={cn(
+                            "font-bold text-(--text-primary)",
+                            "text-2xl leading-snug sm:text-3xl",
+                        )}
+                    >
+                        {TITLE}
+                    </h2>
+                </FadeIn>
+                <FadeIn delay={100} className="text-xs text-(--text-secondary) md:text-sm">
+                    {DESCRIPTION}
+                </FadeIn>
             </div>
 
             <dl className="flex flex-col gap-6">
-                {CHANNELS.map(({ label, value, href, Icon }) => (
-                    <div key={label} className="flex items-start gap-4">
+                {CHANNELS.map(({ label, value, href, Icon }, index) => (
+                    <FadeIn
+                        key={label}
+                        delay={200 + index * 100}
+                        className="flex items-start gap-4"
+                    >
                         <span
                             className={cn(
                                 "flex size-10 shrink-0 items-center justify-center rounded-lg",
@@ -72,11 +80,12 @@ const ContactChannels = () => {
                                 )}
                             </dd>
                         </div>
-                    </div>
+                    </FadeIn>
                 ))}
             </dl>
 
-            <div
+            <FadeIn
+                delay={500}
                 className={cn(
                     "flex flex-col gap-3 rounded-2xl p-6",
                     "border border-(--border-default) bg-(--surface-page)",
@@ -90,8 +99,8 @@ const ContactChannels = () => {
                         </span>
                     ))}
                 </div>
-            </div>
-        </FadeIn>
+            </FadeIn>
+        </div>
     );
 };
 
