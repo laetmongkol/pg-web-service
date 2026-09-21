@@ -88,14 +88,14 @@ const TeamCapabilitySection = () => {
     return (
         <section
             id="team-capability"
-            className={cn("w-full overflow-hidden bg-(--surface-default)", "py-16 sm:py-20 lg:py-28")}
+            className={cn("w-full overflow-hidden bg-(--surface-50) surface-noise", "py-16 sm:py-20 lg:py-28")}
         >
             <FadeIn>
                 <div className={cn("mx-auto flex max-w-7xl flex-col", "px-4 sm:px-8")}>
                     <span
                         className={cn(
                             "inline-flex w-fit items-center gap-2 rounded-full",
-                            "border border-(--border-default) bg-(--surface-page)",
+                            "border border-(--border-default)",
                             "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
                         )}
                     >

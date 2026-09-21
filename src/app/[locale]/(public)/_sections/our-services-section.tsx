@@ -49,7 +49,7 @@ const OurServicesSection = ({ language }: OurServicesSectionProps) => {
             <span
                 className={cn(
                     "inline-flex w-fit items-center gap-2 rounded-full",
-                    "border border-(--border-default) bg-(--surface-default)",
+                    "border border-(--border-default) bg-(--surface-page)",
                     "px-4 py-1.5 text-xs font-medium text-(--text-primary) md:text-sm",
                 )}
             >
@@ -75,7 +75,7 @@ const OurServicesSection = ({ language }: OurServicesSectionProps) => {
     return (
         <section
             id="our-services"
-            className={cn("w-full bg-(--surface-page)", "py-16 sm:py-20 lg:py-28")}
+            className={cn("w-full bg-(--surface-50) surface-noise", "py-16 sm:py-20 lg:py-28")}
         >
             <div className={cn("mx-auto w-full max-w-7xl", "px-4 sm:px-8")}>
                 <OurServicesSlide items={services} header={header} />
