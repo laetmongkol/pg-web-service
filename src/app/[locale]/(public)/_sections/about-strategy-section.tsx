@@ -27,7 +27,7 @@ const AboutStrategySection = () => {
     return (
         <section
             id="about-us"
-            className={cn("w-full bg-(--surface-elevated)", "py-16 sm:py-20 lg:py-24")}
+            className={cn("w-full bg-(--surface-default)", "py-16 sm:py-20 lg:py-24")}
         >
             <div className={cn("mx-auto w-full max-w-7xl", "px-4 sm:px-8")}>
                 {/* one rounded panel: copy and stats on top, the photo bleeding to its bottom edge */}

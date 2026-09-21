@@ -62,7 +62,7 @@ const OurMissionSection = () => {
     return (
         <section
             id="our-mission"
-            className={cn("w-full bg-(--surface-elevated)", "py-16 sm:py-20 lg:py-28")}
+            className={cn("w-full bg-(--surface-default)", "py-16 sm:py-20 lg:py-28")}
         >
             <div className={cn("mx-auto w-full max-w-7xl", "px-4 sm:px-8")}>
                 <FadeIn className="flex flex-col items-center text-center">
