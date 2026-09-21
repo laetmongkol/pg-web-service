@@ -1,6 +1,7 @@
-import { Mouse } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
+import { BACKEND_IMAGE_PREFIX } from "@/lib/media/image-loader";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
@@ -13,112 +14,116 @@ interface HeroSectionProps {
     language: string;
 }
 
-const HeroSection = ({ data }: HeroSectionProps) => {
-    if (!data) return null;
+/** Stand-in artwork until the Services page gets its own CMS image — this is the one
+ *  `gocprime` upload the other pages already share. Delete once a real banner lands. */
+const PLACEHOLDER_IMAGE = `${BACKEND_IMAGE_PREFIX}gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp`;
 
+/** The Services page has no CMS sections yet, so every field falls back to these. Once the
+ *  content lands under page "Services" section "1" it takes over without a code change. */
+const MOCK = {
+    eyebrow: "Our Service",
+    title: "บริการของเรา",
+    subTitle: "ขับเคลื่อนการเติบโตของแบรนด์ด้วยนวัตกรรมและกลยุทธ์การตลาดที่แม่นยำ",
+    scrollDown: "Scroll Down to explore",
+};
+
+const HeroSection = ({ data }: HeroSectionProps) => {
     const banner = extractAttributes<PictureAttributes>(data?.bgImg);
-    const bannerImage = banner?.mediaStorageKey ?? "";
+    const bannerImage = banner?.mediaStorageKey || PLACEHOLDER_IMAGE;
     const bannerAlt = banner?.mediaAltText ?? "Services banner";
+
+    const eyebrow = data?.eyebrow?.value || MOCK.eyebrow;
+    const title = data?.title1?.value || MOCK.title;
+    const subTitle = data?.subTitle?.value || MOCK.subTitle;
+    const scrollDown = data?.scrollDown?.value || MOCK.scrollDown;
 
     return (
         <section
-            className={cn(
-                "relative flex aspect-square w-full flex-col lg:aspect-auto lg:h-[1080px]",
-                "overflow-hidden bg-(--color-primary)",
-            )}
             id="hero"
+            className={cn(
+                "relative flex w-full flex-col",
+                // brand stone, standing in for the banner until the CMS image lands
+                "bg-linear-to-br from-(--color-primary-200) via-(--color-primary-300) to-(--color-primary-400)",
+                "lg:max-h-[1080px] aspect-square lg:aspect-[16/8] pt-(--navbar-height)",
+            )}
         >
-            <div className="absolute inset-0 hidden w-full lg:block">
+            <div className="absolute inset-0 w-full">
                 <FillImage
                     src={bannerImage}
                     alt={bannerAlt}
                     width={banner?.width}
                     height={banner?.height}
                     sizes="100vw"
+                    priority
                     wrapperClassName="h-full w-full"
                     className={cn(
-                        "h-full w-full object-cover object-right",
+                        "h-full w-full object-cover",
+                        "object-[80%_center] lg:object-center",
                         BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
                     )}
                 />
             </div>
-            <div className="absolute inset-0 block w-full lg:hidden">
-                <FillImage
-                    src={bannerImage}
-                    alt={bannerAlt}
-                    width={banner?.width}
-                    height={banner?.height}
-                    sizes="100vw"
-                    wrapperClassName="h-full w-full aspect-square"
-                    className={cn(
-                        "h-full w-full object-cover object-center",
-                        BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                    )}
-                />
-            </div>
+            <div
+                className={cn(
+                    "pointer-events-none absolute inset-0 z-1",
+                    "bg-gradient-to-b from-(--color-primary)/45 via-(--color-primary)/15 to-(--color-primary)/45",
+                )}
+            />
 
             <FadeIn className="absolute inset-0 z-10">
                 <div
                     className={cn(
                         "mx-auto grid h-full w-full max-w-screen-2xl",
-                        // keeps the copy clear of the floating navbar pill on short screens
                         "pt-(--navbar-height) lg:pt-0",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >
                     <div
                         className={cn(
-                            "col-start-1 row-start-1 -mt-16 flex flex-col justify-center gap-4 sm:-mt-24 sm:gap-8",
-                            "text-center items-center",
-                            "sm:text-start sm:items-start",
+                            "col-start-1 row-start-1 flex flex-col items-center justify-center text-center",
+                            "gap-4 sm:gap-6",
                         )}
                     >
                         <span
                             className={cn(
-                                "font-light text-(--text-invert) flex flex-wrap items-center justify-center gap-2",
+                                "font-light tracking-wide text-(--text-invert)",
                                 "text-xs md:text-sm lg:text-base",
-                                "sm:justify-start",
                             )}
                         >
-                            <span className="bg-(--color-secondary) size-2 shrink-0 inline-block" />
-                            {data?.eyebrow?.value}
+                            {eyebrow}
                         </span>
                         <h1
                             className={cn(
-                                "font-bold leading-snug",
-                                "text-xl sm:text-5xl sm:leading-tight xl:text-6xl",
+                                "font-bold text-(--text-invert) text-balance",
+                                "text-2xl leading-snug sm:text-4xl sm:leading-tight lg:text-5xl xl:text-6xl",
                             )}
                         >
-                            <span className="block text-(--color-secondary)">
-                                {data?.title1?.value}
-                            </span>
-                            <span className="block text-(--text-invert)">
-                                {data?.title2?.value}
-                            </span>
+                            <span className="block">{title}</span>
                         </h1>
                         <p
                             className={cn(
-                                "text-(--text-invert) whitespace-pre-line",
-                                "text-xs md:text-sm lg:text-base",
+                                "max-w-2xl text-(--text-invert)/85",
+                                "text-xs leading-relaxed md:text-sm",
                             )}
                         >
-                            {data?.subTitle?.value}
+                            {subTitle}
                         </p>
                     </div>
 
                     <a
                         href="#services-content"
                         className={cn(
-                            "col-start-1 row-start-1 self-end",
-                            "justify-self-center sm:justify-self-start",
-                            "mb-16 flex w-fit flex-col items-center gap-2 sm:mb-24 pb-6 lg:pb-32",
-                            "hidden sm:flex",
-                            "text-(--text-invert)/75",
-                            "text-xs tracking-wide hover:text-(--text-invert) transition-colors",
+                            "col-start-1 row-start-1 self-end justify-self-center",
+                            "flex w-fit flex-col items-center gap-2 pb-10 lg:pb-14",
+                            "text-(--text-invert)/75 hover:text-(--text-invert) transition-colors",
+                            "text-xs tracking-wide",
                         )}
                     >
-                        <Mouse className="size-6 animate-bounce" strokeWidth={1.4} />
-                        {data?.scrollDown?.value}
+                        {/* taller than it is wide, which is what reads as a mouse in the design */}
+                        <span className="flex h-8 w-5.5 items-center justify-center rounded-full border border-current">
+                            <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.5} />
+                        </span>
+                        {scrollDown}
                     </a>
                 </div>
             </FadeIn>
