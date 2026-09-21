@@ -84,9 +84,9 @@ const OurValue = ({ data }: OurValueProps) => {
             id="our-value"
             className={cn("w-full bg-(--surface-page)", "py-16 sm:py-20 lg:py-28")}
         >
-            <FadeIn>
-                <div className={cn("mx-auto max-w-7xl", "px-4 sm:px-8")}>
-                    <div className="flex flex-col items-center text-center">
+            <div className={cn("mx-auto max-w-7xl", "px-4 sm:px-8")}>
+                <div className="flex flex-col items-center text-center">
+                    <FadeIn>
                         <span
                             className={cn(
                                 "inline-flex items-center gap-2 rounded-full",
@@ -97,7 +97,9 @@ const OurValue = ({ data }: OurValueProps) => {
                             <span className="bg-(--color-primary) size-1.5 shrink-0 rounded-full" />
                             {EYEBROW}
                         </span>
+                    </FadeIn>
 
+                    <FadeIn delay={90}>
                         <h2
                             className={cn(
                                 "mt-8 font-bold text-balance text-(--text-primary)",
@@ -113,25 +115,28 @@ const OurValue = ({ data }: OurValueProps) => {
                                 </span>
                             ))}
                         </h2>
-                    </div>
+                    </FadeIn>
+                </div>
 
-                    <ul
-                        className={cn(
-                            "mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-1",
-                        )}
-                    >
-                        {cards.map(({ title, body, picture, labelBelow }, index) => (
-                            <li
-                                key={title}
+                <ul
+                    className={cn(
+                        "mt-10 grid grid-cols-2 gap-4",
+                        "sm:mt-12 lg:mt-16 lg:grid-cols-4 lg:gap-1",
+                    )}
+                >
+                    {cards.map(({ title, body, picture, labelBelow }, index) => (
+                        <li key={title}>
+                            <FadeIn
+                                delay={index * 110}
                                 className={cn(
-                                    "flex flex-col gap-4 lg:gap-8",
+                                    "flex h-full flex-col gap-2.5 lg:gap-8",
                                     !labelBelow && "lg:flex-col-reverse",
                                 )}
                             >
                                 <div
                                     className={cn(
-                                        "group relative aspect-3/4 w-full overflow-hidden",
-                                        "rounded-[2.5rem]",
+                                        "group relative aspect-square w-full overflow-hidden lg:aspect-3/4",
+                                        "rounded-xl lg:rounded-[2.5rem]",
                                         cornerClasses(index, cards.length, !!labelBelow),
                                         "shadow-[0_8px_20px_-8px_rgb(0_0_0/0.18)]",
                                         "bg-linear-to-br from-(--color-primary-25) via-(--surface-muted) to-(--color-primary-50)",
@@ -140,7 +145,7 @@ const OurValue = ({ data }: OurValueProps) => {
                                     <FillImage
                                         src={picture.src}
                                         alt={picture.alt}
-                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                        sizes="(max-width: 1024px) 50vw, 25vw"
                                         wrapperClassName="absolute inset-0 h-full w-full"
                                         className={cn(
                                             "h-full w-full object-cover object-center",
@@ -152,9 +157,11 @@ const OurValue = ({ data }: OurValueProps) => {
 
                                     <div
                                         className={cn(
-                                            "absolute inset-0 hidden items-center justify-center px-6 text-center lg:flex",
-                                            "bg-(--color-primary)/45 backdrop-blur-[2px]",
-                                            "opacity-0 group-hover:opacity-100",
+                                            "absolute inset-x-0 bottom-0 px-3 pt-10 pb-3 text-center",
+                                            "bg-linear-to-t from-(--color-primary)/70 to-transparent",
+                                            "lg:inset-0 lg:flex lg:items-center lg:justify-center lg:px-6 lg:pt-0 lg:pb-0",
+                                            "lg:bg-none lg:bg-(--color-primary)/45 lg:backdrop-blur-[2px]",
+                                            "lg:opacity-0 lg:group-hover:opacity-100",
                                             "transition-opacity! duration-500! motion-reduce:transition-none!",
                                             HOVER_EASE,
                                         )}
@@ -162,11 +169,11 @@ const OurValue = ({ data }: OurValueProps) => {
                                         <p
                                             className={cn(
                                                 "text-(--text-invert)",
-                                                "text-xs leading-loose md:text-sm",
-                                                "translate-y-2 opacity-0",
-                                                "transition-[opacity,translate]! duration-500! group-hover:delay-150",
+                                                "text-[0.625rem] leading-relaxed sm:text-xs lg:text-sm lg:leading-loose",
+                                                "lg:translate-y-2 lg:opacity-0",
+                                                "transition-[opacity,translate]! duration-500! lg:group-hover:delay-150",
                                                 HOVER_EASE,
-                                                "group-hover:translate-y-0 group-hover:opacity-100",
+                                                "lg:group-hover:translate-y-0 lg:group-hover:opacity-100",
                                                 "motion-reduce:translate-y-0 motion-reduce:transition-none!",
                                             )}
                                         >
@@ -178,25 +185,16 @@ const OurValue = ({ data }: OurValueProps) => {
                                 <h3
                                     className={cn(
                                         "text-center font-medium text-(--text-primary)",
-                                        "text-sm md:text-base",
+                                        "text-xs sm:text-sm md:text-base",
                                     )}
                                 >
                                     {title}
                                 </h3>
-
-                                <p
-                                    className={cn(
-                                        "-mt-1 text-center text-(--text-secondary) lg:hidden",
-                                        "text-xs leading-loose",
-                                    )}
-                                >
-                                    {body}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </FadeIn>
+                            </FadeIn>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </section>
     );
 };

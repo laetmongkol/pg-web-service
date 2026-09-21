@@ -102,7 +102,8 @@ const REVEAL_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
 
 const PILLAR_DELAY = ["lg:group-hover:delay-200", "lg:group-hover:delay-300"];
 
-const CARD_CLASSNAME = "flex min-h-45 flex-col rounded-2xl border border-(--border-default) p-5 sm:p-6";
+const CARD_CLASSNAME =
+    "flex flex-col rounded-2xl border border-(--border-default) p-4 sm:min-h-45 sm:p-6";
 
 const MissionAndVision = ({ data }: MissionAndVisionProps) => {
     const coverSection = data?.[COVER_SECTION];
@@ -122,9 +123,9 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
             id="mission-and-vision"
             className={cn("w-full bg-(--surface-page)", "py-16 sm:py-20 lg:py-24")}
         >
-            <FadeIn>
-                <div className={cn("mx-auto max-w-7xl", "px-4 sm:px-8")}>
+            <div className={cn("mx-auto max-w-7xl", "px-4 sm:px-8")}>
                     <div className="flex flex-col items-center text-center">
+                        <FadeIn>
                         <span
                             className={cn(
                                 "inline-flex items-center gap-2 rounded-full",
@@ -135,7 +136,9 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                             <span className="bg-(--color-primary) size-1.5 shrink-0 rounded-full" />
                             {EYEBROW}
                         </span>
+                        </FadeIn>
 
+                        <FadeIn delay={90}>
                         <h2
                             className={cn(
                                 "mt-8 font-bold text-balance text-(--text-primary)",
@@ -151,19 +154,22 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                 </span>
                             ))}
                         </h2>
+                        </FadeIn>
 
+                        <FadeIn delay={180}>
                         <p className={cn("mt-8 max-w-4xl text-(--text-secondary)", "text-xs md:text-sm")}>
                             {SUB_TITLE}
                         </p>
+                        </FadeIn>
                     </div>
 
                     <hr className="mt-10 border-t border-(--border-default)" />
 
-                    <div className="group relative mt-10 w-full">
+                    <FadeIn delay={60} className="group relative mt-10 w-full">
                         <div
                             className={cn(
                                 "relative w-full",
-                                "aspect-4/3 sm:aspect-16/10 lg:aspect-21/9",
+                                "aspect-3/2 sm:aspect-16/10 lg:aspect-21/9",
                             )}
                         >
                             <div
@@ -213,14 +219,15 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                             </div>
                         </div>
 
-                        <div
+                        <FadeIn
+                            delay={150}
                             className={cn(
                                 "mt-8 w-full",
                                 "lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:flex lg:w-1/2 lg:items-center lg:px-16",
                                 "lg:pointer-events-none lg:group-hover:pointer-events-auto",
                             )}
                         >
-                            <dl className="grid w-full grid-cols-1 gap-8 text-center sm:grid-cols-2 sm:gap-6 lg:text-left">
+                            <dl className="grid w-full grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-6">
                                 {PILLARS.map(({ title, body }, index) => (
                                     <div
                                         key={title}
@@ -233,7 +240,7 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                             "motion-reduce:translate-y-0 motion-reduce:transition-none!",
                                         )}
                                     >
-                                        <dt className="font-bold text-(--text-primary) text-base sm:text-lg">
+                                        <dt className="font-bold text-(--text-primary) text-sm sm:text-base lg:text-lg">
                                             {title}
                                         </dt>
                                         <dd
@@ -247,20 +254,22 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                     </div>
                                 ))}
                             </dl>
-                        </div>
-                    </div>
+                        </FadeIn>
+                    </FadeIn>
 
-                    <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4 lg:gap-6">
-                        {STATS.map(({ title, value, lines, review }) => (
-                            <li
-                                key={title}
-                                className={cn(
-                                    CARD_CLASSNAME,
-                                    "group transition-colors duration-300",
-                                    "bg-(--surface-default) text-(--text-primary)",
-                                    "hover:border-transparent hover:bg-(--color-primary) hover:text-(--text-invert)",
-                                )}
-                            >
+                    <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-10 lg:grid-cols-4 lg:gap-6">
+                        {STATS.map(({ title, value, lines, review }, statIndex) => (
+                            <li key={title} className="flex">
+                                <FadeIn
+                                    delay={statIndex * 110}
+                                    className={cn(
+                                        CARD_CLASSNAME,
+                                        "w-full",
+                                        "group transition-colors duration-300",
+                                        "bg-(--surface-default) text-(--text-primary)",
+                                        "hover:border-transparent hover:bg-(--color-primary) hover:text-(--text-invert)",
+                                    )}
+                                >
                                 {review ? (
                                     <>
                                         <div className="flex items-start justify-between gap-3">
@@ -311,14 +320,19 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                     <h3 className="text-sm font-semibold sm:text-base">{title}</h3>
                                 )}
 
-                                <div className="mt-auto flex items-end justify-between gap-4 pt-8">
+                                <div
+                                    className={cn(
+                                        "mt-auto flex flex-col items-start gap-1 pt-6",
+                                        "sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:pt-8",
+                                    )}
+                                >
                                     <CountUpNumber
                                         value={value}
                                         className="text-3xl font-bold sm:text-4xl"
                                     />
                                     <p
                                         className={cn(
-                                            "max-w-40 text-right whitespace-pre-line",
+                                            "whitespace-pre-line sm:max-w-40 sm:text-right",
                                             "text-[0.625rem] leading-relaxed sm:text-xs",
                                             "transition-colors duration-300",
                                             "text-(--text-secondary) group-hover:text-(--text-invert)/75",
@@ -327,11 +341,11 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                         {lines.join("\n")}
                                     </p>
                                 </div>
+                                </FadeIn>
                             </li>
                         ))}
                     </ul>
-                </div>
-            </FadeIn>
+            </div>
         </section>
     );
 };

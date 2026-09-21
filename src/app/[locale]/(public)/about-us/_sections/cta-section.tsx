@@ -30,11 +30,11 @@ const CtaSection = ({ language }: CtaSectionProps) => {
             id="cta"
             className={cn("w-full bg-(--surface-page)", "py-16 sm:py-20 lg:py-28")}
         >
-            <FadeIn>
-                <div className={cn("mx-auto max-w-7xl", "px-4 sm:px-8")}>
+            <div className={cn("mx-auto max-w-7xl", "px-4 sm:px-8")}>
+                <FadeIn>
                     <div
                         className={cn(
-                            "relative w-full overflow-hidden rounded-[2rem]",
+                            "relative w-full overflow-hidden rounded-3xl lg:rounded-[2rem]",
                             "px-6 py-12 sm:px-10 sm:py-14 lg:min-h-84 lg:px-20 lg:py-12",
                             "bg-linear-to-br from-(--color-secondary-200) via-(--surface-default) to-(--color-secondary-300)",
                         )}
@@ -58,27 +58,37 @@ const CtaSection = ({ language }: CtaSectionProps) => {
                             )}
                         />
 
-                        <div className="relative flex max-w-md flex-col items-start lg:max-w-lg">
-                            <AppLogo width={140} />
+                        <div className={cn(
+                            "relative flex max-w-md flex-col lg:max-w-lg",
+                            "mx-auto items-center text-center lg:mx-0 lg:items-start lg:text-left",
+                        )}>
+                            <FadeIn delay={120}>
+                                <AppLogo width={140} />
+                            </FadeIn>
 
-                            <h2
-                                className={cn(
-                                    "mt-6 font-bold text-balance text-(--text-primary)",
-                                    "text-xl leading-snug sm:text-2xl",
-                                )}
-                            >
-                                {MOCK.title}
-                            </h2>
+                            <FadeIn delay={210}>
+                                <h2
+                                    className={cn(
+                                        "mt-6 font-bold text-balance text-(--text-primary)",
+                                        "text-xl leading-snug sm:text-2xl",
+                                    )}
+                                >
+                                    {MOCK.title}
+                                </h2>
+                            </FadeIn>
 
-                            <p
-                                className={cn(
-                                    "mt-4 max-w-md text-(--text-secondary)",
-                                    "text-xs leading-loose md:text-sm",
-                                )}
-                            >
-                                {MOCK.subTitle}
-                            </p>
+                            <FadeIn delay={300}>
+                                <p
+                                    className={cn(
+                                        "mt-4 max-w-md text-(--text-secondary)",
+                                        "text-xs leading-loose md:text-sm",
+                                    )}
+                                >
+                                    {MOCK.subTitle}
+                                </p>
+                            </FadeIn>
 
+                            <FadeIn delay={390}>
                             <LinkCustom
                                 href={`/${language}/${MOCK.buttonPath}`}
                                 className={cn(
@@ -100,10 +110,11 @@ const CtaSection = ({ language }: CtaSectionProps) => {
                                     )}
                                 />
                             </LinkCustom>
+                            </FadeIn>
                         </div>
                     </div>
-                </div>
-            </FadeIn>
+                </FadeIn>
+            </div>
         </section>
     );
 };
