@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import cn from "@/lib/tw-merge";
 
@@ -14,8 +14,8 @@ interface DragMarqueeProps {
      */
     copyWidth?: number;
     /**
-     * How many times the children repeat inside each half. A short row (a handful of logos) needs
-     * several repeats or a wide screen shows a hole between the halves.
+     * Minimum number of times the children repeat inside each half. More copies are added on the
+     * client when the frame turns out to be wider than one half — see `useCopiesPerHalf`.
      */
     copiesPerHalf?: number;
     /** Idle drift in px per second. */
@@ -37,11 +37,41 @@ const FLING_STALE_MS = 80;
 const DragMarquee = ({
     children,
     copyWidth,
-    copiesPerHalf = 1,
+    copiesPerHalf: minCopiesPerHalf = 1,
     speed = 18,
     className,
 }: DragMarqueeProps) => {
+    const frameRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
+    /**
+     * The loop only holds up while one half is at least as wide as the frame: past that, wrapping
+     * the offset would expose bare track on the trailing edge — which is what a 2K screen did to a
+     * board built for 1720px. The count starts at the minimum for SSR and grows once the real
+     * frame width is known.
+     */
+    const [copiesPerHalf, setCopiesPerHalf] = useState(minCopiesPerHalf);
+
+    useEffect(() => {
+        const frame = frameRef.current;
+        const track = trackRef.current;
+        if (!frame || !track) return;
+
+        const fit = () => {
+            const oneCopy = copyWidth ?? track.scrollWidth / (copiesPerHalf * 2);
+            if (!oneCopy) return;
+
+            const needed = Math.max(minCopiesPerHalf, Math.ceil(frame.clientWidth / oneCopy));
+            setCopiesPerHalf((current) => (current === needed ? current : needed));
+        };
+
+        fit();
+
+        const observer = new ResizeObserver(fit);
+        observer.observe(frame);
+        observer.observe(track);
+        return () => observer.disconnect();
+    }, [copiesPerHalf, copyWidth, minCopiesPerHalf]);
+
     /** Pixels scrolled, kept normalised into one half so the loop is seamless. */
     const offset = useRef(0);
     const halfWidth = useRef(0);
@@ -145,6 +175,7 @@ const DragMarquee = ({
 
     return (
         <div
+            ref={frameRef}
             className={cn(
                 "w-full cursor-grab touch-pan-y overflow-hidden select-none active:cursor-grabbing",
                 // the row runs past both edges, so they fade instead of being cut off mid-item
