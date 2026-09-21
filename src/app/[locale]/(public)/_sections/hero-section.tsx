@@ -1,141 +1,151 @@
-import { ArrowUpRight, Mouse } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
-import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
-import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 import LinkCustom from "@/components/link-custom.component";
 
+import SparkleDecoration, { type SparkleSpec } from "./components/sparkle-decoration";
+
+const EYEBROW = "Sriwilai Bangkok";
+const TITLE_LINE_1 = "พาธุรกิจของคุณ";
+const TITLE_LINE_2 = "ไปข้างหน้าอย่างมั่นคง";
+const DESCRIPTION =
+    "ที่ปรึกษาด้านกลยุทธ์ธุรกิจและการตลาดที่ทำงานเคียงข้างคุณตั้งแต่วางแผนจนถึงลงมือทำ เปลี่ยนข้อมูลและความเข้าใจตลาดให้เป็นการเติบโตที่วัดผลได้จริง";
+
+const SECONDARY_CTA = { label: "ดูบริการของเรา", path: "services" };
+const PRIMARY_CTA = { label: "ติดต่อปรึกษา", path: "contact-us" };
+
+const SCROLL_HINT = "Scroll Down to explore";
+/** The next section down — the anchor the scroll hint jumps to. */
+const SCROLL_TARGET = "#trusted-partner";
+
+/**
+ * Optional cut-out figure under the copy (the walking person in the design). Left empty until the
+ * artwork is uploaded: the hero keeps its proportions either way, it just loses the figure.
+ */
+const FIGURE_IMAGE = "/api/app/image/contents/2026-09-18T10-09-01_9d3a7339-94c1-4b4c-969b-c5ee9180c920.png";
+const FIGURE_ALT = "Sriwilai consultant";
+const FIGURE_WIDTH = 420;
+const FIGURE_HEIGHT = 560;
+
+const SPARKLES: SparkleSpec[] = [
+    { className: "left-[8%] top-[14%]", size: 18 },
+    { className: "left-[38%] top-[8%]", size: 22 },
+    { className: "right-[12%] top-[20%]", size: 16 },
+    { className: "left-[10%] bottom-[16%]", size: 24 },
+    { className: "right-[8%] bottom-[12%]", size: 28 },
+];
+
+const CTA_BASE_CLASSNAME = cn(
+    "flex items-center justify-center rounded-full px-8 py-3.5",
+    "text-sm font-medium transition-transform duration-300 hover:scale-105",
+);
+
 interface HeroSectionProps {
-    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const HeroSection = ({ data, language }: HeroSectionProps) => {
-    if (!data) return null;
-
-    const banner = extractAttributes<PictureAttributes>(data?.bgImg);
-    const bannerImage = banner?.mediaStorageKey ?? "";
-    const bannerAlt = banner?.mediaAltText ?? "Home banner";
-
+const HeroSection = ({ language }: HeroSectionProps) => {
     return (
         <section
-            className={cn(
-                // below lg the frame is a square — a fixed 1080px is far taller than a phone or tablet screen
-                "relative flex aspect-square w-full flex-col lg:aspect-auto lg:h-[1080px]",
-                "overflow-hidden bg-(--color-primary)",
-            )}
             id="hero"
+            className={cn(
+                "relative flex w-full flex-col overflow-hidden",
+                // the radial wash in the design: page grey at the rim, near-white in the middle
+                "bg-(--surface-page)",
+                "lg:max-h-[1080px] aspect-square lg:aspect-[16/8] pt-(--navbar-height)",
+            )}
         >
-            <div className="absolute inset-0 hidden w-full lg:block">
-                <FillImage
-                    src={bannerImage}
-                    alt={bannerAlt}
-                    width={banner?.width}
-                    height={banner?.height}
-                    sizes="100vw"
-                    wrapperClassName="h-full w-full"
-                    className={cn(
-                        "h-full w-full object-cover object-right",
-                        BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                    )}
-                />
-            </div>
-            <div className="absolute inset-0 block w-full lg:hidden">
-                <FillImage
-                    src={bannerImage}
-                    alt={bannerAlt}
-                    width={banner?.width}
-                    height={banner?.height}
-                    sizes="100vw"
-                    wrapperClassName="h-full w-full"
-                    className={cn(
-                        "h-full w-full object-cover object-center",
-                        BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                    )}
-                />
-            </div>
-            <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t sm:bg-gradient-to-r from-(--color-primary)/50 to-transparent" />
+            <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-radial-[at_50%_35%] from-(--surface-elevated) via-(--surface-elevated) to-(--surface-page) to-90%"
+            />
+            <SparkleDecoration sparkles={SPARKLES} />
 
-            <FadeIn className="absolute inset-0 z-10">
+            <FadeIn className="relative z-10 flex flex-1 flex-col">
                 <div
                     className={cn(
-                        "mx-auto grid h-full w-full max-w-screen-2xl",
-                        // keeps the copy clear of the floating navbar pill on short screens
-                        "pt-(--navbar-height) lg:pt-0",
-                        "px-4 sm:px-12 md:px-16",
+                        "mx-auto flex w-full max-w-5xl flex-1 flex-col items-center text-center",
+                        "px-4 py-16 sm:px-8 sm:py-20",
                     )}
                 >
-                    <div
+                    <span className="text-xs text-(--text-secondary) md:text-sm">{EYEBROW}</span>
+
+                    <h1
                         className={cn(
-                            "col-start-1 row-start-1 -mt-16 flex flex-col justify-center gap-4 sm:-mt-24 sm:gap-8",
-                            "text-center items-center",
-                            "sm:text-start sm:items-start",
+                            "mt-6 font-bold text-balance text-(--text-primary)",
+                            "text-3xl leading-tight sm:text-5xl lg:text-6xl lg:leading-[1.15]",
+                        )}
+                    >
+                        <span className="block">{TITLE_LINE_1}</span>
+                        <span className="block">{TITLE_LINE_2}</span>
+                    </h1>
+
+                    <p
+                        className={cn(
+                            "mt-8 max-w-3xl text-(--text-secondary)",
+                            "text-xs leading-relaxed md:text-sm",
+                        )}
+                    >
+                        {DESCRIPTION}
+                    </p>
+
+                    <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                        <LinkCustom
+                            href={`/${language}/${SECONDARY_CTA.path}`}
+                            className={cn(
+                                CTA_BASE_CLASSNAME,
+                                "border border-(--border-strong) bg-(--surface-elevated) text-(--text-primary)",
+                            )}
+                        >
+                            {SECONDARY_CTA.label}
+                        </LinkCustom>
+                        <LinkCustom
+                            href={`/${language}/${PRIMARY_CTA.path}`}
+                            className={cn(CTA_BASE_CLASSNAME, "bg-(--text-primary) text-(--text-invert)")}
+                        >
+                            {PRIMARY_CTA.label}
+                        </LinkCustom>
+                    </div>
+
+                    {FIGURE_IMAGE ? (
+                        <FillImage
+                            src={FIGURE_IMAGE}
+                            alt={FIGURE_ALT}
+                            width={FIGURE_WIDTH}
+                            height={FIGURE_HEIGHT}
+                            sizes="(max-width: 640px) 200px, 280px"
+                            // mt-auto parks the figure at the bottom of the leftover space, so on a
+                            // tall screen it still sits just above the scroll hint instead of
+                            // riding up under the buttons
+                            wrapperClassName="mt-auto w-[200px] pt-12 sm:w-[280px]"
+                            className={cn("h-auto w-full object-contain", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
+                        />
+                    ) : (
+                        // keeps the spacing while the figure is missing
+                        <div aria-hidden className="mt-auto h-24 pt-12 sm:h-32" />
+                    )}
+
+                    <a
+                        href={SCROLL_TARGET}
+                        className={cn(
+                            "mt-6 flex flex-col items-center gap-2",
+                            "text-[11px] tracking-wide text-(--text-secondary)",
+                            "transition-colors hover:text-(--text-primary)",
                         )}
                     >
                         <span
                             className={cn(
-                                "font-light text-(--text-invert) flex flex-wrap items-center justify-center gap-2",
-                                "text-xs md:text-sm lg:text-base",
-                                "sm:justify-start",
+                                "flex size-7 items-center justify-center rounded-full",
+                                "border border-(--border-strong)",
                             )}
                         >
-                            <span className="bg-(--color-secondary) size-2 shrink-0 inline-block" />
-                            {data?.eyebrow?.value}
+                            <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.6} />
                         </span>
-                        <h1
-                            className={cn(
-                                "font-bold leading-snug",
-                                "text-xl sm:text-5xl sm:leading-tight xl:text-6xl",
-                            )}
-                        >
-                            <span className="block text-(--text-invert)">
-                                {data?.title1?.value}
-                            </span>
-                            <span className="block text-(--color-secondary)">
-                                {data?.title2?.value}
-                            </span>
-                        </h1>
-                        <p
-                            className={cn(
-                                "text-(--text-invert) whitespace-pre-line",
-                                "text-xs md:text-sm lg:text-base",
-                            )}
-                        >
-                            {data?.subTitle?.value}
-                        </p>
-
-                        <LinkCustom href={`/${language}/${data?.ctaButton?.linkUrl ?? ""}`} className="w-fit">
-                            <span
-                                className={cn(
-                                    "font-medium text-(--text-invert) flex items-center gap-2",
-                                    "bg-(--surface-default)/15 border border-(--surface-default)/12 rounded-full backdrop-blur-xs",
-                                    "hover:bg-(--surface-default)/30 hover:scale-105 transition-all duration-300",
-                                    "text-sm px-5 py-3 lg:text-base lg:px-6 lg:py-4 xl:text-xl xl:px-8 xl:py-6",
-                                )}
-                            >
-                                {data?.ctaButton?.value}
-                                <ArrowUpRight className="inline-block size-6 xl:size-8" />
-                            </span>
-                        </LinkCustom>
-                    </div>
-
-                    <a
-                        href="#about-us"
-                        className={cn(
-                            "col-start-1 row-start-1 self-end",
-                            "justify-self-center sm:justify-self-start",
-                            "mb-16 flex w-fit flex-col items-center gap-2 sm:mb-24 pb-6 lg:pb-32",
-                            "hidden sm:flex",
-                            "text-(--text-invert)/75",
-                            "text-xs tracking-wide hover:text-(--text-invert) transition-colors",
-                        )}
-                    >
-                        <Mouse className="size-6 animate-bounce" strokeWidth={1.4} />
-                        {data?.scrollDown?.value}
+                        {SCROLL_HINT}
                     </a>
                 </div>
             </FadeIn>
