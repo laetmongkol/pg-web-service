@@ -76,7 +76,7 @@ const TrustedPartnerSection = () => {
     return (
         <section
             id="trusted-partner"
-            className={cn("w-full bg-(--surface-elevated)", "py-12 sm:py-16")}
+            className={cn("w-full bg-(--surface-default)", "py-12 sm:py-16")}
         >
             <FadeIn className={cn("mx-auto flex max-w-7xl flex-col items-center", "px-4 sm:px-8")}>
                 <span className="text-xs text-(--text-secondary)">{TITLE}</span>
