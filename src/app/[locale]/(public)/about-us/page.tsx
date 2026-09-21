@@ -9,6 +9,7 @@ import { isSupportedLanguage } from "@/proxies/language.proxy";
 import { LANGUAGE } from "@/shared/constants/common.constants";
 
 import {
+    CtaSection,
     HeroSection,
     MissionAndVision,
     OurHistory,
@@ -40,6 +41,7 @@ export default async function AboutUsPage({ params }: AboutUsPageProps) {
             <OurJourney />
             <MissionAndVision data={data} />
             <OurValue data={data} />
+            <CtaSection language={language} />
         </div>
     );
 }
