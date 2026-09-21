@@ -169,9 +169,9 @@ const PortfolioCard = ({ media }: { media: CapabilityBoardMedia }) => (
                 sizes="160px"
                 className="row-span-2 h-full min-h-32 rounded-lg"
             />
-            <BoardPhoto picture={media.portfolioSecondary} sizes="160px" className="h-16 rounded-lg" />
+            <BoardPhoto picture={media.portfolioSecondary} sizes="480px" className="h-48 rounded-lg" />
             <div
-                className="flex h-14 items-center justify-center rounded-lg text-sm font-medium text-(--text-primary)"
+                className="flex h-28 items-center justify-center rounded-lg text-sm font-medium text-(--text-primary)"
                 style={{ backgroundColor: ACCENT.mint }}
             >
                 +18

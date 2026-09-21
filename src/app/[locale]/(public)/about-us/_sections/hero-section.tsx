@@ -22,11 +22,13 @@ const HeroSection = ({ data }: HeroSectionProps) => {
 
     return (
         <section
-            className={cn(
-                "relative w-full overflow-hidden bg-(--color-primary)",
-                "h-svh min-h-[32rem] lg:min-h-[45rem]",
-            )}
             id="hero"
+            className={cn(
+                "relative flex w-full flex-col",
+                // the radial wash in the design: page grey at the rim, near-white in the middle
+                "bg-(--surface-page)",
+                "lg:max-h-[1080px] aspect-square lg:aspect-[16/8] pt-(--navbar-height)",
+            )}
         >
             <div className="absolute inset-0 w-full">
                 <FillImage
