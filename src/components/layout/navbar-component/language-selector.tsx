@@ -120,7 +120,9 @@ function SegmentedLanguageToggle({
 
   return (
     <div
-      className="flex shrink-0 items-center gap-1 rounded-full bg-(--color-primary)/6 p-1"
+      // inline-flex, not flex: in the mobile sheet this sits in a plain block, where a
+      // block-level flex row stretched the track across the whole panel
+      className="inline-flex shrink-0 items-center gap-1 rounded-full bg-(--color-primary)/6 p-1"
       role="group"
       aria-label="language selector"
     >

@@ -207,10 +207,10 @@ function MobileNavLink({
   const hasChildren = (link.children?.length ?? 0) > 0
 
   const rowClassName = cn(
-    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-base transition-colors",
+    "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-base transition-colors",
     isActive && !hasChildren
-      ? "bg-(--color-primary)/10 text-(--color-primary-readable)"
-      : "text-(--text-primary) hover:bg-(--color-primary)/5",
+      ? "bg-(--surface-page) font-medium text-(--text-primary)"
+      : "text-(--text-secondary) hover:bg-(--surface-page)/70 hover:text-(--text-primary)",
   )
 
   if (hasChildren) {
@@ -284,7 +284,7 @@ function MobileNavLink({
   return (
     <li>
       <LinkCustom href={getNavHref(language, link.href)} onClick={onLinkClick} className={rowClassName}>
-        {Icon && <Icon size={20} strokeWidth={1.75} className="shrink-0 text-(--color-primary-400)" />}
+        {Icon && <Icon size={20} strokeWidth={1.75} className="shrink-0 text-current" />}
         <span className="flex-1">{link.label}</span>
       </LinkCustom>
     </li>
