@@ -105,11 +105,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
         </div>
       </div>
 
-<<<<<<< HEAD
       {isHydrated &&
-=======
-      {mounted &&
->>>>>>> 0642e33 (fix Hydration mismatch and fix respnsive mission-card-media component)
         createPortal(
           <>
           <div
