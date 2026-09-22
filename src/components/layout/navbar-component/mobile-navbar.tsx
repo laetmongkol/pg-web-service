@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
 
 import { X } from "lucide-react"
@@ -30,6 +30,9 @@ interface MobileNavbarProps {
 
 const MENU_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!"
 
+/** Never fires — the snapshot only flips once, when React leaves the server snapshot behind. */
+const subscribeToNothing = () => () => {}
+
 const MOBILE_SIGN_IN_CLASSNAME = cn(
   BUTTON_BASE_CLASSNAME,
   "min-h-9 px-4 py-1.5 text-sm",
@@ -39,6 +42,17 @@ const MOBILE_SIGN_IN_CLASSNAME = cn(
 
 export default function MobileNavbar({ language, navLinks, languages, showLogo = false, labels }: MobileNavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
+
+  /**
+   * A portal can never be part of the server HTML, so the first client render has to agree that it
+   * is not there yet. Testing `typeof document` made that render disagree with the server, which
+   * threw this subtree away. This reports false through hydration and true only after it.
+   */
+  const isHydrated = useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false,
+  )
 
   useEffect(() => {
     const handlePageShow = (e: PageTransitionEvent) => {
@@ -86,7 +100,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
         </div>
       </div>
 
-      {typeof document !== "undefined" &&
+      {isHydrated &&
         createPortal(
           <>
           <div
