@@ -4,8 +4,6 @@ import FadeIn from "@/app/component/fade-in.components";
 
 const EYEBROW = "Who We Are";
 
-/** The badge is the section's label, so this statement carries the heading itself — hence the
- *  lead-paragraph weight rather than the bold h2 the other sections use. */
 const STATEMENT_LINES = [
     "เราสร้างสรรค์และวางแผนกลยุทธ์สื่อสารดิจิทัลแบบครบวงจร ที่ไม่ใช่เพียงแค่สร้างความตระหนักรู้",
     "แต่เป็นการขับเคลื่อนยอดขายและการเติบโตของแบรนด์อย่างยั่งยืนในยุคดิจิทัล",
@@ -35,14 +33,12 @@ const WhoWeAre = () => {
                     <FadeIn delay={90}>
                         <h2
                             className={cn(
-                                // one block per clause, so the break lands where the design puts
-                                // it; each clause still wraps on its own once the screen narrows
                                 "mt-8 max-w-3xl text-(--text-primary) sm:mt-10",
-                                "text-sm leading-loose md:text-base",
+                                "text-xs leading-loose sm:text-sm md:text-base",
                             )}
                         >
                             {STATEMENT_LINES.map((line) => (
-                                <span key={line} className="block">
+                                <span key={line} className="lg:block">
                                     {line}
                                 </span>
                             ))}

@@ -21,8 +21,12 @@ const EYEBROW = "Our Service";
 
 const TITLE = "บริการด้านการตลาดดิจิทัลที่ครบวงจร";
 
-const SUB_TITLE =
-    "เราออกแบบโซลูชันการตลาดดิจิทัลที่เหมาะสมกับขนาดและเป้าหมายของธุรกิจคุณโดยเฉพาะ";
+/** Split where the phone design breaks it. The halves join back into one line from lg, where
+ *  they are inline again — Thai needs no space at the seam. */
+const SUB_TITLE_PARTS = [
+    "เราออกแบบโซลูชันการตลาดดิจิทัลที่เหมาะสมกับขนาดและ",
+    "เป้าหมายของธุรกิจคุณโดยเฉพาะ",
+];
 
 const CTA_LABEL = "ติดต่อเรา";
 const CTA_PATH = "contact-us";
@@ -99,7 +103,7 @@ const OurServices = ({ language }: OurServicesProps) => {
                         <h2
                             className={cn(
                                 "mt-8 font-bold text-balance text-(--text-primary)",
-                                "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
+                                "text-xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
                             )}
                         >
                             {TITLE}
@@ -113,14 +117,21 @@ const OurServices = ({ language }: OurServicesProps) => {
                                 "text-xs leading-relaxed md:text-sm",
                             )}
                         >
-                            {SUB_TITLE}
+                            {SUB_TITLE_PARTS.map((part) => (
+                                <span key={part} className="block lg:inline">
+                                    {part}
+                                </span>
+                            ))}
                         </p>
                     </FadeIn>
                 </div>
 
                 <ul
                     className={cn(
-                        "mt-10 flex h-128 flex-col gap-4 lg:mt-14 lg:h-120 lg:flex-row",
+                        // phones get plain stacked cards; only from lg does the row share its
+                        // width by flex-grow and turn into the accordion from the design
+                        "mt-10 flex flex-col gap-5",
+                        "lg:mt-14 lg:h-120 lg:flex-row lg:gap-4",
                     )}
                 >
                     {SERVICES.map(({ title, lines }, index) => {
@@ -130,18 +141,20 @@ const OurServices = ({ language }: OurServicesProps) => {
                             <li
                                 key={title}
                                 className={cn(
-                                    "relative min-h-0 min-w-0 overflow-hidden rounded-2xl",
-                                    "bg-linear-to-br from-(--color-primary-25) via-(--surface-muted) to-(--color-primary-50)",
+                                    "relative min-w-0 overflow-hidden rounded-2xl",
+                                    "border border-(--border-default) bg-(--surface-default) p-6",
+                                    "lg:min-h-0 lg:border-0 lg:bg-transparent lg:p-0",
                                     "transition-[flex-grow]! duration-500! motion-reduce:transition-none!",
                                     REVEAL_EASE,
-                                    isActive ? "grow-[4]" : "grow-[1]",
+                                    isActive ? "lg:grow-[4]" : "lg:grow-[1]",
                                 )}
                             >
+                                {/* nothing to expand on phones — every card is already open */}
                                 <button
                                     type="button"
                                     onClick={() => setActiveIndex(index)}
                                     aria-expanded={isActive}
-                                    className="absolute inset-0 cursor-pointer"
+                                    className="absolute inset-0 hidden cursor-pointer lg:block"
                                 >
                                     <span className="sr-only">{title}</span>
                                 </button>
@@ -150,7 +163,12 @@ const OurServices = ({ language }: OurServicesProps) => {
                                     src={PLACEHOLDER_IMAGE}
                                     alt={title}
                                     sizes="(max-width: 1024px) 100vw, 60vw"
-                                    wrapperClassName="pointer-events-none absolute inset-0 h-full w-full"
+                                    wrapperClassName={cn(
+                                        "pointer-events-none overflow-hidden",
+                                        "relative aspect-video w-full rounded-xl",
+                                        "bg-linear-to-br from-(--color-primary-25) via-(--surface-muted) to-(--color-primary-50)",
+                                        "lg:absolute lg:inset-0 lg:aspect-auto lg:h-full lg:rounded-none",
+                                    )}
                                     className={cn(
                                         "h-full w-full object-cover",
                                         // the stand-in photo keeps its subject at ~72% of the
@@ -160,9 +178,10 @@ const OurServices = ({ language }: OurServicesProps) => {
                                     )}
                                 />
 
+                                {/* the tints only exist to carry the overlaid copy at lg */}
                                 <div
                                     className={cn(
-                                        "pointer-events-none absolute inset-0",
+                                        "pointer-events-none absolute inset-0 hidden lg:block",
                                         "bg-linear-to-t from-(--color-primary)/85 to-transparent",
                                         "transition-opacity! duration-500! motion-reduce:transition-none!",
                                         REVEAL_EASE,
@@ -171,7 +190,7 @@ const OurServices = ({ language }: OurServicesProps) => {
                                 />
                                 <div
                                     className={cn(
-                                        "pointer-events-none absolute inset-0 bg-(--color-primary)/55",
+                                        "pointer-events-none absolute inset-0 hidden bg-(--color-primary)/55 lg:block",
                                         "transition-opacity! duration-500! motion-reduce:transition-none!",
                                         REVEAL_EASE,
                                         isActive ? "opacity-0" : "opacity-100",
@@ -180,41 +199,40 @@ const OurServices = ({ language }: OurServicesProps) => {
 
                                 <div
                                     className={cn(
-                                        "pointer-events-none absolute inset-x-0 bottom-0 flex flex-col",
+                                        "relative mt-5 flex flex-col",
+                                        "lg:pointer-events-none lg:absolute lg:inset-x-0 lg:bottom-0 lg:mt-0",
                                         "transition-[padding]! duration-500! motion-reduce:transition-none!",
                                         REVEAL_EASE,
-                                        isActive ? "p-6 lg:p-8" : "p-5 lg:p-6",
+                                        isActive ? "lg:p-8" : "lg:p-6",
                                     )}
                                 >
                                     <h3
                                         className={cn(
-                                            "font-semibold text-(--text-invert)",
-                                            "text-sm md:text-base",
-                                            // one line at every card width: the ellipsis slides
-                                            // as the card resizes, so nothing ever re-wraps
-                                            "lg:truncate",
+                                            "font-semibold text-(--text-primary) lg:text-(--text-invert)",
+                                            "text-base lg:truncate lg:text-sm xl:text-base",
                                         )}
                                     >
                                         {title}
                                     </h3>
 
+                                    {/* open on phones; at lg it collapses along with the card */}
                                     <div
                                         className={cn(
-                                            "grid",
-                                            "transition-[grid-template-rows,opacity,translate]!",
+                                            "grid grid-rows-[1fr] opacity-100",
+                                            "lg:transition-[grid-template-rows,opacity,translate]!",
                                             "motion-reduce:transition-none!",
                                             REVEAL_EASE,
                                             isActive
-                                                ? "grid-rows-[1fr] translate-y-0 opacity-100 duration-500! delay-200"
-                                                : "grid-rows-[0fr] translate-y-2 opacity-0 duration-200!",
+                                                ? "lg:grid-rows-[1fr] lg:translate-y-0 lg:opacity-100 lg:duration-500! lg:delay-200"
+                                                : "lg:grid-rows-[0fr] lg:translate-y-2 lg:opacity-0 lg:duration-200!",
                                         )}
                                     >
                                       <div className="overflow-hidden">
                                         <div className="mt-3 flex items-end justify-between gap-6">
                                             <p
                                                 className={cn(
-                                                    "text-(--text-invert)/85 lg:whitespace-nowrap",
-                                                    "text-[0.625rem] leading-loose sm:text-xs",
+                                                    "text-(--text-secondary) lg:whitespace-nowrap lg:text-(--text-invert)/85",
+                                                    "text-xs leading-loose lg:text-[0.625rem] xl:text-xs",
                                                 )}
                                             >
                                                 {lines.map((line) => (
@@ -227,9 +245,9 @@ const OurServices = ({ language }: OurServicesProps) => {
                                             <LinkCustom
                                                 href={`/${language}/${CTA_PATH}`}
                                                 className={cn(
-                                                    "group flex shrink-0 items-center gap-3",
+                                                    "group hidden shrink-0 items-center gap-3 lg:flex",
                                                     "text-xs text-(--text-invert) md:text-sm",
-                                                    isActive && "pointer-events-auto",
+                                                    isActive && "lg:pointer-events-auto",
                                                 )}
                                             >
                                                 <span className="underline underline-offset-4">

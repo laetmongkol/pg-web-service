@@ -14,12 +14,8 @@ interface HeroSectionProps {
     language: string;
 }
 
-/** Stand-in artwork until the Services page gets its own CMS image — this is the one
- *  `gocprime` upload the other pages already share. Delete once a real banner lands. */
 const PLACEHOLDER_IMAGE = `${BACKEND_IMAGE_PREFIX}gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp`;
 
-/** The Services page has no CMS sections yet, so every field falls back to these. Once the
- *  content lands under page "Services" section "1" it takes over without a code change. */
 const MOCK = {
     eyebrow: "Our Service",
     title: "บริการของเรา",
@@ -42,9 +38,8 @@ const HeroSection = ({ data }: HeroSectionProps) => {
             id="hero"
             className={cn(
                 "relative flex w-full flex-col",
-                // brand stone, standing in for the banner until the CMS image lands
                 "bg-linear-to-br from-(--color-primary-200) via-(--color-primary-300) to-(--color-primary-400)",
-                "lg:max-h-[1080px] aspect-square lg:aspect-[16/8] pt-(--navbar-height)",
+                "lg:max-h-[1080px] aspect-4/5 lg:aspect-[16/8] pt-(--navbar-height)",
             )}
         >
             <div className="absolute inset-0 w-full">
@@ -74,7 +69,6 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                 <div
                     className={cn(
                         "mx-auto grid h-full w-full max-w-screen-2xl",
-                        "pt-(--navbar-height) lg:pt-0",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >
@@ -103,7 +97,7 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                         <p
                             className={cn(
                                 "max-w-2xl text-(--text-invert)/85",
-                                "text-xs leading-relaxed md:text-sm",
+                                "text-[0.625rem] leading-relaxed sm:text-xs md:text-sm",
                             )}
                         >
                             {subTitle}
@@ -114,12 +108,11 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                         href="#services-content"
                         className={cn(
                             "col-start-1 row-start-1 self-end justify-self-center",
-                            "flex w-fit flex-col items-center gap-2 pb-10 lg:pb-14",
+                            "hidden w-fit flex-col items-center gap-2 pb-10 lg:flex lg:pb-14",
                             "text-(--text-invert)/75 hover:text-(--text-invert) transition-colors",
                             "text-xs tracking-wide",
                         )}
                     >
-                        {/* taller than it is wide, which is what reads as a mouse in the design */}
                         <span className="flex h-8 w-5.5 items-center justify-center rounded-full border border-current">
                             <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.5} />
                         </span>
