@@ -25,9 +25,8 @@ const HeroSection = ({ data }: HeroSectionProps) => {
             id="hero"
             className={cn(
                 "relative flex w-full flex-col",
-                // the radial wash in the design: page grey at the rim, near-white in the middle
                 "bg-(--surface-page)",
-                "lg:max-h-[1080px] aspect-square lg:aspect-[16/8] pt-(--navbar-height)",
+                "lg:max-h-[1080px] aspect-4/5 lg:aspect-[16/8] pt-(--navbar-height)",
             )}
         >
             <div className="absolute inset-0 w-full">
@@ -57,7 +56,6 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                 <div
                     className={cn(
                         "mx-auto grid h-full w-full max-w-screen-2xl",
-                        "pt-(--navbar-height) lg:pt-0",
                         "px-4 sm:px-12 md:px-16",
                     )}
                 >
@@ -91,7 +89,7 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                                 "text-xs leading-relaxed md:text-sm",
                             )}
                         >
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus imperdiet sed id elementum. Quam vel aliquam sit vulputate. Faucibus nec gravida ipsum.
+                            ศรีวิไลก่อตั้งขึ้นจากความตั้งใจที่จะเป็นที่ปรึกษาที่เข้าใจธุรกิจจากภายใน
                         </p>
                     </div>
 
@@ -99,7 +97,7 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                         href="#our-history"
                         className={cn(
                             "col-start-1 row-start-1 self-end justify-self-center",
-                            "flex w-fit flex-col items-center gap-2 pb-10 lg:pb-14",
+                            "hidden w-fit flex-col items-center gap-2 pb-10 lg:flex lg:pb-14",
                             "text-(--text-invert)/75 hover:text-(--text-invert) transition-colors",
                             "text-xs tracking-wide",
                         )}

@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import { isSupportedLanguage } from "@/proxies/language.proxy";
 import { LANGUAGE } from "@/shared/constants/common.constants";
 
-import { HeroSection, OurServices, WhoWeAre } from "./_sections";
+import { CtaSection, HeroSection, OurCustomer, OurServices, WhoWeAre, WhyChooseUs } from "./_sections";
 
 interface ServicesPageProps {
     params: Promise<{ locale: string }>;
@@ -32,6 +32,9 @@ export default async function ServicesPage({ params }: ServicesPageProps) {
             <section id="services-content" className="w-full bg-(--surface-page)" />
             <WhoWeAre />
             <OurServices language={language} />
+            <OurCustomer />
+            <WhyChooseUs />
+            <CtaSection language={language} />
         </div>
     );
 }
