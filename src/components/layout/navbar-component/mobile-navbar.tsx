@@ -42,6 +42,11 @@ const MOBILE_SIGN_IN_CLASSNAME = cn(
 
 export default function MobileNavbar({ language, navLinks, languages, showLogo = false, labels }: MobileNavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   /**
    * A portal can never be part of the server HTML, so the first client render has to agree that it
@@ -100,7 +105,11 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
         </div>
       </div>
 
+<<<<<<< HEAD
       {isHydrated &&
+=======
+      {mounted &&
+>>>>>>> 0642e33 (fix Hydration mismatch and fix respnsive mission-card-media component)
         createPortal(
           <>
           <div
