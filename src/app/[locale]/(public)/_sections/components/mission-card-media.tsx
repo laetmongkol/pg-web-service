@@ -26,16 +26,17 @@ const FADE_SLIDE_TRANSITION: CSSProperties = {
 };
 
 /**
- * Hover and keyboard focus come from the card `group`; the `peer` checkbox is the touch path.
- * Both halves are breakpoint-scoped: a checked card must not survive a resize into hover
- * territory, and below `md` focus alone must not reveal — tapping the label focuses the
- * checkbox, so a focus-driven reveal would leave the second tap unable to close the card.
+ * Which path a device gets is decided by its pointer, not its width — a tablet is wide enough
+ * for `lg` and still has nothing to hover with. `group-hover` is already inert on touch
+ * (Tailwind v4 wraps it in `hover: hover`), and the focus reveal is limited to fine pointers
+ * because tapping the label focuses the checkbox: a focus-driven reveal there would pin the
+ * card open and leave the second tap unable to close it.
  */
 const REVEAL = cn(
     "pointer-events-none opacity-0",
-    "group-hover:opacity-100 md:group-focus-within:opacity-100 max-md:peer-checked:opacity-100",
+    "group-hover:opacity-100 pointer-fine:group-focus-within:opacity-100 peer-checked:opacity-100",
 );
-const SLIDE = "group-hover:translate-y-0 md:group-focus-within:translate-y-0 max-md:peer-checked:translate-y-0";
+const SLIDE = "group-hover:translate-y-0 pointer-fine:group-focus-within:translate-y-0 peer-checked:translate-y-0";
 
 export interface MissionCardMediaProps {
     image?: string;
@@ -46,8 +47,8 @@ export interface MissionCardMediaProps {
 }
 
 /**
- * Touch screens have no hover, so below `md` a hidden checkbox turns the overlay into a
- * tap toggle — tap to show, tap again to hide. No JavaScript involved either way.
+ * Touch screens have no hover, so a hidden checkbox turns the overlay into a tap toggle there —
+ * tap to show, tap again to hide. No JavaScript involved on either path.
  */
 const MissionCardMedia = ({ image, title, badge, value, caption }: MissionCardMediaProps) => {
     const toggleId = `mission-reveal-${title.replace(/\s+/g, "-")}`;
@@ -70,8 +71,8 @@ const MissionCardMedia = ({ image, title, badge, value, caption }: MissionCardMe
                 <div aria-hidden className="h-full w-full bg-[image:var(--brand-gradient-silver)]" />
             )}
 
-            {/* only a tap target below md — pointer devices keep the pure hover behaviour */}
-            <label htmlFor={toggleId} className="absolute inset-0 z-1 cursor-pointer md:hidden" />
+            {/* the tap target exists wherever a touch pointer does, phone or tablet */}
+            <label htmlFor={toggleId} className="absolute inset-0 z-1 hidden cursor-pointer any-pointer-coarse:block" />
 
             {/* the darkened, captioned state in the design is the hover, so it sits on every card
                 and fades in rather than being baked into the first one */}
