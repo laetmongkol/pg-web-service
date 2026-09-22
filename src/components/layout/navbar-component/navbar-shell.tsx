@@ -23,14 +23,17 @@ const NavbarShell = ({ children }: { children: ReactNode }) => {
       data-scrolled={isScrolled}
       className={cn(
         "pointer-events-none fixed inset-x-0 top-0 z-100",
-        "px-3 pt-3 sm:px-6 sm:pt-4",
+        "px-5 pt-4 sm:px-6",
+        // the open mobile menu replaces the pill, so it must not show through the scrim
+        "transition-opacity! duration-200! motion-reduce:transition-none!",
+        "[.menu-open_&]:opacity-0",
       )}
     >
       <div
         className={cn(
-          "pointer-events-auto mx-auto flex min-h-14 max-w-7xl items-center justify-between gap-4",
+          "pointer-events-auto mx-auto flex min-h-12 max-w-7xl items-center justify-between gap-4",
           "rounded-full border border-(--surface-default)/60 backdrop-blur-lg",
-          "px-4 py-2 sm:px-6",
+          "px-6 py-2",
           "transition-[background-color,box-shadow] duration-300",
           isScrolled
             ? "bg-(--surface-default)/95 shadow-[var(--shadow-lg)]"

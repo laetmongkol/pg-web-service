@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 
-import { Menu,X } from "lucide-react"
+import { X } from "lucide-react"
 
 import cn from "@/lib/tw-merge"
 import { LanguageResponseDto } from "@/services/generated-cli/api-app-service"
@@ -27,6 +28,10 @@ interface MobileNavbarProps {
   labels: NavbarLabels
 }
 
+/** Same easing as the rest of the site. The `!` is load-bearing: base-transitions.css sets
+ *  transition-property on `*` outside any cascade layer, so unmarked utilities do nothing. */
+const MENU_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!"
+
 const MOBILE_SIGN_IN_CLASSNAME = cn(
   BUTTON_BASE_CLASSNAME,
   "min-h-9 px-4 py-1.5 text-sm",
@@ -45,6 +50,17 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
     return () => window.removeEventListener("pageshow", handlePageShow)
   }, [])
 
+  /**
+   * The collapsed pill lives in NavbarShell, a sibling this component cannot reach. Flagging the
+   * root lets the shell fade itself out, so the pill does not sit behind the open sheet. Safe only
+   * because the sheet is portalled out of the shell — otherwise it would fade with it.
+   */
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle("menu-open", isOpen)
+    return () => root.classList.remove("menu-open")
+  }, [isOpen])
+
   const close = () => setIsOpen(false)
 
   return (
@@ -52,7 +68,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
       <div className="flex w-full flex-1 items-center justify-between gap-3 lg:hidden">
         {showLogo ? (
           <LinkCustom href={`/${language}`} className="shrink-0">
-            <AppLogo width={80} />
+            <AppLogo width={80} className="h-5 sm:h-5" />
           </LinkCustom>
         ) : (
           <div aria-hidden="true" />
@@ -62,39 +78,60 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
           <button
             onClick={() => setIsOpen(true)}
             className={cn(
-              "inline-flex h-10 w-10 items-center justify-center rounded-lg",
+              "inline-flex size-8 items-center justify-center rounded-lg",
               "hover:bg-(--color-primary-hover)",
               "hover:cursor-pointer text-(--color-primary)",
             )}
             aria-label="Open menu"
           >
-            <Menu width="24" height="24"/>
+            <span aria-hidden className="flex flex-col gap-1.5">
+              <span className="block h-0.5 w-5 rounded-full bg-current" />
+              <span className="block h-0.5 w-5 rounded-full bg-current" />
+              <span className="block h-0.5 w-5 rounded-full bg-current" />
+            </span>
           </button>
         </div>
       </div>
 
-      {isOpen && (
-        <>
+      {/* Portalled to <body> on purpose: the pill's backdrop-blur makes it a containing block
+        * for fixed children, so left inside it the scrim and the sheet were measured against the
+        * pill instead of the viewport — and the shell's fade would take the menu with it.
+        * It stays mounted so closing can animate too; `invisible` (not `hidden`) keeps it out of
+        * the tab order and only takes effect once the fade has finished. */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <>
           <div
-            className="fixed inset-0 z-200 bg-black/40 backdrop-blur-sm lg:hidden"
+            className={cn(
+              "fixed inset-0 z-200 bg-(--color-primary)/35 backdrop-blur-sm lg:hidden",
+              "transition-[opacity,visibility]! motion-reduce:transition-none!",
+              MENU_EASE,
+              isOpen ? "visible opacity-100 duration-300!" : "invisible opacity-0 duration-200!",
+            )}
             onClick={close}
             aria-hidden="true"
           />
 
           <aside
             className={cn(
-              "fixed inset-x-0 top-0 z-201",
-              "flex max-h-dvh flex-col",
-              "bg-(--surface-default)",
-              "border-b border-(--border-default)",
-              "px-4 py-3",
+              "fixed inset-x-5 top-4 z-201 sm:inset-x-6",
+              "flex max-h-[calc(100dvh-2rem)] flex-col",
+              "rounded-3xl border border-(--surface-default)/60 bg-(--surface-default)",
+              "shadow-[var(--shadow-lg)] backdrop-blur-lg",
+              "px-5 py-2.5",
               "lg:hidden",
+              // grows out of the pill rather than appearing on top of it
+              "origin-top transition-[opacity,visibility,translate,scale]! motion-reduce:transition-none!",
+              MENU_EASE,
+              isOpen
+                ? "visible translate-y-0 scale-100 opacity-100 duration-300!"
+                : "invisible -translate-y-2 scale-95 opacity-0 duration-200!",
             )}
           >
-            <div className="flex min-h-14 items-center justify-between gap-3">
+            <div className="flex min-h-12 items-center justify-between gap-3">
               {showLogo ? (
                 <LinkCustom href={`/${language}`} className="shrink-0" onClick={close}>
-                  <AppLogo width={80} />
+                  <AppLogo width={80} className="h-5 sm:h-5" />
                 </LinkCustom>
               ) : (
                 <div aria-hidden="true" />
@@ -104,31 +141,32 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
                 <button
                   onClick={close}
                   className={cn(
-                    "inline-flex h-9 w-9 items-center justify-center rounded-md",
+                    "inline-flex size-8 items-center justify-center rounded-md",
                     "text-(--color-primary-400) hover:cursor-pointer",
                   )}
                   aria-label="Close menu"
                 >
-                  <X width="24" height="24" />
+                  <X width="20" height="20" />
                 </button>
               </div>
             </div>
 
-            <hr className="my-3 border-0 border-t border-dashed border-(--border-default)" />
+            <hr className="my-2.5 border-0 border-t border-(--border-default)" />
 
             <nav className="min-h-0 flex-1 overflow-y-auto pr-1">
               <NavMenuLinks language={language} links={navLinks} isMobile onLinkClick={close} />
             </nav>
 
-            <div className="mt-4 shrink-0 border-t border-(--border-muted) pt-4 pb-1">
-              <p className="mb-2 px-1 text-xs font-medium tracking-wide text-(--text-muted) uppercase">
+            <div className="mt-3 shrink-0 border-t border-(--border-muted) pt-3 pb-1">
+              <p className="mb-2 px-1 text-xs font-medium tracking-wide text-(--text-secondary) uppercase">
                 {labels.language}
               </p>
               <LanguageSelector currentLanguage={language} languages={languages} variant="segmented" />
             </div>
           </aside>
-        </>
-      )}
+          </>,
+          document.body,
+        )}
     </>
   )
 }
