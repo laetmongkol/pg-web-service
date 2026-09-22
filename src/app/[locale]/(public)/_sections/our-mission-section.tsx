@@ -1,8 +1,8 @@
 import cn from "@/lib/tw-merge";
-import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
-import FillImage from "@/components/fill-image.component";
+
+import MissionCardMedia from "./components/mission-card-media";
 
 const EYEBROW = "We & Our Mission";
 
@@ -48,15 +48,6 @@ const MISSIONS = [
         caption: "ยอดขายเฉลี่ยที่เติบโตขึ้นหลังทำงานร่วมกัน",
     },
 ];
-
-const CARD_MEDIA_CLASSNAME = "relative aspect-[4/3] w-full overflow-hidden rounded-2xl";
-
-/** Hidden until the card is hovered or keyboard-focused, so it reads as a state, not a variant. */
-const OVERLAY_CLASSNAME = cn(
-    "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300",
-    "group-hover:opacity-100 group-focus-within:opacity-100",
-    "motion-reduce:transition-none",
-);
 
 const OurMissionSection = () => {
     return (
@@ -113,55 +104,13 @@ const OurMissionSection = () => {
                                 delay={300 + index * 100}
                                 className="group flex flex-col gap-4"
                             >
-                                <div className={CARD_MEDIA_CLASSNAME}>
-                                    {mission.image ? (
-                                        <FillImage
-                                            src={mission.image}
-                                            alt={mission.title}
-                                            width={800}
-                                            height={600}
-                                            sizes="(max-width: 768px) 100vw, 33vw"
-                                            wrapperClassName="h-full w-full"
-                                            className={cn(
-                                                "h-full w-full object-cover",
-                                                BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                                            )}
-                                        />
-                                    ) : (
-                                        <div
-                                            aria-hidden
-                                            className="h-full w-full bg-[image:var(--brand-gradient-silver)]"
-                                        />
-                                    )}
-
-                                    {/* the darkened, captioned state in the design is the hover,
-                                        so it sits on every card and fades in rather than being
-                                        baked into the first one */}
-                                    <div className={OVERLAY_CLASSNAME}>
-                                        <div
-                                            aria-hidden
-                                            className="absolute inset-0 bg-linear-to-t from-(--color-primary-400) via-(--color-primary-400)/30 to-transparent"
-                                        />
-                                        <span
-                                            className={cn(
-                                                "absolute top-4 left-4 flex items-center gap-2 rounded-full",
-                                                "bg-(--color-primary-400)/60 px-3 py-1 backdrop-blur-xs",
-                                                "text-[11px] font-medium text-(--text-invert)",
-                                            )}
-                                        >
-                                            <span className="size-1.5 shrink-0 rounded-full bg-(--text-invert)" />
-                                            {mission.badge}
-                                        </span>
-                                        <div className="absolute inset-x-4 bottom-4 flex flex-col gap-1 text-start">
-                                            <span className="text-2xl font-bold text-(--text-invert)">
-                                                {mission.value}
-                                            </span>
-                                            <span className="text-[11px] text-(--text-invert)/80">
-                                                {mission.caption}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <MissionCardMedia
+                                    image={mission.image}
+                                    title={mission.title}
+                                    badge={mission.badge}
+                                    value={mission.value}
+                                    caption={mission.caption}
+                                />
 
                                 <div className="flex flex-col gap-2">
                                     <h3 className="font-bold text-(--text-primary)">{mission.title}</h3>
