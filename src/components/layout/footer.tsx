@@ -79,8 +79,8 @@ function resolveHref(language: LANGUAGE, href: string) {
   return href.startsWith("/") ? `/${language}${href === "/" ? "" : href}` : href
 }
 
-const HEADING_CLASSNAME = "text-sm font-semibold text-(--text-primary)"
-const BODY_CLASSNAME = "text-sm leading-relaxed text-(--text-secondary)"
+const HEADING_CLASSNAME = "text-xs font-semibold text-(--text-primary) lg:text-sm"
+const BODY_CLASSNAME = "text-xs leading-relaxed text-(--text-secondary) lg:text-sm"
 const BODY_LINK_CLASSNAME = cn(BODY_CLASSNAME, "transition-colors hover:text-(--text-primary)")
 
 export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
@@ -94,16 +94,24 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
         )}
       />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-12 lg:py-16">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-15">
-          <div className="flex flex-col items-start">
-            <AppLogo width={140} />
+      <div className="relative mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:py-10">
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-15 lg:gap-y-8">
+          <div
+            className={cn(
+              "col-span-2 flex flex-col gap-5",
+              "sm:col-span-3 sm:flex-row sm:items-start sm:justify-between",
+              "lg:col-span-1 lg:flex-col lg:gap-0",
+            )}
+          >
+            <div className="flex flex-col items-start">
+              <AppLogo width={140} />
+              <p className={cn("mt-4 max-w-xs lg:mt-5", BODY_CLASSNAME, "text-xs lg:text-xs")}>{COMPANY_SUMMARY}</p>
+            </div>
 
-            <p className={cn("mt-8 max-w-xs", BODY_CLASSNAME)}>{COMPANY_SUMMARY}</p>
+            <div className="flex flex-col items-start lg:mt-6">
+            <p className="text-[0.625rem] text-(--text-secondary) lg:text-xs">{"Follow us"}</p>
 
-            <p className="mt-10 text-xs text-(--text-secondary)">{"Follow us"}</p>
-
-            <div className="mt-5 flex items-center gap-1.5">
+            <div className="mt-2.5 flex items-center gap-1 lg:mt-3 lg:gap-1.5">
               {SOCIAL_LINKS.map(({ label, href, Icon }) => (
                 <LinkCustom
                   key={label}
@@ -112,22 +120,23 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
                   rel="noopener noreferrer"
                   aria-label={label}
                   className={cn(
-                    "flex size-14 items-center justify-center rounded-full",
+                    "flex size-9 items-center justify-center rounded-full lg:size-10",
                     "border border-(--border-default) bg-(--surface-default)/60",
                     "text-(--text-primary)",
                     "transition-colors! duration-300! motion-reduce:transition-none!",
                     "hover:border-transparent hover:bg-(--color-primary) hover:text-(--text-invert)",
                   )}
                 >
-                  <Icon className="size-5" />
+                  <Icon className="size-4 lg:size-5" />
                 </LinkCustom>
               ))}
+            </div>
             </div>
           </div>
 
           <div className="flex flex-col">
             <h3 className={HEADING_CLASSNAME}>{"Navigation"}</h3>
-            <ul className="mt-8 flex flex-col gap-4">
+            <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
               {NAVIGATION_LINKS.map(({ label, href }) => (
                 <li key={label}>
                   <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
@@ -140,7 +149,7 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
 
           <div className="flex flex-col">
             <h3 className={HEADING_CLASSNAME}>{"Utility Pages"}</h3>
-            <ul className="mt-8 flex flex-col gap-4">
+            <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
               {UTILITY_LINKS.map(({ label, href }) => (
                 <li key={label}>
                   <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
@@ -151,9 +160,9 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
             </ul>
           </div>
 
-          <div className="flex flex-col">
+          <div className="col-span-2 flex flex-col sm:col-span-1">
             <h3 className={HEADING_CLASSNAME}>{"Contact"}</h3>
-            <ul className="mt-8 flex flex-col gap-4">
+            <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
               {CONTACT_ITEMS.map(({ key, value, href }) => (
                 <li key={key}>
                   {href ? (
@@ -171,11 +180,11 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
 
         <div
           className={cn(
-            "mt-14 flex flex-col gap-4 lg:mt-20",
+            "mt-6 flex flex-col gap-3 lg:mt-8 lg:gap-4",
             "sm:flex-row sm:items-center sm:justify-between",
           )}
         >
-          <p className="text-xs text-(--text-secondary) sm:text-sm">
+          <p className="text-xs text-(--text-secondary) lg:text-sm">
             {`© ${COMPANY_BRAND_NAME} ${new Date().getFullYear()}`}
           </p>
 
@@ -185,7 +194,7 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
                 key={label}
                 href={resolveHref(language, href)}
                 className={cn(
-                  "text-xs text-(--text-secondary) sm:text-sm",
+                  "text-xs text-(--text-secondary) lg:text-sm",
                   "transition-colors hover:text-(--text-primary)",
                 )}
               >
