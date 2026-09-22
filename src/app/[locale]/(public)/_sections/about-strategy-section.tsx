@@ -1,29 +1,31 @@
+import {
+    convertObjectToArrayByPrefix,
+    extractAttributes,
+    PictureAttributes,
+} from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import CountUpNumber from "@/app/component/count-up-number.component";
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
-const EYEBROW = "Sriwilai Bangkok";
-const TITLE = "เราเชื่อว่ากลยุทธ์ที่ดี ต้องนำไปใช้ได้จริง";
+/** attributes on `stat*` — the number itself is the row value. */
+interface StatAttributes {
+    label?: string;
+}
 
-const DESCRIPTION_LINES = "ประกอบกิจการให้บริการด้านการวางแผนกลยุทธ์การตลาดออนไลน์แบบครบวงจร สำหรับธุรกิจในยุคดิจิทัล ครอบคลุมตั้งแต่การวิเคราะห์ธุรกิจและกลุ่มเป้าหมาย การวางแผนและกำหนดทิศทางการตลาด การสร้างแบรนด์และการสื่อสาร การผลิตคอนเทนต์ ตลอดจนการวางแผนและบริหารสื่อโฆษณาออนไลน์ทุกรูปแบบ เพื่อช่วยเพิ่มการรับรู้ สร้างโอกาสทางธุรกิจ เข้าถึงกลุ่มลูกค้าได้อย่างมีประสิทธิภาพ และสนับสนุนการเติบโตของธุรกิจอย่างยั่งยืน";
+interface AboutStrategySectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
 
-const STATS = [
-    { value: "20+", label: "ทีมงานผู้เชี่ยวชาญ" },
-    { value: "99%", label: "ความพึงพอใจจากลูกค้า" },
-    { value: "10+", label: "โปรเจกต์ที่ส่งมอบแล้ว" },
-    { value: "3", label: "รางวัลการันตี" },
-];
+const AboutStrategySection = ({ data }: AboutStrategySectionProps) => {
+    if (!data) return null;
 
-/** CMS media key for the office photo that closes the panel. */
-const OFFICE_IMAGE = "/api/app/image/contents/2026-09-18T10-09-01_9d3a7339-94c1-4b4c-969b-c5ee9180c920.png";
-const OFFICE_ALT = "สำนักงาน Sriwilai Consulting & Marketing Agency";
-const OFFICE_WIDTH = 1536;
-const OFFICE_HEIGHT = 1024;
+    const stats = convertObjectToArrayByPrefix<StatAttributes>(data, "stat");
+    const office = extractAttributes<PictureAttributes>(data?.officeImg);
 
-const AboutStrategySection = () => {
     return (
         <section
             id="about-us"
@@ -46,7 +48,7 @@ const AboutStrategySection = () => {
                             )}
                         >
                             <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
-                            {EYEBROW}
+                            {data?.badge?.value}
                         </span>
                     </FadeIn>
 
@@ -57,7 +59,7 @@ const AboutStrategySection = () => {
                                 "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
                             )}
                         >
-                            {TITLE}
+                            {data?.title?.value}
                         </h2>
                     </FadeIn>
 
@@ -68,17 +70,17 @@ const AboutStrategySection = () => {
                             "text-xs leading-loose md:text-sm",
                         )}
                     >
-                        {DESCRIPTION_LINES}
+                        {data?.description?.value}
                     </FadeIn>
 
                     <dl className="mt-12 grid w-full grid-cols-2 gap-8 lg:grid-cols-4">
-                        {STATS.map((stat, index) => (
+                        {stats.map((stat, index) => (
                             <FadeIn
-                                key={stat.label}
+                                key={stat.key}
                                 delay={300 + index * 100}
                                 className="flex flex-col items-center gap-2 text-center"
                             >
-                                <dt className="sr-only">{stat.label}</dt>
+                                <dt className="sr-only">{stat.attributes?.label}</dt>
                                 <dd className="flex flex-col items-center gap-2">
                                     <CountUpNumber
                                         value={stat.value}
@@ -87,26 +89,29 @@ const AboutStrategySection = () => {
                                             "text-2xl sm:text-3xl lg:text-4xl",
                                         )}
                                     />
-                                    <span className="text-xs text-(--text-secondary)">{stat.label}</span>
+                                    <span className="text-xs text-(--text-secondary)">
+                                        {stat.attributes?.label}
+                                    </span>
                                 </dd>
                             </FadeIn>
                         ))}
                     </dl>
 
-                    <FadeIn delay={200} className="mt-12 w-full">
-                        <FillImage
-                            src={OFFICE_IMAGE}
-                            alt={OFFICE_ALT}
-                            width={OFFICE_WIDTH}
-                            height={OFFICE_HEIGHT}
-                            sizes="(max-width: 1024px) 100vw, 1200px"
-                            wrapperClassName="w-full overflow-hidden rounded-t-2xl"
-                            className={cn(
-                                "h-[220px] w-full object-cover sm:h-[360px] lg:h-[460px]",
-                                BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
-                            )}
-                        />
-                    </FadeIn>
+                    {office?.mediaStorageKey ? (
+                        <FadeIn delay={700} className="mt-12 w-full">
+                            <FillImage
+                                src={office.mediaStorageKey}
+                                alt={office?.mediaAltText ?? ""}
+                                width={office?.width}
+                                height={office?.height}
+                                wrapperClassName="w-full overflow-hidden rounded-t-2xl"
+                                className={cn(
+                                    "h-[220px] w-full object-cover sm:h-[360px] lg:h-[460px]",
+                                    BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
+                                )}
+                            />
+                        </FadeIn>
+                    ) : null}
                 </div>
             </div>
         </section>

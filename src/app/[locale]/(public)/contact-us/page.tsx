@@ -2,8 +2,12 @@ import { setRequestLocale } from "next-intl/server";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import cn from "@/lib/tw-merge";
+import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
 import type { Metadata } from "next";
+
+import { isSupportedLanguage } from "@/proxies/language.proxy";
+import { LANGUAGE } from "@/shared/constants/common.constants";
 
 import { ContactChannels, ContactForm, HeroSection, OfficeMap } from "./_sections";
 
@@ -19,13 +23,14 @@ export async function generateMetadata({ params }: ContactUsPageProps): Promise<
 export default async function ContactUsPage({ params }: ContactUsPageProps) {
     const { locale: routeLocale } = await params;
     setRequestLocale(routeLocale);
+    const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
-    // Copy is held in the sections for now — the ContactUs rows in the CMS still carry the seed
-    // content from the project this service was cloned from, so binding them here would print
-    // another brand's text. Swap each section to `data?.["<n>"]` as its rows are filled in.
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."4", in page order.
+    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "ContactUs");
+
     return (
         <div className="relative flex flex-col bg-(--surface-elevated)">
-            <HeroSection />
+            <HeroSection data={data?.["1"]} />
 
             <section
                 id="contact-us-content"
@@ -38,12 +43,12 @@ export default async function ContactUsPage({ params }: ContactUsPageProps) {
                         "lg:grid-cols-2 lg:gap-16",
                     )}
                 >
-                    <ContactChannels />
-                    <ContactForm />
+                    <ContactChannels data={data?.["2"]} />
+                    <ContactForm data={data?.["3"]} />
                 </div>
             </section>
 
-            <OfficeMap />
+            <OfficeMap data={data?.["4"]} />
         </div>
     );
 }

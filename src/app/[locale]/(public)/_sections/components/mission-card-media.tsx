@@ -40,6 +40,9 @@ const SLIDE = "group-hover:translate-y-0 pointer-fine:group-focus-within:transla
 
 export interface MissionCardMediaProps {
     image?: string;
+    /** Intrinsic pixels from the CMS row — what the picture is sized from. */
+    width?: number;
+    height?: number;
     title: string;
     badge: string;
     value: string;
@@ -50,7 +53,7 @@ export interface MissionCardMediaProps {
  * Touch screens have no hover, so a hidden checkbox turns the overlay into a tap toggle there —
  * tap to show, tap again to hide. No JavaScript involved on either path.
  */
-const MissionCardMedia = ({ image, title, badge, value, caption }: MissionCardMediaProps) => {
+const MissionCardMedia = ({ image, width, height, title, badge, value, caption }: MissionCardMediaProps) => {
     const toggleId = `mission-reveal-${title.replace(/\s+/g, "-")}`;
 
     return (
@@ -61,9 +64,8 @@ const MissionCardMedia = ({ image, title, badge, value, caption }: MissionCardMe
                 <FillImage
                     src={image}
                     alt={title}
-                    width={800}
-                    height={600}
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    width={width}
+                    height={height}
                     wrapperClassName="h-full w-full"
                     className={cn("h-full w-full object-cover", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
                 />

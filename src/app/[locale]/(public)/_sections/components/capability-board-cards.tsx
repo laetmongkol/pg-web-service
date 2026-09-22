@@ -47,11 +47,9 @@ const CARD_LABEL_CLASSNAME = "text-[10px] font-medium tracking-wide text-(--text
 const BoardPhoto = ({
     picture,
     className,
-    sizes,
 }: {
     picture?: PictureAttributes;
     className?: string;
-    sizes: string;
 }) => {
     const source = picture?.mediaStorageKey;
 
@@ -65,7 +63,6 @@ const BoardPhoto = ({
             alt={picture?.mediaAltText ?? ""}
             width={picture?.width}
             height={picture?.height}
-            sizes={sizes}
             draggable={false}
             wrapperClassName={cn("overflow-hidden", className)}
             className="h-full w-full object-cover"
@@ -166,10 +163,9 @@ const PortfolioCard = ({ media }: { media: CapabilityBoardMedia }) => (
         <div className="grid grid-cols-2 gap-2">
             <BoardPhoto
                 picture={media.portfolioPrimary}
-                sizes="160px"
                 className="row-span-2 h-full min-h-32 rounded-lg"
             />
-            <BoardPhoto picture={media.portfolioSecondary} sizes="480px" className="h-48 rounded-lg" />
+            <BoardPhoto picture={media.portfolioSecondary} className="h-48 rounded-lg" />
             <div
                 className="flex h-28 items-center justify-center rounded-lg text-sm font-medium text-(--text-primary)"
                 style={{ backgroundColor: ACCENT.mint }}
@@ -212,7 +208,7 @@ const CONSULTANT_ROWS = [
 const ConsultantCard = ({ media }: { media: CapabilityBoardMedia }) => (
     <div className={cn(CARD_CLASSNAME, "gap-4")}>
         <div className="flex items-center gap-3">
-            <BoardPhoto picture={media.consultantAvatar} sizes="40px" className="size-10 shrink-0 rounded-full" />
+            <BoardPhoto picture={media.consultantAvatar} className="size-10 shrink-0 rounded-full" />
             <div className="flex flex-col">
                 <span className="text-sm font-bold text-(--text-primary)">Amara Robinson</span>
                 <span className="text-[10px] text-(--text-secondary)">Lead Consultant</span>
@@ -377,7 +373,6 @@ const TimelineCard = ({ media }: { media: CapabilityBoardMedia }) => (
                             {step.photo ? (
                                 <BoardPhoto
                                     picture={media.timelineStep}
-                                    sizes="200px"
                                     className="h-16 w-full rounded-lg"
                                 />
                             ) : null}

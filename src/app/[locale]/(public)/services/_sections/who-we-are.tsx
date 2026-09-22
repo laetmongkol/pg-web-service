@@ -1,15 +1,20 @@
+import { convertObjectToValuesByPrefix } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import FadeIn from "@/app/component/fade-in.components";
 
-const EYEBROW = "Who We Are";
+interface WhoWeAreProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
 
-const STATEMENT_LINES = [
-    "เราสร้างสรรค์และวางแผนกลยุทธ์สื่อสารดิจิทัลแบบครบวงจร ที่ไม่ใช่เพียงแค่สร้างความตระหนักรู้",
-    "แต่เป็นการขับเคลื่อนยอดขายและการเติบโตของแบรนด์อย่างยั่งยืนในยุคดิจิทัล",
-];
+const WhoWeAre = ({ data }: WhoWeAreProps) => {
+    if (!data) return null;
 
-const WhoWeAre = () => {
+    const EYEBROW = data?.eyebrow?.value;
+    // one row per line so a translator controls where the statement breaks
+    const STATEMENT_LINES = convertObjectToValuesByPrefix(data, "line").map((line) => line.value);
+
     return (
         <section
             id="who-we-are"

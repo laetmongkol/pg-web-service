@@ -35,7 +35,6 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                     alt={bannerAlt}
                     width={banner?.width}
                     height={banner?.height}
-                    sizes="100vw"
                     priority
                     wrapperClassName="h-full w-full"
                     className={cn(
@@ -71,7 +70,7 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                                 "text-xs md:text-sm lg:text-base",
                             )}
                         >
-                            About Us
+                            {data?.eyebrow?.value}
                         </span>
                         <h1
                             className={cn(
@@ -79,17 +78,16 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                                 "text-2xl leading-snug sm:text-4xl sm:leading-tight lg:text-5xl xl:text-6xl",
                             )}
                         >
-                            <span className="block">
-                                จุดเริ่มต้นที่สร้างความเติบโตอย่างมีความหมาย
-                            </span>
+                            <span className="block">{data?.title1?.value}</span>
+                            <span className="block">{data?.title2?.value}</span>
                         </h1>
                         <p
                             className={cn(
-                                "max-w-2xl text-(--text-invert)/85",
+                                "text-(--text-invert)/85",
                                 "text-xs leading-relaxed md:text-sm",
                             )}
                         >
-                            ศรีวิไลก่อตั้งขึ้นจากความตั้งใจที่จะเป็นที่ปรึกษาที่เข้าใจธุรกิจจากภายใน
+                            {data?.subTitle?.value}
                         </p>
                     </div>
 
@@ -102,8 +100,8 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                             "text-xs tracking-wide",
                         )}
                     >
-                        <span className="flex size-8 items-center justify-center rounded-full border border-current">
-                            <ArrowDown className="size-4 animate-bounce" strokeWidth={1.5} />
+                        <span className="flex h-8 w-5.5 items-center justify-center rounded-full border border-current">
+                            <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.5} />
                         </span>
                         {data?.scrollDown?.value}
                     </a>

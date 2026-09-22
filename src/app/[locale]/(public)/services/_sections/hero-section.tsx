@@ -48,7 +48,6 @@ const HeroSection = ({ data }: HeroSectionProps) => {
                     alt={bannerAlt}
                     width={banner?.width}
                     height={banner?.height}
-                    sizes="100vw"
                     priority
                     wrapperClassName="h-full w-full"
                     className={cn(

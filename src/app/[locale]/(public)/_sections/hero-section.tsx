@@ -1,6 +1,8 @@
 import { ArrowDown } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
@@ -9,27 +11,8 @@ import LinkCustom from "@/components/link-custom.component";
 
 import SparkleDecoration, { type SparkleSpec } from "./components/sparkle-decoration";
 
-const EYEBROW = "Sriwilai Bangkok";
-const TITLE_LINE_1 = "พาธุรกิจของคุณ";
-const TITLE_LINE_2 = "ไปข้างหน้าอย่างมั่นคง";
-const DESCRIPTION =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus imperdiet sed id elementum. Quam vel aliquam sit vulputate. Faucibus nec gravida ipsum.";
-
-const SECONDARY_CTA = { label: "ดูบริการของเรา", path: "services" };
-const PRIMARY_CTA = { label: "ติดต่อปรึกษา", path: "contact-us" };
-
-const SCROLL_HINT = "Scroll Down to explore";
 /** The next section down — the anchor the scroll hint jumps to. */
 const SCROLL_TARGET = "#trusted-partner";
-
-/**
- * Optional cut-out figure under the copy (the walking person in the design). Left empty until the
- * artwork is uploaded: the hero keeps its proportions either way, it just loses the figure.
- */
-const FIGURE_IMAGE = "/api/app/image/contents/2026-09-18T10-09-01_9d3a7339-94c1-4b4c-969b-c5ee9180c920.png";
-const FIGURE_ALT = "Sriwilai consultant";
-const FIGURE_WIDTH = 420;
-const FIGURE_HEIGHT = 560;
 
 const SPARKLES: SparkleSpec[] = [
     { className: "left-[8%] top-[14%]", size: 18 },
@@ -45,10 +28,16 @@ const CTA_BASE_CLASSNAME = cn(
 );
 
 interface HeroSectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const HeroSection = ({ language }: HeroSectionProps) => {
+const HeroSection = ({ data, language }: HeroSectionProps) => {
+    if (!data) return null;
+
+    const figure = extractAttributes<PictureAttributes>(data?.figureImg);
+    const figureImage = figure?.mediaStorageKey ?? "";
+
     return (
         <section
             id="hero"
@@ -73,7 +62,9 @@ const HeroSection = ({ language }: HeroSectionProps) => {
                     )}
                 >
                     <FadeIn>
-                        <span className="text-xs text-(--text-secondary) md:text-sm">{EYEBROW}</span>
+                        <span className="text-xs text-(--text-secondary) md:text-sm">
+                            {data?.eyebrow?.value}
+                        </span>
                     </FadeIn>
                     <FadeIn delay={100}>
                         <h1
@@ -82,8 +73,8 @@ const HeroSection = ({ language }: HeroSectionProps) => {
                                 "text-3xl leading-tight sm:text-5xl lg:text-6xl lg:leading-[1.15]",
                             )}
                         >
-                            <span className="block">{TITLE_LINE_1}</span>
-                            <span className="block">{TITLE_LINE_2}</span>
+                            <span className="block">{data?.title1?.value}</span>
+                            <span className="block">{data?.title2?.value}</span>
                         </h1>
                     </FadeIn>
 
@@ -93,43 +84,41 @@ const HeroSection = ({ language }: HeroSectionProps) => {
                             "text-xs leading-relaxed md:text-sm",
                         )}
                     >
-                        {DESCRIPTION}
+                        {data?.description?.value}
                     </FadeIn>
 
                     <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
                         <FadeIn delay={300}>
                             <LinkCustom
-                                href={`/${language}/${SECONDARY_CTA.path}`}
+                                href={`/${language}/${data?.ctaSecondary?.linkUrl ?? ""}`}
                                 className={cn(
                                     CTA_BASE_CLASSNAME,
                                     "border border-(--border-strong) bg-(--surface-elevated) text-(--text-primary)",
                                 )}
                             >
-
-                                {SECONDARY_CTA.label}
+                                {data?.ctaSecondary?.value}
                             </LinkCustom>
                         </FadeIn>
                         <FadeIn delay={400}>
                             <LinkCustom
-                                href={`/${language}/${PRIMARY_CTA.path}`}
+                                href={`/${language}/${data?.ctaPrimary?.linkUrl ?? ""}`}
                                 className={cn(CTA_BASE_CLASSNAME, "bg-(--text-primary) text-(--text-invert)")}
                             >
-                                {PRIMARY_CTA.label}
+                                {data?.ctaPrimary?.value}
                             </LinkCustom>
                         </FadeIn>
                     </div>
 
-                    {FIGURE_IMAGE ? (
+                    {figureImage ? (
                         // mt-auto belongs on the flex child itself — the FadeIn wrapper is that
                         // child now, so parking it here is what pushes the figure back to the
                         // bottom of the leftover space, just above the scroll hint
                         <FadeIn delay={500} className="mt-auto w-[200px] pt-12 sm:w-[280px]">
                             <FillImage
-                                src={FIGURE_IMAGE}
-                                alt={FIGURE_ALT}
-                                width={FIGURE_WIDTH}
-                                height={FIGURE_HEIGHT}
-                                sizes="(max-width: 640px) 200px, 280px"
+                                src={figureImage}
+                                alt={figure?.mediaAltText ?? ""}
+                                width={figure?.width}
+                                height={figure?.height}
                                 wrapperClassName="w-full"
                                 className={cn("h-auto w-full object-contain", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
                             />
@@ -148,17 +137,12 @@ const HeroSection = ({ language }: HeroSectionProps) => {
                         )}
                     >
                         <FadeIn delay={600}>
-                            <span
-                                className={cn(
-                                    "flex size-7 items-center justify-center rounded-full",
-                                    "border border-(--border-strong)",
-                                )}
-                            >
-                                <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.6} />
-                            </span>
+                        <span className="flex h-8 w-5.5 items-center justify-center rounded-full border border-current">
+                            <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.5} />
+                        </span>
                         </FadeIn>
                         <FadeIn delay={700}>
-                            {SCROLL_HINT}
+                            {data?.scrollDown?.value}
                         </FadeIn>
                     </a>
                 </div>

@@ -1,6 +1,10 @@
 import { Star } from "lucide-react";
 
-import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
+import {
+    convertObjectToArrayByPrefix,
+    extractAttributes,
+    PictureAttributes,
+} from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
@@ -35,37 +39,30 @@ const toPicture = (dto: TranslateContentResponseDto | undefined, fallbackAlt: st
     };
 };
 
-const EYEBROW = "Mission & Vision";
-
-const TITLE_PARTS = [
-    { text: "เปลี่ยนวิสัยทัศน์", highlight: false },
-    { text: "ให้กลายเป็นความจริง", highlight: true },
-];
-
-const SUB_TITLE =
-    "จากแนวคิดสู่ผลลัพธ์เราทำให้วิสัยทัศน์ของคุณเป็นจริงด้วยโซลูชันที่เป็นนวัตกรรมซึ่งทั้งทรงพลังและมีประสิทธิภาพ";
-
-const COVER_ALT = "บรรยากาศการทำงานของทีม";
-
-const PILLARS = [
-    {
-        title: "Our mission",
-        body: "ยกระดับศักยภาพของธุรกิจผ่านกลยุทธ์ที่เฉียบคมและการวิเคราะห์ข้อมูลเชิงลึก เรามุ่งมั่นที่จะเป็นหุ้นส่วนเชิงกลยุทธ์ที่น่าเชื่อถือที่สุด สร้างความได้เปรียบทางการแข่งขันที่ยั่งยืนในทุกอุตสาหกรรม",
-    },
-    {
-        title: "Our vision",
-        body: "เป็นผู้นำด้านที่ปรึกษาธุรกิจระดับภูมิภาคที่กำหนดนิยามใหม่ของความสำเร็จด้วยนวัตกรรมทางความคิดและการปฏิบัติที่ส่งมอบผลลัพธ์ที่จับต้องได้ในระดับสากล",
-    },
-];
-
-const MEDIA_CARDS = [
-    { key: "image1", label: "บรรยากาศการทำงาน", progress: 45 },
-    { key: "image2", label: "ความเชี่ยวชาญ", progress: 75 },
-];
+/** The section that owns this block's copy; the pictures live in COVER/PEOPLE. */
+const TEXT_SECTION = "4";
 
 const REVIEW_AVATAR_KEYS = ["person1", "person2", "person3"];
 
 const REVIEW_STARS = 5;
+
+/** attributes on `stat*` — the number itself is the row value. */
+interface StatAttributes {
+    title?: string;
+    lines?: string[];
+    review?: boolean;
+}
+
+/** attributes on `pillar*` — the pillar name is the row value. */
+interface PillarAttributes {
+    body?: string;
+}
+
+/** attributes on the workplace pictures — the caption and the bar width beside them. */
+interface WorkplaceAttributes extends PictureAttributes {
+    label?: string;
+    progress?: number;
+}
 
 interface StatCard {
     title: string;
@@ -73,30 +70,6 @@ interface StatCard {
     lines: string[];
     review?: boolean;
 }
-
-const STATS: StatCard[] = [
-    {
-        title: "ทีมงานผู้เชี่ยวชาญ",
-        value: "20+",
-        lines: ["เรามีทีมงาน", "ผู้เชี่ยวชาญด้านต่างๆ", "พร้อมช่วยเหลือคุณ"],
-    },
-    {
-        title: "ลูกค้าพึงพอใจทั่วโลก",
-        value: "99%",
-        lines: ["ลูกค้ายังคงใช้บริการ", "ของเราเพราะคุณภาพและ", "ผลลัพธ์ที่ได้"],
-        review: true,
-    },
-    {
-        title: "โปรเจกต์ที่ส่งมอบแล้ว",
-        value: "10+",
-        lines: ["ส่งมอบประสบการณ์", "ที่ดีให้แก่ทุกคน"],
-    },
-    {
-        title: "รางวัล",
-        value: "3",
-        lines: ["ความเชี่ยวชาญที่", "นำไปสู่ผลลัพธ์ที่", "มีความหมาย"],
-    },
-];
 
 const REVEAL_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
 
@@ -106,17 +79,44 @@ const CARD_CLASSNAME =
     "flex flex-col rounded-2xl border border-(--border-default) p-4 sm:min-h-45 sm:p-6";
 
 const MissionAndVision = ({ data }: MissionAndVisionProps) => {
+    const text = data?.[TEXT_SECTION];
     const coverSection = data?.[COVER_SECTION];
     const peopleSection = data?.[PEOPLE_SECTION];
 
-    const cover = toPicture(coverSection?.image1, COVER_ALT);
-    const mediaCards = MEDIA_CARDS.map((card) => ({
-        ...card,
-        picture: toPicture(coverSection?.[card.key], card.label),
+    if (!text) return null;
+
+    const EYEBROW = text?.eyebrow?.value;
+    const SUB_TITLE = text?.subTitle?.value;
+    // the highlighted half of the heading is its own row, so a translator can move it
+    const TITLE_PARTS = [
+        { text: text?.titleLead?.value ?? "", highlight: false },
+        { text: text?.titleHighlight?.value ?? "", highlight: true },
+    ];
+    const PILLARS = convertObjectToArrayByPrefix<PillarAttributes>(text, "pillar").map((pillar) => ({
+        title: pillar.value ?? "",
+        body: pillar.attributes?.body ?? "",
     }));
-    const avatars = REVIEW_AVATAR_KEYS.map((key, index) =>
-        toPicture(peopleSection?.[key], `ลูกค้า ${index + 1}`),
-    );
+    const STATS: StatCard[] = convertObjectToArrayByPrefix<StatAttributes>(text, "stat").map((stat) => ({
+        title: stat.attributes?.title ?? "",
+        value: stat.value ?? "",
+        lines: stat.attributes?.lines ?? [],
+        review: stat.attributes?.review,
+    }));
+
+    // the caption and the bar width ride along with each workplace picture
+    const workplace = convertObjectToArrayByPrefix<WorkplaceAttributes>(coverSection, "image");
+    const mediaCards = workplace.map((card) => ({
+        key: card.key,
+        label: card.attributes?.label ?? "",
+        progress: card.attributes?.progress ?? 0,
+        picture: toPicture(coverSection?.[card.key], card.attributes?.label ?? ""),
+    }));
+
+    const cover = toPicture(coverSection?.image1, mediaCards[0]?.label ?? "");
+    const avatars = REVIEW_AVATAR_KEYS.map((key, index) => ({
+        key,
+        ...toPicture(peopleSection?.[key], `ลูกค้า ${index + 1}`),
+    }));
 
     return (
         <section
@@ -184,7 +184,8 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                 <FillImage
                                     src={cover.src}
                                     alt={cover.alt}
-                                    sizes="(max-width: 1280px) 100vw, 1280px"
+                                    width={cover.width}
+                                    height={cover.height}
                                     wrapperClassName="absolute inset-0 h-full w-full"
                                     className={cn(
                                         "h-full w-full object-cover object-center",
@@ -274,9 +275,9 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                     <>
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-center -space-x-2">
-                                                {avatars.map(({ src, alt }) => (
+                                                {avatars.map(({ key, src, alt, width, height }) => (
                                                     <span
-                                                        key={alt}
+                                                        key={key}
                                                         className={cn(
                                                             "relative size-8 overflow-hidden rounded-full",
                                                             "border border-(--border-default) bg-(--surface-muted)",
@@ -287,7 +288,8 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                                         <FillImage
                                                             src={src}
                                                             alt={alt}
-                                                            sizes="32px"
+                                                            width={width}
+                                                            height={height}
                                                             wrapperClassName="absolute inset-0 h-full w-full"
                                                             className="h-full w-full object-cover"
                                                         />

@@ -4,7 +4,13 @@ import { useState } from "react";
 
 import { ArrowRight } from "lucide-react";
 
-import { BACKEND_IMAGE_PREFIX } from "@/lib/media/image-loader";
+import {
+    convertObjectToArrayByPrefix,
+    convertObjectToValuesByPrefix,
+    extractAttributes,
+    PictureAttributes,
+} from "@/lib/cms/content-attributes";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import cn from "@/lib/tw-merge";
 
 import FadeIn from "@/app/component/fade-in.components";
@@ -12,72 +18,41 @@ import FillImage from "@/components/fill-image.component";
 import LinkCustom from "@/components/link-custom.component";
 
 interface OurServicesProps {
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const PLACEHOLDER_IMAGE = `${BACKEND_IMAGE_PREFIX}gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp`;
-
-const EYEBROW = "Our Service";
-
-const TITLE = "บริการด้านการตลาดดิจิทัลที่ครบวงจร";
-
-/** Split where the phone design breaks it. The halves join back into one line from lg, where
- *  they are inline again — Thai needs no space at the seam. */
-const SUB_TITLE_PARTS = [
-    "เราออกแบบโซลูชันการตลาดดิจิทัลที่เหมาะสมกับขนาดและ",
-    "เป้าหมายของธุรกิจคุณโดยเฉพาะ",
-];
-
-const CTA_LABEL = "ติดต่อเรา";
-const CTA_PATH = "contact-us";
+/** attributes on `service*` — the card title is the row value. */
+interface ServiceAttributes {
+    lines?: string[];
+}
 
 interface ServiceCard {
     title: string;
     lines: string[];
 }
 
-const SERVICES: ServiceCard[] = [
-    {
-        title: "กลยุทธ์การตลาด",
-        lines: [
-            "วิเคราะห์โครงสร้างตลาด พฤติกรรมผู้บริโภค",
-            "และค้นหาโอกาสใหม่ทางธุรกิจเพื่อสร้างความได้เปรียบในการแข่งขันอย่างยั่งยืน",
-        ],
-    },
-    {
-        title: "คอนเทนต์มาร์เก็ตติ้ง",
-        lines: [
-            "วางแผนและผลิตคอนเทนต์ที่ตรงกับกลุ่มเป้าหมาย",
-            "เพื่อสร้างการจดจำและความเชื่อมั่นในแบรนด์อย่างต่อเนื่อง",
-        ],
-    },
-    {
-        title: "โฆษณาดิจิทัล",
-        lines: [
-            "บริหารงบโฆษณาบนทุกแพลตฟอร์มอย่างแม่นยำ",
-            "วัดผลได้จริงและปรับปรุงประสิทธิภาพอย่างสม่ำเสมอ",
-        ],
-    },
-    {
-        title: "โซเชียลมีเดีย",
-        lines: [
-            "ดูแลช่องทางโซเชียลมีเดียของแบรนด์แบบครบวงจร",
-            "ตั้งแต่การวางคอนเซปต์ไปจนถึงการสื่อสารกับผู้ติดตาม",
-        ],
-    },
-    {
-        title: "วิเคราะห์ข้อมูล",
-        lines: [
-            "เปลี่ยนข้อมูลจากทุกช่องทางให้เป็นข้อมูลเชิงลึก",
-            "ที่ใช้ตัดสินใจทางธุรกิจได้จริงและต่อยอดการเติบโต",
-        ],
-    },
-];
 
 const REVEAL_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
 
-const OurServices = ({ language }: OurServicesProps) => {
+const OurServices = ({ data, language }: OurServicesProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
+
+    const EYEBROW = data?.eyebrow?.value;
+    const TITLE = data?.title?.value;
+    const SUB_TITLE_PARTS = convertObjectToValuesByPrefix(data, "subTitle").map((line) => line.value);
+    const CTA_LABEL = data?.ctaButton?.value ?? "";
+    const CTA_PATH = data?.ctaButton?.linkUrl ?? "";
+    const cover = extractAttributes<PictureAttributes>(data?.serviceImg);
+    const PLACEHOLDER_IMAGE = cover?.mediaStorageKey ?? "";
+    const COVER_WIDTH = cover?.width;
+    const COVER_HEIGHT = cover?.height;
+    const SERVICES: ServiceCard[] = convertObjectToArrayByPrefix<ServiceAttributes>(data, "service").map(
+        (service) => ({
+            title: service.value ?? "",
+            lines: service.attributes?.lines ?? [],
+        }),
+    );
 
     return (
         <section
@@ -162,7 +137,8 @@ const OurServices = ({ language }: OurServicesProps) => {
                                 <FillImage
                                     src={PLACEHOLDER_IMAGE}
                                     alt={title}
-                                    sizes="(max-width: 1024px) 100vw, 60vw"
+                                    width={COVER_WIDTH}
+                                    height={COVER_HEIGHT}
                                     wrapperClassName={cn(
                                         "pointer-events-none overflow-hidden",
                                         "relative aspect-video w-full rounded-xl",

@@ -28,6 +28,18 @@ interface NavbarProps {
   showLogo?: boolean
 }
 
+/** Swaps every link label for its CMS translation, children included. */
+function withTranslatedLabels(
+  items: NavLinkItem[],
+  t: Awaited<ReturnType<typeof getTranslations>>,
+): NavLinkItem[] {
+  return items.map((item) => ({
+    ...item,
+    label: t(item.key),
+    ...(item.children ? { children: withTranslatedLabels(item.children, t) } : {}),
+  }))
+}
+
 const Navbar = async ({ language, languages, menuItems = [], showLogo = false }: NavbarProps) => {
   const t = await getTranslations()
   const labels: NavbarLabels = {
@@ -35,12 +47,14 @@ const Navbar = async ({ language, languages, menuItems = [], showLogo = false }:
     startTrading: t("navbar.startTrading"),
     language: t("navbar.language"),
   }
+  // link labels come from translate_values (CMS), the same catalog next-intl reads
+  const links = withTranslatedLabels(menuItems, t)
 
   return (
     <>
       <NavbarShell>
-        <DesktopNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels}/>
-        <MobileNavbar language={language} languages={languages} navLinks={menuItems} showLogo={showLogo} labels={labels} />
+        <DesktopNavbar language={language} languages={languages} navLinks={links} showLogo={showLogo} labels={labels}/>
+        <MobileNavbar language={language} languages={languages} navLinks={links} showLogo={showLogo} labels={labels} />
       </NavbarShell>
       <div aria-hidden className="h-(--navbar-height) shrink-0" />
     </>

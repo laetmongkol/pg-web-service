@@ -1,47 +1,45 @@
+import { convertObjectToArrayByPrefix } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import FadeIn from "@/app/component/fade-in.components";
 
-import OurServicesSlide, { type OurServiceSlideItem } from "./components/our-services-slide";
+import OurServicesSlide, {
+    type OurServiceSlideItem,
+    type ServiceIconName,
+} from "./components/our-services-slide";
 
-const EYEBROW = "Our Service";
-const TITLE = "การบริการของเรา";
-const DESCRIPTION = "ครบทุกมิติการตลาดและการเติบโตของธุรกิจในที่เดียว";
-const LINK_LABEL = "ดูรายละเอียด";
+/** attributes on `service*` — icon key + body copy; the card title is the row value. */
+interface ServiceAttributes {
+    icon?: string;
+    description?: string;
+}
 
-const SERVICES: Omit<OurServiceSlideItem, "href" | "linkLabel">[] = [
-    {
-        icon: "consulting",
-        title: "Business Consulting",
-        description: "ให้คำปรึกษาเชิงกลยุทธ์ วิเคราะห์ธุรกิจ\nและวางแผนการเติบโตที่วัดผลได้จริง",
-    },
-    {
-        icon: "strategy",
-        title: "Marketing Strategy",
-        description: "วางกลยุทธ์การตลาดที่เข้าถึงกลุ่มเป้าหมาย\nผ่านทุกช่องทางอย่างมีทิศทาง",
-    },
-    {
-        icon: "branding",
-        title: "Branding",
-        description: "สร้างแบรนด์ให้โดดเด่น มีจุดยืน\nและเป็นที่จดจำในใจลูกค้า",
-    },
-    {
-        icon: "content",
-        title: "Content & Creative",
-        description: "สร้างสรรค์คอนเทนต์และงานครีเอทีฟ\nที่สื่อสารแบรนด์ได้อย่างเป็นมืออาชีพ",
-    },
-];
+const SERVICE_ICON_FALLBACK: ServiceIconName = "consulting";
+const SERVICE_ICON_NAMES: ServiceIconName[] = ["consulting", "strategy", "branding", "content"];
+
+const resolveIcon = (icon?: string): ServiceIconName =>
+    SERVICE_ICON_NAMES.find((name) => name === icon) ?? SERVICE_ICON_FALLBACK;
 
 interface OurServicesSectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const OurServicesSection = ({ language }: OurServicesSectionProps) => {
-    const services: OurServiceSlideItem[] = SERVICES.map((service) => ({
-        ...service,
-        href: `/${language}/services`,
-        linkLabel: LINK_LABEL,
-    }));
+const OurServicesSection = ({ data, language }: OurServicesSectionProps) => {
+    if (!data) return null;
+
+    const linkLabel = data?.ctaButton?.value ?? "";
+    const href = `/${language}/${data?.ctaButton?.linkUrl ?? ""}`;
+
+    const services: OurServiceSlideItem[] = convertObjectToArrayByPrefix<ServiceAttributes>(data, "service")
+        .map((service) => ({
+            icon: resolveIcon(service.attributes?.icon),
+            title: service.value ?? "",
+            description: service.attributes?.description ?? "",
+            href,
+            linkLabel,
+        }));
 
     // passed into the slide so desktop can line the heading up with the arrows
     const header = (
@@ -55,7 +53,7 @@ const OurServicesSection = ({ language }: OurServicesSectionProps) => {
                     )}
                 >
                     <span className="bg-(--text-primary) size-1.5 shrink-0 rounded-full" />
-                    {EYEBROW}
+                    {data?.badge?.value}
                 </span>
             </FadeIn>
 
@@ -66,12 +64,12 @@ const OurServicesSection = ({ language }: OurServicesSectionProps) => {
                         "text-2xl leading-snug sm:text-3xl lg:text-4xl lg:leading-tight",
                     )}
                 >
-                    {TITLE}
+                    {data?.title?.value}
                 </h2>
             </FadeIn>
 
             <FadeIn delay={200} className={cn("text-(--text-secondary)", "text-sm md:text-base")}>
-                {DESCRIPTION}
+                {data?.description?.value}
             </FadeIn>
         </div>
     );

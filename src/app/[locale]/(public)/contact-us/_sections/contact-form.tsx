@@ -3,22 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 
 import { parseApiError } from "@/lib/api/parse-api-error";
+import { extractAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import FadeIn from "@/app/component/fade-in.components";
 import { errorToast, successToast } from "@/components/toasts";
 import useContactAppService from "@/services/modules/app-service/hooks/contact.app-service.hook";
 
 import type { FormEvent } from "react";
-
-const TITLE = "ส่งข้อความถึงเรา (Send Message)";
-const SUBMIT_LABEL = "ส่งข้อมูลการติดต่อ";
-const SUBMITTING_LABEL = "กำลังส่ง...";
-
-const SUCCESS_TITLE = "ส่งข้อมูลเรียบร้อย";
-const SUCCESS_MESSAGE = "ทีมงานจะติดต่อกลับโดยเร็วที่สุด";
-const ERROR_TITLE = "ส่งข้อมูลไม่สำเร็จ";
-const ERROR_MESSAGE = "กรุณาลองใหม่อีกครั้ง";
 
 /**
  * `contact_messages.topic_code` is a filter column in the console, so the free-text subject from
@@ -30,6 +23,15 @@ const TOPIC_CODE = "general";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type FieldName = "fullName" | "email" | "phone" | "subject" | "message";
+
+/** CMS row code for each field — the label is the row value, the placeholder an attribute. */
+const FIELD_CODE: Record<FieldName, string> = {
+    fullName: "fieldName",
+    email: "fieldEmail",
+    phone: "fieldPhone",
+    subject: "fieldSubject",
+    message: "fieldMessage",
+};
 
 const EMPTY_FORM: Record<FieldName, string> = {
     fullName: "",
@@ -47,20 +49,34 @@ const FIELD_CLASSNAME = cn(
 
 const LABEL_CLASSNAME = "text-xs font-medium text-(--text-primary)";
 
+/** Kept in the component: these fire before anything is sent, so they never reach the CMS copy. */
+const VALIDATION = {
+    fullName: "กรุณากรอกชื่อ-นามสกุล",
+    emailRequired: "กรุณากรอกอีเมล",
+    emailInvalid: "รูปแบบอีเมลไม่ถูกต้อง",
+    phoneTooLong: "เบอร์โทรศัพท์ยาวเกินไป",
+    subject: "กรุณาระบุหัวข้อที่ต้องการติดต่อ",
+    message: "กรุณากรอกข้อความ",
+};
+
 const validate = (form: Record<FieldName, string>): Partial<Record<FieldName, string>> => {
     const errors: Partial<Record<FieldName, string>> = {};
 
-    if (!form.fullName.trim()) errors.fullName = "กรุณากรอกชื่อ-นามสกุล";
-    if (!form.email.trim()) errors.email = "กรุณากรอกอีเมล";
-    else if (!EMAIL_PATTERN.test(form.email.trim())) errors.email = "รูปแบบอีเมลไม่ถูกต้อง";
-    if (form.phone.trim().length > 32) errors.phone = "เบอร์โทรศัพท์ยาวเกินไป";
-    if (!form.subject.trim()) errors.subject = "กรุณาระบุหัวข้อที่ต้องการติดต่อ";
-    if (!form.message.trim()) errors.message = "กรุณากรอกข้อความ";
+    if (!form.fullName.trim()) errors.fullName = VALIDATION.fullName;
+    if (!form.email.trim()) errors.email = VALIDATION.emailRequired;
+    else if (!EMAIL_PATTERN.test(form.email.trim())) errors.email = VALIDATION.emailInvalid;
+    if (form.phone.trim().length > 32) errors.phone = VALIDATION.phoneTooLong;
+    if (!form.subject.trim()) errors.subject = VALIDATION.subject;
+    if (!form.message.trim()) errors.message = VALIDATION.message;
 
     return errors;
 };
 
-const ContactForm = () => {
+interface ContactFormProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
+
+const ContactForm = ({ data }: ContactFormProps) => {
     const [form, setForm] = useState(EMPTY_FORM);
     const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
     /** Hidden field: anything typed in it came from a bot, never from a person. */
@@ -81,6 +97,10 @@ const ContactForm = () => {
         setErrors((current) => (current[name] ? { ...current, [name]: undefined } : current));
     };
 
+    const label = (name: FieldName) => data?.[FIELD_CODE[name]]?.value ?? "";
+    const placeholder = (name: FieldName) =>
+        extractAttributes<{ placeholder?: string }>(data?.[FIELD_CODE[name]])?.placeholder ?? "";
+
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -95,7 +115,7 @@ const ContactForm = () => {
                     email: form.email.trim(),
                     phone: form.phone.trim() || undefined,
                     topicCode: TOPIC_CODE,
-                    message: `หัวข้อ: ${form.subject.trim()}\n\n${form.message.trim()}`,
+                    message: `${label("subject")}: ${form.subject.trim()}\n\n${form.message.trim()}`,
                 },
                 botTrap: {
                     honeypot,
@@ -103,20 +123,25 @@ const ContactForm = () => {
                 },
             });
 
-            successToast({ title: SUCCESS_TITLE, message: SUCCESS_MESSAGE });
+            successToast({
+                title: data?.successTitle?.value ?? "",
+                message: data?.successMessage?.value ?? "",
+            });
             setForm(EMPTY_FORM);
             renderedAt.current = Date.now();
         } catch (error) {
             const parsed = await parseApiError(error);
             errorToast({
-                title: parsed?.header ?? ERROR_TITLE,
-                message: parsed?.message ?? ERROR_MESSAGE,
+                title: parsed?.header ?? data?.errorTitle?.value ?? "",
+                message: parsed?.message ?? data?.errorMessage?.value ?? "",
             });
         }
     };
 
     const renderError = (name: FieldName) =>
         errors[name] ? <span className="text-xs text-(--color-danger-500)">{errors[name]}</span> : null;
+
+    if (!data) return null;
 
     return (
         <form
@@ -128,18 +153,20 @@ const ContactForm = () => {
             )}
         >
             <FadeIn>
-                <h2 className={cn("font-bold text-(--text-primary)", "text-xl sm:text-2xl")}>{TITLE}</h2>
+                <h2 className={cn("font-bold text-(--text-primary)", "text-xl sm:text-2xl")}>
+                    {data?.title?.value}
+                </h2>
             </FadeIn>
 
             <FadeIn delay={100} className="flex flex-col gap-2">
                 <label className={LABEL_CLASSNAME} htmlFor="contact-fullName">
-                    ชื่อ-นามสกุล / Name
+                    {label("fullName")}
                 </label>
                 <input
                     id="contact-fullName"
                     name="fullName"
                     autoComplete="name"
-                    placeholder="กรอกชื่อ-นามสกุลของคุณ"
+                    placeholder={placeholder("fullName")}
                     value={form.fullName}
                     onChange={(event) => setField("fullName", event.target.value)}
                     aria-invalid={Boolean(errors.fullName)}
@@ -151,14 +178,14 @@ const ContactForm = () => {
             <FadeIn delay={200} className="grid gap-5 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
                     <label className={LABEL_CLASSNAME} htmlFor="contact-email">
-                        อีเมล / Email
+                        {label("email")}
                     </label>
                     <input
                         id="contact-email"
                         name="email"
                         type="email"
                         autoComplete="email"
-                        placeholder="example@domain.com"
+                        placeholder={placeholder("email")}
                         value={form.email}
                         onChange={(event) => setField("email", event.target.value)}
                         aria-invalid={Boolean(errors.email)}
@@ -169,14 +196,14 @@ const ContactForm = () => {
 
                 <div className="flex flex-col gap-2">
                     <label className={LABEL_CLASSNAME} htmlFor="contact-phone">
-                        เบอร์โทรศัพท์ / Phone
+                        {label("phone")}
                     </label>
                     <input
                         id="contact-phone"
                         name="phone"
                         type="tel"
                         autoComplete="tel"
-                        placeholder="089-XXX-XXXX"
+                        placeholder={placeholder("phone")}
                         value={form.phone}
                         onChange={(event) => setField("phone", event.target.value)}
                         aria-invalid={Boolean(errors.phone)}
@@ -188,12 +215,12 @@ const ContactForm = () => {
 
             <FadeIn delay={300} className="flex flex-col gap-2">
                 <label className={LABEL_CLASSNAME} htmlFor="contact-subject">
-                    หัวข้อ / Subject
+                    {label("subject")}
                 </label>
                 <input
                     id="contact-subject"
                     name="subject"
-                    placeholder="ระบุเรื่องที่ต้องการติดต่อ"
+                    placeholder={placeholder("subject")}
                     value={form.subject}
                     onChange={(event) => setField("subject", event.target.value)}
                     aria-invalid={Boolean(errors.subject)}
@@ -204,13 +231,13 @@ const ContactForm = () => {
 
             <FadeIn delay={400} className="flex flex-col gap-2">
                 <label className={LABEL_CLASSNAME} htmlFor="contact-message">
-                    ข้อความ / Message
+                    {label("message")}
                 </label>
                 <textarea
                     id="contact-message"
                     name="message"
                     rows={5}
-                    placeholder="รายละเอียดธุรกิจ เป้าหมาย หรือคำถามเพิ่มเติม..."
+                    placeholder={placeholder("message")}
                     value={form.message}
                     onChange={(event) => setField("message", event.target.value)}
                     aria-invalid={Boolean(errors.message)}
@@ -242,7 +269,9 @@ const ContactForm = () => {
                         "disabled:cursor-not-allowed disabled:opacity-60",
                     )}
                 >
-                    {createContactMessage.isPending ? SUBMITTING_LABEL : SUBMIT_LABEL}
+                    {createContactMessage.isPending
+                        ? data?.submittingLabel?.value
+                        : data?.submitButton?.value}
                 </button>
             </FadeIn>
         </form>

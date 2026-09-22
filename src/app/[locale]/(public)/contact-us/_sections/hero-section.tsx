@@ -1,53 +1,41 @@
-import { PictureAttributes } from "@/lib/cms/content-attributes";
-import { BACKEND_IMAGE_PREFIX } from "@/lib/media/image-loader";
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
-const EYEBROW = "Contact Us";
-const TITLE = "ติดต่อเรา";
-const DESCRIPTION = "เริ่มต้นพูดคุยเพื่อสร้างสรรค์งานสถาปัตยกรรมและการก่อสร้างที่เป็นเอกลักษณ์เฉพาะตัวคุณ";
+interface HeroSectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
 
-/**
- * Hardcoded stand-in for the banner picture row, in the shape a `translate_contents` picture row
- * returns — the file lives on `mediaStorageKey` and nothing else. Swap for
- * `extractAttributes<PictureAttributes>(data?.bgImg)` once page `ContactUs` section `1` is filled.
- */
-const BANNER_ROW: PictureAttributes = {
-    mediaStorageKey: "contents/2026-09-18T10-09-01_9d3a7339-94c1-4b4c-969b-c5ee9180c920.png",
-    mediaAltText: "สำนักงาน Sriwilai Consulting & Marketing Agency",
-    width: 1536,
-    height: 1024,
-};
+const HeroSection = ({ data }: HeroSectionProps) => {
+    if (!data) return null;
 
-/** What `extractAttributes` does to a CMS picture row: the stored key is bare until it is read. */
-const BANNER: PictureAttributes = BANNER_ROW.mediaStorageKey
-    ? { ...BANNER_ROW, mediaStorageKey: `${BACKEND_IMAGE_PREFIX}${BANNER_ROW.mediaStorageKey}` }
-    : BANNER_ROW;
+    const banner = extractAttributes<PictureAttributes>(data?.bgImg);
 
-const HeroSection = () => {
     return (
         <section
             id="hero"
             className={cn(
-                "relative flex w-full flex-col",
+                "relative flex w-full flex-col overflow-hidden",
                 // the radial wash in the design: page grey at the rim, near-white in the middle
                 "bg-(--surface-page)",
                 "lg:max-h-[1080px] aspect-square lg:aspect-[16/8] pt-(--navbar-height)",
             )}
         >
-            <FillImage
-                src={BANNER.mediaStorageKey ?? ""}
-                alt={BANNER.mediaAltText ?? TITLE}
-                width={BANNER.width}
-                height={BANNER.height}
-                sizes="100vw"
-                priority
-                wrapperClassName="absolute inset-0 h-full w-full"
-                className={cn("h-full w-full object-cover", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
-            />
+            {banner?.mediaStorageKey ? (
+                <FillImage
+                    src={banner.mediaStorageKey}
+                    alt={banner?.mediaAltText ?? ""}
+                    width={banner?.width}
+                    height={banner?.height}
+                    priority
+                    wrapperClassName="absolute inset-0 h-full w-full"
+                    className={cn("h-full w-full object-cover", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
+                />
+            ) : null}
 
             {/* the copy sits over a photo, so it carries its own contrast rather than relying on one */}
             <div
@@ -63,7 +51,9 @@ const HeroSection = () => {
                     )}
                 >
                     <FadeIn>
-                        <span className="text-xs text-(--text-invert)/80 md:text-sm">{EYEBROW}</span>
+                        <span className="text-xs text-(--text-invert)/80 md:text-sm">
+                            {data?.eyebrow?.value}
+                        </span>
                     </FadeIn>
 
                     <FadeIn delay={100}>
@@ -73,7 +63,7 @@ const HeroSection = () => {
                                 "text-3xl leading-tight sm:text-5xl lg:text-6xl",
                             )}
                         >
-                            {TITLE}
+                            {data?.title?.value}
                         </h1>
                     </FadeIn>
 
@@ -84,7 +74,7 @@ const HeroSection = () => {
                                 "text-xs leading-relaxed md:text-sm",
                             )}
                         >
-                            {DESCRIPTION}
+                            {data?.description?.value}
                         </p>
                     </FadeIn>
                 </div>

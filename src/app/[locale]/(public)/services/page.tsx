@@ -16,7 +16,7 @@ interface ServicesPageProps {
 
 export async function generateMetadata({ params }: ServicesPageProps): Promise<Metadata> {
     const { locale } = await params;
-    return buildPageMetadata({ locale, pathname: "/services", pageCode: "Services" });
+    return buildPageMetadata({ locale, pathname: "services", pageCode: "Services" });
 }
 
 export default async function ServicesPage({ params }: ServicesPageProps) {
@@ -24,17 +24,18 @@ export default async function ServicesPage({ params }: ServicesPageProps) {
     setRequestLocale(routeLocale);
     const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."6", in page order.
     const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "Services");
 
     return (
         <div className="relative flex flex-col bg-(--surface-page)">
             <HeroSection data={data?.["1"]} language={language} />
             <section id="services-content" className="w-full bg-(--surface-page)" />
-            <WhoWeAre />
-            <OurServices language={language} />
-            <OurCustomer />
-            <WhyChooseUs />
-            <CtaSection language={language} />
+            <WhoWeAre data={data?.["2"]} />
+            <OurServices data={data?.["3"]} language={language} />
+            <OurCustomer data={data?.["4"]} />
+            <WhyChooseUs data={data?.["5"]} />
+            <CtaSection data={data?.["6"]} language={language} />
         </div>
     );
 }

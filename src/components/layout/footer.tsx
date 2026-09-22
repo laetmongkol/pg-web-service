@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server"
+
 import {
   IoLogoFacebook,
   IoLogoGoogle,
@@ -18,7 +20,6 @@ import {
   COMPANY_BRAND_NAME,
   COMPANY_EMAIL,
   COMPANY_PHONE,
-  COMPANY_SUMMARY,
 } from "@/shared/constants/company.constants"
 
 import AppLogo from "./logo"
@@ -27,22 +28,18 @@ interface FooterProps {
   language?: LANGUAGE
 }
 
+/** `key` is the translate_values code; the label itself comes from the CMS catalog. */
 interface FooterLinkItem {
-  label: string
+  key: string
   href: string
 }
 
-const NAVIGATION_LINKS: FooterLinkItem[] = NAV_LINKS.map(({ label, href }) => ({
-  label,
-  href: href ? `/${href}` : "/",
-}))
-
 const UTILITY_LINKS: FooterLinkItem[] = [
-  { label: "Property", href: "#" },
-  { label: "Our Mission", href: "/about-us#mission-and-vision" },
-  { label: "Our Vision", href: "/about-us#mission-and-vision" },
-  { label: "Our History", href: "/about-us#our-history" },
-  { label: "404 Not Found", href: "/404" },
+  { key: "footer.utility.property", href: "#" },
+  { key: "footer.utility.ourMission", href: "/about-us#mission-and-vision" },
+  { key: "footer.utility.ourVision", href: "/about-us#mission-and-vision" },
+  { key: "footer.utility.ourHistory", href: "/about-us#our-history" },
+  { key: "footer.utility.notFound", href: "/404" },
 ]
 
 interface FooterContactItem {
@@ -71,8 +68,8 @@ const SOCIAL_LINKS: FooterSocialItem[] = [
 ]
 
 const LEGAL_LINKS: FooterLinkItem[] = [
-  { label: "Term of service", href: "#" },
-  { label: "Privacy Policy", href: "#" },
+  { key: "footer.legal.termsOfService", href: "#" },
+  { key: "footer.legal.privacy", href: "#" },
 ]
 
 function resolveHref(language: LANGUAGE, href: string) {
@@ -83,7 +80,9 @@ const HEADING_CLASSNAME = "text-xs font-semibold text-(--text-primary) lg:text-s
 const BODY_CLASSNAME = "text-xs leading-relaxed text-(--text-secondary) lg:text-sm"
 const BODY_LINK_CLASSNAME = cn(BODY_CLASSNAME, "transition-colors hover:text-(--text-primary)")
 
-export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
+export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
+  const t = await getTranslations()
+
   return (
     <footer className="relative w-full overflow-hidden bg-(--surface-default) text-(--text-primary)">
       <div
@@ -105,11 +104,13 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
           >
             <div className="flex flex-col items-start">
               <AppLogo width={140} />
-              <p className={cn("mt-4 max-w-xs lg:mt-5", BODY_CLASSNAME, "text-xs lg:text-xs")}>{COMPANY_SUMMARY}</p>
+              <p className={cn("mt-4 max-w-xs lg:mt-5", BODY_CLASSNAME, "text-xs lg:text-xs")}>
+                {t("footer.brandDescription")}
+              </p>
             </div>
 
             <div className="flex flex-col items-start lg:mt-6">
-            <p className="text-[0.625rem] text-(--text-secondary) lg:text-xs">{"Follow us"}</p>
+            <p className="text-[0.625rem] text-(--text-secondary) lg:text-xs">{t("footer.followUs")}</p>
 
             <div className="mt-2.5 flex items-center gap-1 lg:mt-3 lg:gap-1.5">
               {SOCIAL_LINKS.map(({ label, href, Icon }) => (
@@ -135,12 +136,15 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
           </div>
 
           <div className="flex flex-col">
-            <h3 className={HEADING_CLASSNAME}>{"Navigation"}</h3>
+            <h3 className={HEADING_CLASSNAME}>{t("footer.navigation.title")}</h3>
             <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
-              {NAVIGATION_LINKS.map(({ label, href }) => (
-                <li key={label}>
-                  <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
-                    {label}
+              {NAV_LINKS.map(({ key, href }) => (
+                <li key={key}>
+                  <LinkCustom
+                    href={resolveHref(language, href ? `/${href}` : "/")}
+                    className={BODY_LINK_CLASSNAME}
+                  >
+                    {t(key)}
                   </LinkCustom>
                 </li>
               ))}
@@ -148,12 +152,12 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
           </div>
 
           <div className="flex flex-col">
-            <h3 className={HEADING_CLASSNAME}>{"Utility Pages"}</h3>
+            <h3 className={HEADING_CLASSNAME}>{t("footer.utility.title")}</h3>
             <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
-              {UTILITY_LINKS.map(({ label, href }) => (
-                <li key={label}>
+              {UTILITY_LINKS.map(({ key, href }) => (
+                <li key={key}>
                   <LinkCustom href={resolveHref(language, href)} className={BODY_LINK_CLASSNAME}>
-                    {label}
+                    {t(key)}
                   </LinkCustom>
                 </li>
               ))}
@@ -161,7 +165,7 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
           </div>
 
           <div className="col-span-2 flex flex-col sm:col-span-1">
-            <h3 className={HEADING_CLASSNAME}>{"Contact"}</h3>
+            <h3 className={HEADING_CLASSNAME}>{t("footer.contact.title")}</h3>
             <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
               {CONTACT_ITEMS.map(({ key, value, href }) => (
                 <li key={key}>
@@ -189,16 +193,16 @@ export default function Footer({ language = LANGUAGE.TH }: FooterProps) {
           </p>
 
           <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
-            {LEGAL_LINKS.map(({ label, href }) => (
+            {LEGAL_LINKS.map(({ key, href }) => (
               <LinkCustom
-                key={label}
+                key={key}
                 href={resolveHref(language, href)}
                 className={cn(
                   "text-xs text-(--text-secondary) lg:text-sm",
                   "transition-colors hover:text-(--text-primary)",
                 )}
               >
-                {label}
+                {t(key)}
               </LinkCustom>
             ))}
           </div>
