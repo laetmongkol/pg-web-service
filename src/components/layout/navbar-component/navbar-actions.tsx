@@ -7,7 +7,6 @@ import LinkCustom from "@/components/link-custom.component"
 import { LANGUAGE } from "@/shared/constants/common.constants"
 import { BUTTON_BASE_CLASSNAME } from "@/shared/ui/classes/button.classes"
 
-// TODO: change later
 export const NAVBAR_ROUTES = {
   signIn: "",
   startTrading: "",
@@ -17,7 +16,6 @@ export type NavbarRouteKey = keyof typeof NAVBAR_ROUTES
 
 export function getNavbarHref(language: LANGUAGE, route: NavbarRouteKey) {
   const path = NAVBAR_ROUTES[route]
-  // Absolute / protocol URLs leave the app as-is — do not prefix locale.
   if (/^(https?:)?\/\//i.test(path) || path.startsWith("mailto:") || path.startsWith("tel:")) {
     return path
   }
