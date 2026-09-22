@@ -28,8 +28,6 @@ interface MobileNavbarProps {
   labels: NavbarLabels
 }
 
-/** Same easing as the rest of the site. The `!` is load-bearing: base-transitions.css sets
- *  transition-property on `*` outside any cascade layer, so unmarked utilities do nothing. */
 const MENU_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!"
 
 const MOBILE_SIGN_IN_CLASSNAME = cn(
@@ -50,11 +48,6 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
     return () => window.removeEventListener("pageshow", handlePageShow)
   }, [])
 
-  /**
-   * The collapsed pill lives in NavbarShell, a sibling this component cannot reach. Flagging the
-   * root lets the shell fade itself out, so the pill does not sit behind the open sheet. Safe only
-   * because the sheet is portalled out of the shell — otherwise it would fade with it.
-   */
   useEffect(() => {
     const root = document.documentElement
     root.classList.toggle("menu-open", isOpen)
@@ -93,11 +86,6 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
         </div>
       </div>
 
-      {/* Portalled to <body> on purpose: the pill's backdrop-blur makes it a containing block
-        * for fixed children, so left inside it the scrim and the sheet were measured against the
-        * pill instead of the viewport — and the shell's fade would take the menu with it.
-        * It stays mounted so closing can animate too; `invisible` (not `hidden`) keeps it out of
-        * the tab order and only takes effect once the fade has finished. */}
       {typeof document !== "undefined" &&
         createPortal(
           <>
@@ -120,7 +108,6 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
               "shadow-[var(--shadow-lg)] backdrop-blur-lg",
               "px-5 py-2.5",
               "lg:hidden",
-              // grows out of the pill rather than appearing on top of it
               "origin-top transition-[opacity,visibility,translate,scale]! motion-reduce:transition-none!",
               MENU_EASE,
               isOpen

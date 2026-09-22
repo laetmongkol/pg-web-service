@@ -24,7 +24,6 @@ const NavbarShell = ({ children }: { children: ReactNode }) => {
       className={cn(
         "pointer-events-none fixed inset-x-0 top-0 z-100",
         "px-5 pt-4 sm:px-6",
-        // the open mobile menu replaces the pill, so it must not show through the scrim
         "transition-opacity! duration-200! motion-reduce:transition-none!",
         "[.menu-open_&]:opacity-0",
       )}
