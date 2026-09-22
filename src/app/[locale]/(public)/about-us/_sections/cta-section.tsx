@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
@@ -9,22 +11,28 @@ import AppLogo from "@/components/layout/logo";
 import LinkCustom from "@/components/link-custom.component";
 
 interface CtaSectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const MOCK = {
-    title: "มาร่วมเป็นส่วนหนึ่งกับเรา",
-    subTitle:
-        "เรากำลังมองหาผู้ที่มีความมุ่งมั่นและพร้อมที่จะสร้างการเปลี่ยนแปลงในอุตสาหกรรม หากคุณรักความท้าทาย นี่คือที่ของคุณ",
-    buttonLabel: "ดูตำแหน่งงาน",
-    buttonPath: "contact-us",
-    backgroundSrc: "",
-    backgroundAlt: "",
-};
 
 const HOVER_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
 
-const CtaSection = ({ language }: CtaSectionProps) => {
+const CtaSection = ({ data, language }: CtaSectionProps) => {
+    if (!data) return null;
+
+    const background = extractAttributes<PictureAttributes>(data?.bgImg);
+    const CtaData = {
+        title: data?.title?.value ?? "",
+        subTitle: data?.subTitle?.value ?? "",
+        buttonLabel: data?.ctaButton?.value ?? "",
+        buttonPath: data?.ctaButton?.linkUrl ?? "",
+        backgroundSrc: background?.mediaStorageKey ?? "",
+        backgroundAlt: background?.mediaAltText ?? "",
+        backgroundWidth: background?.width,
+        backgroundHeight: background?.height,
+    };
+
     return (
         <section
             id="cta"
@@ -40,9 +48,10 @@ const CtaSection = ({ language }: CtaSectionProps) => {
                         )}
                     >
                         <FillImage
-                            src={MOCK.backgroundSrc}
-                            alt={MOCK.backgroundAlt || MOCK.title}
-                            sizes="(max-width: 1280px) 100vw, 1216px"
+                            src={CtaData.backgroundSrc}
+                            alt={CtaData.backgroundAlt || CtaData.title}
+                            width={CtaData.backgroundWidth}
+                            height={CtaData.backgroundHeight}
                             wrapperClassName="absolute inset-0 h-full w-full"
                             className={cn(
                                 "h-full w-full object-cover object-center",
@@ -73,7 +82,7 @@ const CtaSection = ({ language }: CtaSectionProps) => {
                                         "text-xl leading-snug sm:text-2xl",
                                     )}
                                 >
-                                    {MOCK.title}
+                                    {CtaData.title}
                                 </h2>
                             </FadeIn>
 
@@ -84,13 +93,13 @@ const CtaSection = ({ language }: CtaSectionProps) => {
                                         "text-xs leading-loose md:text-sm",
                                     )}
                                 >
-                                    {MOCK.subTitle}
+                                    {CtaData.subTitle}
                                 </p>
                             </FadeIn>
 
                             <FadeIn delay={390}>
                             <LinkCustom
-                                href={`/${language}/${MOCK.buttonPath}`}
+                                href={`/${language}/${CtaData.buttonPath}`}
                                 className={cn(
                                     "group mt-8 inline-flex items-center gap-3 rounded-full",
                                     "bg-(--color-primary) text-(--text-invert)",
@@ -100,7 +109,7 @@ const CtaSection = ({ language }: CtaSectionProps) => {
                                     "hover:bg-(--color-primary-350)",
                                 )}
                             >
-                                {MOCK.buttonLabel}
+                                {CtaData.buttonLabel}
                                 <ArrowRight
                                     className={cn(
                                         "size-4 shrink-0",

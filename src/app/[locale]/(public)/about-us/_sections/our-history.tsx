@@ -1,23 +1,27 @@
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import FadeIn from "@/app/component/fade-in.components";
 
-const EYEBROW = "Our History";
+interface OurHistoryProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
 
-const TITLE_PARTS = [
-    { text: "“เราขับเคลื่อนการเติบโตด้วย", highlight: false },
-    { text: "กลยุทธ์", highlight: true },
-    { text: "และ", highlight: false },
-    { text: "นวัตกรรม", highlight: true },
-    { text: "”", highlight: false },
-];
+const OurHistory = ({ data }: OurHistoryProps) => {
+    if (!data) return null;
 
-const SUB_TITLE = "จากจุดเริ่มต้น สู่การเดินทางที่สร้างคุณค่าและเติบโตไปพร้อมกับลูกค้า";
+    const EYEBROW = data?.eyebrow?.value;
+    const SUB_TITLE = data?.subTitle?.value;
+    const DESCRIPTION = data?.description?.value;
+    // the highlighted words are their own rows, so a translator can move them inside the sentence
+    const TITLE_PARTS = [
+        { text: data?.titleLead?.value ?? "", highlight: false },
+        { text: data?.titleHighlight1?.value ?? "", highlight: true },
+        { text: data?.titleMid?.value ?? "", highlight: false },
+        { text: data?.titleHighlight2?.value ?? "", highlight: true },
+        { text: data?.titleTail?.value ?? "", highlight: false },
+    ];
 
-const DESCRIPTION =
-    "ศรีวิไลก่อตั้งขึ้นจากความตั้งใจที่จะเป็นที่ปรึกษาที่เข้าใจธุรกิจจากภายใน ไม่ใช่แค่ผู้ส่งมอบ รายงานหรือแผนสวยงามที่วางบนหิ้ง เราทำงานเคียงข้างเจ้าของธุรกิจ และทีมผู้บริหาร เพื่อแปลงข้อมูลและความเข้าใจตลาดให้กลายเป็นแผนงานที่ลงมือทำได้จริงทีมของเราผสมผสานทักษะด้านกลยุทธ์ธุรกิจ การสร้างแบรนด์ และการตลาดดิจิทัลเข้าไว้ด้วยกัน เพื่อให้ทุกคำแนะนำ มีทั้งความแม่นยำเชิงตัวเลขและความเข้าใจในพฤติกรรมของผู้บริโภคอย่างแท้จริง";
-
-const OurHistory = () => {
     return (
         <section
             id="our-history"

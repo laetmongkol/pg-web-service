@@ -1,45 +1,30 @@
 import { ChartNoAxesCombined, Expand, UserRoundPlus, Wrench, type LucideIcon } from "lucide-react";
 
+import { convertObjectToArrayByPrefix } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import FadeIn from "@/app/component/fade-in.components";
 
-const EYEBROW = "Our Journey";
+/** attributes on `step*` — the step title is the row value. */
+interface StepAttributes {
+    icon?: string;
+    body?: string;
+}
 
-const TITLE_PARTS = [
-    { text: "เส้นทาง", highlight: false },
-    { text: "ความสำเร็จ", highlight: true },
-    { text: "ของเรา", highlight: false },
-];
+/** Icons stay in code: a CMS row carries the key, never the component. */
+const STEP_ICONS: Record<string, LucideIcon> = {
+    Wrench,
+    Expand,
+    UserRoundPlus,
+    ChartNoAxesCombined,
+};
 
 interface JourneyStep {
     icon: LucideIcon;
     title: string;
     body: string;
 }
-
-const STEPS: JourneyStep[] = [
-    {
-        icon: Wrench,
-        title: "ก่อตั้งบริษัท",
-        body: "เริ่มต้นด้วยทีมงานขนาดเล็กที่มีวิสัยทัศน์กว้างไกลในการพลิกโฉมวงการที่ปรึกษา",
-    },
-    {
-        icon: Expand,
-        title: "ขยายฐานลูกค้า",
-        body: "ขยายการให้บริการสู่องค์กรระดับองค์กรข้ามชาติ สร้างผลกระทบเชิงบวกในหลายอุตสาหกรรม",
-    },
-    {
-        icon: UserRoundPlus,
-        title: "ขยายขีดความสามารถ",
-        body: "ต่อยอดองค์ความรู้และพัฒนากระบวนการทำงานด้วยเทคโนโลยีและเครื่องมือที่ทันสมัย",
-    },
-    {
-        icon: ChartNoAxesCombined,
-        title: "เติบโตอย่างไม่หยุดยั้ง",
-        body: "ได้รับความไว้วางใจจากแบรนด์และองค์กรชั้นนำในหลากหลาย",
-    },
-];
 
 const CONNECTOR_GAP = "calc(50% + 3rem)";
 
@@ -48,7 +33,27 @@ const CONNECTOR_CLASSNAME = cn(
     "border-t border-dashed border-(--color-primary-50)",
 );
 
-const OurJourney = () => {
+interface OurJourneyProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
+
+const OurJourney = ({ data }: OurJourneyProps) => {
+    if (!data) return null;
+
+    const EYEBROW = data?.eyebrow?.value;
+    const TITLE_PARTS = [
+        { text: data?.titleLead?.value ?? "", highlight: false },
+        { text: data?.titleHighlight?.value ?? "", highlight: true },
+        { text: data?.titleTail?.value ?? "", highlight: false },
+    ];
+    const STEPS: JourneyStep[] = convertObjectToArrayByPrefix<StepAttributes>(data, "step").map(
+        (step) => ({
+            icon: STEP_ICONS[step.attributes?.icon ?? ""] ?? Wrench,
+            title: step.value ?? "",
+            body: step.attributes?.body ?? "",
+        }),
+    );
+
     return (
         <section
             id="our-journey"

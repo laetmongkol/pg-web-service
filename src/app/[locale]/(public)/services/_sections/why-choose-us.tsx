@@ -6,22 +6,30 @@ import {
     type LucideIcon,
 } from "lucide-react";
 
-import { BACKEND_IMAGE_PREFIX } from "@/lib/media/image-loader";
+import {
+    convertObjectToArrayByPrefix,
+    extractAttributes,
+    PictureAttributes,
+} from "@/lib/cms/content-attributes";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import cn from "@/lib/tw-merge";
 
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
-const PLACEHOLDER_IMAGE = `${BACKEND_IMAGE_PREFIX}gocprime/contents/2026-08-06T10-33-14_6af64cfa-5bcf-45e4-b88f-333644a5769e.webp`;
+/** attributes on `reason*` — the reason title is the row value. */
+interface ReasonAttributes {
+    icon?: string;
+    body?: string;
+}
 
-const EYEBROW = "Why Choose us";
-
-const TITLE = "ทำไมลูกค้าเลือกเรา";
-
-const SUB_TITLE =
-    "เราเชื่อว่าความสำเร็จมาจากความเข้าใจลึกซึ้ง การทำงานร่วมกัน และการตัดสินใจที่มีประสิทธิภาพ";
-
-const IMAGE_ALT = "ทีมที่ปรึกษาของศรีวิไลทำงานร่วมกับลูกค้า";
+/** Icons stay in code: a CMS row carries the key, never the component. */
+const REASON_ICONS: Record<string, LucideIcon> = {
+    Target,
+    Sparkles,
+    ChartNoAxesColumn,
+    SquareCheckBig,
+};
 
 interface Reason {
     Icon: LucideIcon;
@@ -29,30 +37,30 @@ interface Reason {
     body: string;
 }
 
-const REASONS: Reason[] = [
-    {
-        Icon: Target,
-        title: "เข้าใจธุรกิจก่อนเริ่มงาน",
-        body: "เราให้ความสำคัญกับการเข้าใจธุรกิจ เป้าหมาย และความท้าทายอย่างลึกซึ้ง",
-    },
-    {
-        Icon: Sparkles,
-        title: "ผสานกลยุทธ์และความคิดสร้างสรรค์",
-        body: "ทำงานร่วมกันแบบไร้รอยต่อเพื่อส่งมอบผลลัพธ์ที่เป็นเลิศและมีมิติ",
-    },
-    {
-        Icon: ChartNoAxesColumn,
-        title: "ขับเคลื่อนด้วยข้อมูลจริง",
-        body: "วิเคราะห์ผลอย่างโปร่งใสและนำข้อมูลมาปรับปรุงแคมเปญสม่ำเสมอ",
-    },
-    {
-        Icon: SquareCheckBig,
-        title: "ดูแลครบ จบในที่เดียว",
-        body: "ตั้งแต่การวางแผน สร้างสรรค์ จนถึงการลงมือทำ",
-    },
-];
 
-const WhyChooseUs = () => {
+interface WhyChooseUsProps {
+    data?: Record<string, TranslateContentResponseDto>;
+}
+
+const WhyChooseUs = ({ data }: WhyChooseUsProps) => {
+    if (!data) return null;
+
+    const EYEBROW = data?.eyebrow?.value;
+    const TITLE = data?.title?.value;
+    const SUB_TITLE = data?.subTitle?.value;
+    const cover = extractAttributes<PictureAttributes>(data?.coverImg);
+    const PLACEHOLDER_IMAGE = cover?.mediaStorageKey ?? "";
+    const IMAGE_ALT = cover?.mediaAltText ?? "";
+    const IMAGE_WIDTH = cover?.width;
+    const IMAGE_HEIGHT = cover?.height;
+    const REASONS: Reason[] = convertObjectToArrayByPrefix<ReasonAttributes>(data, "reason").map(
+        (reason) => ({
+            Icon: REASON_ICONS[reason.attributes?.icon ?? ""] ?? Target,
+            title: reason.value ?? "",
+            body: reason.attributes?.body ?? "",
+        }),
+    );
+
     return (
         <section
             id="why-choose-us"
@@ -112,7 +120,8 @@ const WhyChooseUs = () => {
                         <FillImage
                             src={PLACEHOLDER_IMAGE}
                             alt={IMAGE_ALT}
-                            sizes="(max-width: 1024px) 100vw, 60vw"
+                            width={IMAGE_WIDTH}
+                            height={IMAGE_HEIGHT}
                             wrapperClassName="absolute inset-0 h-full w-full"
                             className={cn(
                                 "h-full w-full object-cover",

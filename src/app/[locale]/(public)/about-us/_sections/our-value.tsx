@@ -1,4 +1,8 @@
-import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
+import {
+    convertObjectToArrayByPrefix,
+    extractAttributes,
+    PictureAttributes,
+} from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
@@ -11,12 +15,13 @@ interface OurValueProps {
     data?: ContentSections;
 }
 
-const EYEBROW = "Our Value";
+/** The section that owns this block's copy; the pictures come from the two picture sections. */
+const TEXT_SECTION = "5";
 
-const TITLE_PARTS = [
-    { text: "ค่านิยม", highlight: false },
-    { text: "ขององกรณ์เรา", highlight: true },
-];
+/** attributes on `value*` — the value name is the row value. */
+interface ValueAttributes {
+    body?: string;
+}
 
 interface ValueCard {
     title: string;
@@ -25,29 +30,15 @@ interface ValueCard {
     labelBelow?: boolean;
 }
 
-const VALUES: ValueCard[] = [
-    {
-        title: "ความโปร่งใส",
-        body: "เราทำงานด้วยความซื่อสัตย์ ตรวจสอบได้และยึดมั่นในจริยธรรมสูงสุด",
-        image: { section: "6", key: "visionImage" },
-    },
-    {
-        title: "ความเชี่ยวชาญ",
-        body: "ทีมที่ปรึกษาที่เข้าใจธุรกิจจากภายในและลงมือทำจริงเคียงข้างคุณ",
-        image: { section: "7", key: "image1" },
-        labelBelow: true,
-    },
-    {
-        title: "ความสำเร็จของลูกค้า",
-        body: "เราวัดความสำเร็จของเราจากผลลัพธ์ที่ลูกค้าได้รับ",
-        image: { section: "7", key: "image2" },
-    },
-    {
-        title: "นวัตกรรม",
-        body: "มองหาวิธีใหม่ที่ทำให้ธุรกิจเติบโตได้เร็วและยั่งยืน",
-        image: { section: "6", key: "missionImage" },
-        labelBelow: true,
-    },
+/**
+ * Which picture each card pulls, and which cards hang their label below the photo. Layout, not
+ * copy — it stays in code so a CMS edit can never break the alternating grid.
+ */
+const VALUE_LAYOUT = [
+    { image: { section: "6", key: "visionImage" } },
+    { image: { section: "7", key: "image1" }, labelBelow: true },
+    { image: { section: "7", key: "image2" } },
+    { image: { section: "6", key: "missionImage" }, labelBelow: true },
 ];
 
 const HOVER_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
@@ -65,6 +56,25 @@ const cornerClasses = (index: number, total: number, labelBelow: boolean) => {
 };
 
 const OurValue = ({ data }: OurValueProps) => {
+    const text = data?.[TEXT_SECTION];
+
+    if (!text) return null;
+
+    const EYEBROW = text?.eyebrow?.value;
+    const TITLE_PARTS = [
+        { text: text?.titleLead?.value ?? "", highlight: false },
+        { text: text?.titleHighlight?.value ?? "", highlight: true },
+    ];
+
+    const VALUES: ValueCard[] = convertObjectToArrayByPrefix<ValueAttributes>(text, "value").map(
+        (value, index) => ({
+            title: value.value ?? "",
+            body: value.attributes?.body ?? "",
+            image: VALUE_LAYOUT[index]?.image ?? VALUE_LAYOUT[0].image,
+            labelBelow: VALUE_LAYOUT[index]?.labelBelow,
+        }),
+    );
+
     const cards = VALUES.map((card) => {
         const attributes = extractAttributes<PictureAttributes>(
             data?.[card.image.section]?.[card.image.key],
@@ -75,6 +85,8 @@ const OurValue = ({ data }: OurValueProps) => {
             picture: {
                 src: attributes?.mediaStorageKey ?? "",
                 alt: attributes?.mediaAltText || card.title,
+                width: attributes?.width,
+                height: attributes?.height,
             },
         };
     });
@@ -145,7 +157,8 @@ const OurValue = ({ data }: OurValueProps) => {
                                     <FillImage
                                         src={picture.src}
                                         alt={picture.alt}
-                                        sizes="(max-width: 1024px) 50vw, 25vw"
+                                        width={picture.width}
+                                        height={picture.height}
                                         wrapperClassName="absolute inset-0 h-full w-full"
                                         className={cn(
                                             "h-full w-full object-cover object-center",

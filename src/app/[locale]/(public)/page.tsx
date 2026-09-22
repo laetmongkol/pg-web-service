@@ -1,6 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
 import type { Metadata } from "next";
 
@@ -32,19 +33,19 @@ export default async function HomePage({ params }: HomePageProps) {
     setRequestLocale(routeLocale);
     const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
-    // Copy is held in the sections for now — the Home rows in the CMS still carry the seed content
-    // from the project this service was cloned from, so binding them here would print another
-    // brand's text. Swap each section back to `data?.["<n>"]` as its rows are filled in.
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."8", in page order.
+    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "Home");
+
     return (
         <div className="relative flex flex-col bg-(--surface-page)">
-            <HeroSection language={language} />
-            <TrustedPartnerSection />
-            <AboutStrategySection />
-            <OurMissionSection />
-            <TeamCapabilitySection />
-            <OurServicesSection language={language} />
-            <ReviewSection />
-            <CtaSection language={language} />
+            <HeroSection data={data?.["1"]} language={language} />
+            <TrustedPartnerSection data={data?.["2"]} />
+            <AboutStrategySection data={data?.["3"]} />
+            <OurMissionSection data={data?.["4"]} />
+            <TeamCapabilitySection data={data?.["5"]} />
+            <OurServicesSection data={data?.["6"]} language={language} />
+            <ReviewSection data={data?.["7"]} />
+            <CtaSection data={data?.["8"]} language={language} />
         </div>
     );
 }

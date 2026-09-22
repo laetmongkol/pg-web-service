@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
+import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.classes";
 
 import FadeIn from "@/app/component/fade-in.components";
@@ -9,22 +11,28 @@ import AppLogo from "@/components/layout/logo";
 import LinkCustom from "@/components/link-custom.component";
 
 interface CtaSectionProps {
+    data?: Record<string, TranslateContentResponseDto>;
     language: string;
 }
 
-const MOCK = {
-    title: "พร้อมเริ่มต้นการเติบโตครั้งสำคัญไปกับเรา",
-    subTitle:
-        "ให้ทีมงานคุณภาพของเราให้คำปรึกษาและออกแบบกลยุทธ์การตลาดที่เหมาะกับธุรกิจของคุณ",
-    buttonLabel: "ติดต่อปรึกษาเรา",
-    buttonPath: "contact-us",
-    backgroundSrc: "",
-    backgroundAlt: "",
-};
 
 const HOVER_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
 
-const CtaSection = ({ language }: CtaSectionProps) => {
+const CtaSection = ({ data, language }: CtaSectionProps) => {
+    if (!data) return null;
+
+    const background = extractAttributes<PictureAttributes>(data?.bgImg);
+    const MOCK = {
+        title: data?.title?.value ?? "",
+        subTitle: data?.subTitle?.value ?? "",
+        buttonLabel: data?.ctaButton?.value ?? "",
+        buttonPath: data?.ctaButton?.linkUrl ?? "",
+        backgroundSrc: background?.mediaStorageKey ?? "",
+        backgroundAlt: background?.mediaAltText ?? "",
+        backgroundWidth: background?.width,
+        backgroundHeight: background?.height,
+    };
+
     return (
         <section
             id="cta"
@@ -42,7 +50,8 @@ const CtaSection = ({ language }: CtaSectionProps) => {
                         <FillImage
                             src={MOCK.backgroundSrc}
                             alt={MOCK.backgroundAlt || MOCK.title}
-                            sizes="(max-width: 1280px) 100vw, 1216px"
+                            width={MOCK.backgroundWidth}
+                            height={MOCK.backgroundHeight}
                             wrapperClassName="absolute inset-0 h-full w-full"
                             className={cn(
                                 "h-full w-full object-cover object-center",
