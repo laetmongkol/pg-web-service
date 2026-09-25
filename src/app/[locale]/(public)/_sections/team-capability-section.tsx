@@ -80,7 +80,7 @@ const TeamCapabilitySection = ({ data }: TeamCapabilitySectionProps) => {
             {/* The board drifts, so any column can pass under the heading: pulling it up far enough
                 to tuck behind the copy collides with it on a wide screen, where the centred heading
                 sits right over the middle columns. mt-0 is as tight as it goes without a collision. */}
-            <FadeIn delay={300} className="mt-6 lg:mt-0">
+            <FadeIn delay={300} className="mt-6 lg:mt-0 ">
                 <DragMarquee copyWidth={BOARD_WIDTH_PX}>
                     <CapabilityBoardCards media={media} />
                 </DragMarquee>

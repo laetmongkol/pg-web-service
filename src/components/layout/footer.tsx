@@ -5,6 +5,7 @@ import {
   IoLogoGoogle,
   IoLogoInstagram,
   IoLogoYoutube,
+  IoLogoLinkedin,
 } from "react-icons/io5"
 
 import cn from "@/lib/tw-merge"
@@ -15,12 +16,6 @@ import type { ComponentType } from "react"
 
 import { LANGUAGE } from "@/shared/constants/common.constants"
 import { NAV_LINKS } from "@/shared/constants/nav-links.constants"
-import {
-  COMPANY_ADDRESS,
-  COMPANY_BRAND_NAME,
-  COMPANY_EMAIL,
-  COMPANY_PHONE,
-} from "@/shared/constants/company.constants"
 
 import AppLogo from "./logo"
 
@@ -35,23 +30,23 @@ interface FooterLinkItem {
 }
 
 const UTILITY_LINKS: FooterLinkItem[] = [
-  { key: "footer.utility.property", href: "#" },
+  // { key: "footer.utility.property", href: "#" },
   { key: "footer.utility.ourMission", href: "/about-us#mission-and-vision" },
   { key: "footer.utility.ourVision", href: "/about-us#mission-and-vision" },
   { key: "footer.utility.ourHistory", href: "/about-us#our-history" },
-  { key: "footer.utility.notFound", href: "/404" },
+  // { key: "footer.utility.notFound", href: "/404" },
 ]
 
+/** `key` is the translate_values code; `toHref` turns the translated value into a link. */
 interface FooterContactItem {
   key: string
-  value: string
-  href?: string
+  toHref?: (value: string) => string
 }
 
 const CONTACT_ITEMS: FooterContactItem[] = [
-  { key: "address", value: COMPANY_ADDRESS },
-  { key: "email", value: COMPANY_EMAIL, href: `mailto:${COMPANY_EMAIL}` },
-  { key: "phone", value: COMPANY_PHONE, href: `tel:${COMPANY_PHONE.replace(/\s/g, "")}` },
+  { key: "footer.contact.address" },
+  { key: "footer.contact.email", toHref: (value) => `mailto:${value}` },
+  { key: "footer.contact.phone", toHref: (value) => `tel:${value.replace(/\s/g, "")}` },
 ]
 
 interface FooterSocialItem {
@@ -65,6 +60,7 @@ const SOCIAL_LINKS: FooterSocialItem[] = [
   { label: "Google", href: "#", Icon: IoLogoGoogle },
   { label: "Instagram", href: "#", Icon: IoLogoInstagram },
   { label: "YouTube", href: "#", Icon: IoLogoYoutube },
+  { label: "LinkedIn", href: "#", Icon: IoLogoLinkedin },
 ]
 
 const LEGAL_LINKS: FooterLinkItem[] = [
@@ -82,6 +78,12 @@ const BODY_LINK_CLASSNAME = cn(BODY_CLASSNAME, "transition-colors hover:text-(--
 
 export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
   const t = await getTranslations()
+  // A missing or empty value (e.g. no phone yet) hides that line instead of rendering the raw key
+  // or a blank link.
+  const contactItems = CONTACT_ITEMS.map(({ key, toHref }) => {
+    const value = t.has(key) ? t(key).trim() : ""
+    return { key, value, href: value && toHref ? toHref(value) : undefined }
+  }).filter(({ value }) => value)
 
   return (
     <footer className="relative w-full overflow-hidden bg-(--surface-default) text-(--text-primary)">
@@ -167,7 +169,7 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
           <div className="col-span-2 flex flex-col sm:col-span-1">
             <h3 className={HEADING_CLASSNAME}>{t("footer.contact.title")}</h3>
             <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
-              {CONTACT_ITEMS.map(({ key, value, href }) => (
+              {contactItems.map(({ key, value, href }) => (
                 <li key={key}>
                   {href ? (
                     <LinkCustom href={href} className={BODY_LINK_CLASSNAME}>
@@ -189,7 +191,7 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
           )}
         >
           <p className="text-xs text-(--text-secondary) lg:text-sm">
-            {`© ${COMPANY_BRAND_NAME} ${new Date().getFullYear()}`}
+            {`© ${t("footer.brandName")} ${new Date().getFullYear()}`}
           </p>
 
           <div className="flex flex-wrap items-center gap-x-7 gap-y-2">

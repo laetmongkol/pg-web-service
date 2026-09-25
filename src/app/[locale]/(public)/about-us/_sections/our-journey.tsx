@@ -158,7 +158,7 @@ const OurJourney = ({ data }: OurJourneyProps) => {
 
                                     <p
                                         className={cn(
-                                            "mt-2 text-(--text-secondary) sm:mt-4 sm:max-w-[19rem]",
+                                            "mt-2 text-(--text-secondary) sm:mt-4 max-w-[10rem]",
                                             "text-xs leading-loose md:text-sm",
                                         )}
                                     >
