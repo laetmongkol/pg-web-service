@@ -6,6 +6,8 @@ import { BANNER_IMAGE_DRAG_PREVENT_CLASSNAME } from "@/shared/ui/classes/base.cl
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
+import TapRevealMedia from "./components/tap-reveal-media";
+
 /** attributes on `mission*` — picture plus the overlay copy; the card title is the row value. */
 interface MissionAttributes extends PictureAttributes {
     description?: string;
@@ -16,11 +18,39 @@ interface MissionAttributes extends PictureAttributes {
 
 const CARD_MEDIA_CLASSNAME = "relative aspect-[4/3] w-full overflow-hidden rounded-2xl";
 
-/** Hidden until the card is hovered or keyboard-focused, so it reads as a state, not a variant. */
+// Same motion as Our Value on the about page. `base-transitions.css` sets `transition-property`
+// on `*` outside any layer, so the transition utilities need `!` to win.
+// Revealed on hover / keyboard focus; below `lg` (touch) a tap toggles it via `TapRevealMedia`.
+// Variants are spelled out in full so Tailwind's scanner picks them up.
+const HOVER_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
+
+/** Hidden until revealed, so it reads as a state, not a variant. */
 const OVERLAY_CLASSNAME = cn(
-    "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300",
-    "group-hover:opacity-100 group-focus-within:opacity-100",
-    "motion-reduce:transition-none",
+    "pointer-events-none absolute inset-0 opacity-0",
+    "transition-opacity! duration-500! motion-reduce:transition-none!",
+    HOVER_EASE,
+    "group-hover:opacity-100 group-has-focus-visible:opacity-100",
+    "max-lg:group-data-[active=true]/media:opacity-100",
+);
+
+/** Copy rises in after the scrim (delay on the way in only), so the reveal feels layered. */
+const OVERLAY_CONTENT_CLASSNAME = cn(
+    "translate-y-2 opacity-0",
+    "transition-[opacity,translate]! duration-500!",
+    HOVER_EASE,
+    "group-hover:translate-y-0 group-hover:opacity-100 group-hover:delay-150",
+    "group-has-focus-visible:translate-y-0 group-has-focus-visible:opacity-100 group-has-focus-visible:delay-150",
+    "max-lg:group-data-[active=true]/media:translate-y-0 max-lg:group-data-[active=true]/media:opacity-100",
+    "max-lg:group-data-[active=true]/media:delay-150",
+    "motion-reduce:translate-y-0 motion-reduce:transition-none!",
+);
+
+const MEDIA_ZOOM_CLASSNAME = cn(
+    "transition-[scale,filter]! duration-700! motion-reduce:transition-none!",
+    HOVER_EASE,
+    "group-hover:scale-105 group-hover:blur-[3px]",
+    "group-has-focus-visible:scale-105 group-has-focus-visible:blur-[3px]",
+    "max-lg:group-data-[active=true]/media:scale-105 max-lg:group-data-[active=true]/media:blur-[3px]",
 );
 
 interface OurMissionSectionProps {
@@ -82,23 +112,31 @@ const OurMissionSection = ({ data }: OurMissionSectionProps) => {
                             delay={300 + index * 100}
                             className="group flex flex-col gap-4"
                         >
-                            <div className={CARD_MEDIA_CLASSNAME}>
+                            <TapRevealMedia
+                                className={CARD_MEDIA_CLASSNAME}
+                                label={mission.value ?? undefined}
+                            >
                                 {mission.attributes?.mediaStorageKey ? (
                                     <FillImage
                                         src={mission.attributes.mediaStorageKey}
                                         alt={mission.attributes?.mediaAltText ?? mission.value ?? ""}
                                         width={mission.attributes?.width}
                                         height={mission.attributes?.height}
+                                        sizes="(max-width: 768px) 100vw, 33vw"
                                         wrapperClassName="h-full w-full"
                                         className={cn(
                                             "h-full w-full object-cover",
+                                            MEDIA_ZOOM_CLASSNAME,
                                             BANNER_IMAGE_DRAG_PREVENT_CLASSNAME,
                                         )}
                                     />
                                 ) : (
                                     <div
                                         aria-hidden
-                                        className="h-full w-full bg-[image:var(--brand-gradient-silver)]"
+                                        className={cn(
+                                            "h-full w-full bg-[image:var(--brand-gradient-silver)]",
+                                            MEDIA_ZOOM_CLASSNAME,
+                                        )}
                                     />
                                 )}
 
@@ -113,6 +151,7 @@ const OurMissionSection = ({ data }: OurMissionSectionProps) => {
                                     <span
                                         className={cn(
                                             "absolute top-4 left-4 flex items-center gap-2 rounded-full",
+                                            OVERLAY_CONTENT_CLASSNAME,
                                             "bg-(--color-primary-400)/60 px-3 py-1 backdrop-blur-xs",
                                             "text-[11px] font-medium text-(--text-invert)",
                                         )}
@@ -120,7 +159,12 @@ const OurMissionSection = ({ data }: OurMissionSectionProps) => {
                                         <span className="size-1.5 shrink-0 rounded-full bg-(--text-invert)" />
                                         {mission.attributes?.badge}
                                     </span>
-                                    <div className="absolute inset-x-4 bottom-4 flex flex-col gap-1 text-start">
+                                    <div
+                                        className={cn(
+                                            "absolute inset-x-4 bottom-4 flex flex-col gap-1 text-start",
+                                            OVERLAY_CONTENT_CLASSNAME,
+                                        )}
+                                    >
                                         <span className="text-2xl font-bold text-(--text-invert)">
                                             {mission.attributes?.value}
                                         </span>
@@ -129,7 +173,7 @@ const OurMissionSection = ({ data }: OurMissionSectionProps) => {
                                         </span>
                                     </div>
                                 </div>
-                            </div>
+                            </TapRevealMedia>
 
                             <div className="flex flex-col gap-2">
                                 <h3 className="font-bold text-(--text-primary)">{mission.value}</h3>
