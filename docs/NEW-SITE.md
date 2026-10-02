@@ -326,24 +326,11 @@ src/app/[locale]/(public)/our-businesses/product-a/page.tsx
 
 
 
-## 11. `src/app/sitemap.xml/route.ts`
+## 11. Sitemap (`src/app/sitemap.ts`, `src/lib/seo/sitemap-data.ts`)
 
-XML prefix ยังเป็น `goc:` (`GOC_NS`, `xmlns:goc`, `goc:index`, …). Google ใช่แค่ sitemap มาตรฐาน — prefix นี้เป็นของ stylesheet/debug.
+ไม่ต้องแก้อะไร — ใช้ convention ของ Next ไม่มี custom XML prefix ให้ rename
 
-ขึ้นเว็บใหม่ให้ rename ทั้งก้อนเป็นชื่อ generic เช่น `site`:
-
-```ts
-const SITE_NS = "https://www.acme.com/ns/sitemap"
-
-// ใน template string:
-xmlns:site="${SITE_NS}"
-site:generatedAt="..."
-site:label="..."
-```
-
-ต้องไล่แทนทุก `goc:` ในไฟล์นี้. ถ้ามี `public/sitemap.xsl` ที่อ่าน attr เดิม ต้องแก้ xsl ให้ตรง prefix ใหม่.
-
-รายการ URL ใน sitemap **ไม่ได้พิมพ์ในไฟล์นี้** — มาจาก `PUBLIC_STATIC_ROUTES` + บล็อก (ถ้า `BLOG_BASE_PATH` ไม่ว่าง).
+รายการ URL ใน sitemap **ไม่ได้พิมพ์ในไฟล์ sitemap** — มาจาก `PUBLIC_STATIC_ROUTES` + บล็อก (ถ้า `BLOG_BASE_PATH` ไม่ว่าง).
 
 ---
 
@@ -375,5 +362,4 @@ site:label="..."
 - [ ] `NAVBAR_ROUTES` มี URL จริง
 - [ ] footer ชื่อ / โซเชียล / ลิงก์ / QR
 - [ ] สีใน `theme-tokens.css`
-- [ ] (optional) เปลี่ยน `goc:` ใน sitemap
 - [ ] (optional) `package.json` name
