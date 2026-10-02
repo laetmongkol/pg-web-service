@@ -138,7 +138,7 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                         )}
                     >
                         <FadeIn delay={600}>
-                            <span className="flex h-8 w-5.5 items-center justify-center rounded-full border border-current">
+                            <span className="flex h-9 w-5.5 items-center justify-center rounded-full border border-current">
                                 <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.5} />
                             </span>
                         </FadeIn>
