@@ -50,6 +50,10 @@ for protected in "$DEVELOP_BRANCH" "$STAGING_BRANCH" "$MAIN_BRANCH"; do
 done
 [[ -z "$(git status --porcelain)" ]] || fail "Working tree is dirty. Commit (or stash) your changes first."
 
+# Fetch first: a branch someone else created (e.g. staging/develop) has no local
+# remote-tracking ref until then, and `git switch` would fail halfway through.
+run_git "fetch origin" git fetch origin
+
 # staging/develop does not exist in every repo (e.g. sriwilai-cms-db-service).
 HAS_STAGING=0
 if git show-ref --verify --quiet "refs/heads/$STAGING_BRANCH" \
