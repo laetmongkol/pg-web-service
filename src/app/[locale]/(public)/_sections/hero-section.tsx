@@ -15,16 +15,16 @@ import SparkleDecoration, { type SparkleSpec } from "./components/sparkle-decora
 const SCROLL_TARGET = "#trusted-partner";
 
 const SPARKLES: SparkleSpec[] = [
-    { className: "left-[8%] top-[14%]", size: 18 },
-    { className: "left-[38%] top-[8%]", size: 22 },
-    { className: "right-[12%] top-[20%]", size: 16 },
-    { className: "left-[10%] bottom-[16%]", size: 24 },
-    { className: "right-[8%] bottom-[12%]", size: 28 },
+    { className: "left-[8%] top-[14%] animate-pulse [animation-duration:3s] [animation-delay:-0.8s]", size: 18 },
+    { className: "left-[38%] top-[8%] animate-pulse [animation-duration:3s] [animation-delay:-0.6s]", size: 22 },
+    { className: "right-[12%] top-[20%] animate-pulse [animation-duration:3s] [animation-delay:-0.4s]", size: 16 },
+    { className: "left-[10%] bottom-[16%] animate-pulse [animation-duration:3s] [animation-delay:-0.2s]", size: 24 },
+    { className: "right-[8%] bottom-[12%] animate-pulse [animation-duration:3s] [animation-delay:0s]", size: 28 },
 ];
 
 const CTA_BASE_CLASSNAME = cn(
     "flex items-center justify-center rounded-full px-8 py-3.5",
-    "text-sm font-medium transition-transform duration-300 hover:scale-105",
+    "text-sm font-medium transition-transform! duration-180! hover:scale-110",
 );
 
 interface HeroSectionProps {
@@ -113,14 +113,15 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                         // mt-auto belongs on the flex child itself — the FadeIn wrapper is that
                         // child now, so parking it here is what pushes the figure back to the
                         // bottom of the leftover space, just above the scroll hint
-                        <FadeIn delay={500} className="mt-auto w-[200px] pt-12 sm:w-[280px]">
+                        <FadeIn delay={500} className="mt-auto w-30 pt-12 sm:w-30">
                             <FillImage
                                 src={figureImage}
                                 alt={figure?.mediaAltText ?? ""}
                                 width={figure?.width}
                                 height={figure?.height}
                                 wrapperClassName="w-full"
-                                className={cn("h-auto w-full object-contain", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
+                                className={cn("h-auto w-30 object-contain rotate-y-180", BANNER_IMAGE_DRAG_PREVENT_CLASSNAME)}
+                                unoptimized
                             />
                         </FadeIn>
                     ) : (
@@ -137,9 +138,9 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                         )}
                     >
                         <FadeIn delay={600}>
-                        <span className="flex h-8 w-5.5 items-center justify-center rounded-full border border-current">
-                            <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.5} />
-                        </span>
+                            <span className="flex h-8 w-5.5 items-center justify-center rounded-full border border-current">
+                                <ArrowDown className="size-3.5 animate-bounce" strokeWidth={1.5} />
+                            </span>
                         </FadeIn>
                         <FadeIn delay={700}>
                             {data?.scrollDown?.value}

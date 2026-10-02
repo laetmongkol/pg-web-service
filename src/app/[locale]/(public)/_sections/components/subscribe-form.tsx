@@ -66,7 +66,7 @@ const SubscribeForm = ({ placeholder, submitLabel, contactHref }: SubscribeFormP
                     className={cn(
                         "shrink-0 cursor-pointer rounded-full px-6 py-2.5",
                         "bg-(--text-primary) text-sm font-medium text-(--text-invert)",
-                        "transition-transform duration-300 hover:scale-105 active:scale-95",
+                        "transition-transform! duration-150! hover:scale-105 active:scale-95",
                     )}
                 >
                     {submitLabel}
