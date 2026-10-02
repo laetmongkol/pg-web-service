@@ -35,9 +35,19 @@ const nextConfig: NextConfig = {
     imageSizes: [64, 128, 256, 384],
   },
   async rewrites() {
-    return [
-      { source: "/api/app/:path*", destination: `${appServiceOrigin}/api/app/:path*` },
-    ];
+    return {
+      // `/sitemap.xml` must serve the sitemap INDEX, but app/sitemap.ts (which uses
+      // generateSitemaps) already owns that route name — a second handler there is a build error.
+      // beforeFiles runs ahead of app routes, so the index route answers the canonical URL while
+      // the children stay at /sitemap/{id}.xml. Google Search Console keeps its existing entry.
+      beforeFiles: [
+        { source: "/sitemap.xml", destination: "/sitemap-index.xml" },
+      ],
+      afterFiles: [
+        { source: "/api/app/:path*", destination: `${appServiceOrigin}/api/app/:path*` },
+      ],
+      fallback: [],
+    };
   },
 };
 

@@ -7,7 +7,7 @@
 | `metadata.ts` | สร้าง Next `Metadata` (title, description, canonical, OG, hreflang) |
 | `json-ld.ts` | schema.org structured data (Article, Organization, BreadcrumbList ฯลฯ) |
 | `active-locales.ts` | locale ที่ทั้ง routable **และ** active ใน languages table — source เดียวของ hreflang กับ sitemap alternates |
-| `sitemap-entries.ts` | ประกอบ entry ของ `sitemap.xml` |
+| `sitemap-data.ts` | ประกอบ URL ทั้งหมดแล้วซอยเป็น child sitemap ให้ `app/sitemap.ts` กับ `/sitemap-view` ใช้ร่วมกัน |
 | `redirect-or-not-found.ts` | ใช้แทน `notFound()` — เช็ค `url_redirects` ก่อน ให้ slug ที่เปลี่ยนชื่อตอบ 3xx จริงไม่ใช่ 404 |
 
 **เข้าที่นี่เมื่อ** output ปลายทางคือ HTTP status, `<head>` tag, หรือไฟล์ที่ crawler ดึง

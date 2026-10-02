@@ -498,8 +498,8 @@ src/app/
 ├── not-found.tsx              ← 404 ทั้งไซต์
 ├── favicon.ico
 ├── robots.ts                  ← /robots.txt
-├── sitemap.xml/route.ts       ← /sitemap.xml
-├── sitemap.csv/route.ts       ← /sitemap.csv ดาวน์โหลด
+├── sitemap.ts                 ← /sitemap/{id}.xml (child sitemap)
+├── sitemap-index.xml/route.ts ← /sitemap.xml (index ผ่าน rewrite)
 └── [locale]/
     ├── layout.tsx             ← ล็อก locale + ข้อความแปล
     └── (public)/              ← วงเล็บ = กลุ่ม ไม่ใช่ URL
@@ -586,19 +586,16 @@ Next จะเสิร์ฟที่ `/robots.txt`
 
 
 
-### `sitemap.xml/route.ts` และ `sitemap.csv/route.ts`
+### `sitemap.ts` และ `sitemap-index.xml/route.ts`
 
-ไม่ใช้ `app/sitemap.ts` แบบช่วย ๆ ของ Next  
-เขียน `route.ts` เองเพื่อควบคุม XML
+ใช้ `app/sitemap.ts` ของ Next (`generateSitemaps`) เขียน child sitemap แยกกลุ่ม: `/sitemap/pages.xml`, `blog-categories`, `blog-articles`, `authors`
 
-- XML สำหรับ Google
-- CSV สำหรับคนโหลดไปดูใน Excel
+- `sitemap-index.xml/route.ts` เขียน `<sitemapindex>` — `next.config.ts` rewrite `/sitemap.xml` มาที่นี่
+- `/{locale}/sitemap-view` หน้าให้คนดู (แทน CSV เดิม)
 
-ข้อมูลราย URL มาจาก `lib/seo/sitemap-entries.ts` (หน้า static + บล็อก + author ถ้า backend มี)
+ข้อมูลราย URL มาจาก `lib/seo/sitemap-data.ts` (หน้า static + บล็อก + author ถ้า backend มี)
 
-ไฟล์ XML อาจมี prefix กำหนดเองบน `<url>` (เช่น `site:` / ชื่อเก่า) — เป็น XML attribute สำหรับ stylesheet/debug ไม่กระทบการเรนเดอร์หน้า เปลี่ยนชื่อได้ตอนขึ้นเว็บใหม่ (ดู NEW-SITE.md)
-
-`revalidate = 3600` = สร้างใหม่ได้อย่างน้อยทุกชั่วโมง
+`force-dynamic` + `no-store` — **ห้ามเรียก API ตอน build**: fetch ตอน build ไม่มี origin ให้ app-service resolve domain ได้ 400 แล้ว build ล้มทั้งก้อน
 
 ---
 
