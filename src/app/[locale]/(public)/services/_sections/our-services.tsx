@@ -7,7 +7,6 @@ import { ArrowRight } from "lucide-react";
 import {
     convertObjectToArrayByPrefix,
     convertObjectToValuesByPrefix,
-    extractAttributes,
     PictureAttributes,
 } from "@/lib/cms/content-attributes";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
@@ -22,16 +21,16 @@ interface OurServicesProps {
     language: string;
 }
 
-/** attributes on `service*` — the card title is the row value. */
-interface ServiceAttributes {
+/** attributes on `service*` — the card title is the row value, the picture rides along. */
+interface ServiceAttributes extends PictureAttributes {
     lines?: string[];
 }
 
 interface ServiceCard {
     title: string;
     lines: string[];
+    picture: PictureAttributes;
 }
-
 
 const REVEAL_EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]!";
 
@@ -43,14 +42,11 @@ const OurServices = ({ data, language }: OurServicesProps) => {
     const SUB_TITLE_PARTS = convertObjectToValuesByPrefix(data, "subTitle").map((line) => line.value);
     const CTA_LABEL = data?.ctaButton?.value ?? "";
     const CTA_PATH = data?.ctaButton?.linkUrl ?? "";
-    const cover = extractAttributes<PictureAttributes>(data?.serviceImg);
-    const PLACEHOLDER_IMAGE = cover?.mediaStorageKey ?? "";
-    const COVER_WIDTH = cover?.width;
-    const COVER_HEIGHT = cover?.height;
     const SERVICES: ServiceCard[] = convertObjectToArrayByPrefix<ServiceAttributes>(data, "service").map(
         (service) => ({
             title: service.value ?? "",
             lines: service.attributes?.lines ?? [],
+            picture: service.attributes ?? {},
         }),
     );
 
@@ -109,7 +105,7 @@ const OurServices = ({ data, language }: OurServicesProps) => {
                         "lg:mt-14 lg:h-120 lg:flex-row lg:gap-4",
                     )}
                 >
-                    {SERVICES.map(({ title, lines }, index) => {
+                    {SERVICES.map(({ title, lines, picture }, index) => {
                         const isActive = index === activeIndex;
 
                         return (
@@ -135,10 +131,10 @@ const OurServices = ({ data, language }: OurServicesProps) => {
                                 </button>
 
                                 <FillImage
-                                    src={PLACEHOLDER_IMAGE}
-                                    alt={title}
-                                    width={COVER_WIDTH}
-                                    height={COVER_HEIGHT}
+                                    src={picture.mediaStorageKey ?? ""}
+                                    alt={picture.mediaAltText || title}
+                                    width={picture.width}
+                                    height={picture.height}
                                     wrapperClassName={cn(
                                         "pointer-events-none overflow-hidden",
                                         "relative aspect-video w-full rounded-xl",
