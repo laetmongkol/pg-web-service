@@ -5,6 +5,8 @@ import cn from "@/lib/tw-merge";
 
 import FillImage from "@/components/fill-image.component";
 
+import CapabilityBoardSlider from "./capability-board-slider";
+
 /**
  * One picture per photo slot on the board, in the shape a `translate_contents` picture row hands
  * back: the file lives on `mediaStorageKey` and nothing else, with `mediaAltText` and the intrinsic
@@ -63,6 +65,7 @@ const BoardPhoto = ({
             alt={picture?.mediaAltText ?? ""}
             width={picture?.width}
             height={picture?.height}
+            sizes="300px"
             draggable={false}
             wrapperClassName={cn("overflow-hidden", className)}
             className="h-full w-full object-cover"
@@ -429,7 +432,7 @@ const SeminarCard = () => (
     </div>
 );
 
-const COLUMN_CLASSNAME = "flex flex-1 flex-col gap-4";
+const COLUMN_CLASSNAME = "keen-slider__slide flex flex-col gap-4";
 
 interface CapabilityBoardCardsProps {
     /** Picture rows for the board's photo slots, as the CMS hands them back. */
@@ -437,15 +440,13 @@ interface CapabilityBoardCardsProps {
 }
 
 /**
- * The five columns of the capability board. From `lg` they are staggered the way the design has
- * them — each column starting at a different height is what makes the grid read as a loose collage
- * rather than a table. Below `lg` only part of the board is on screen at a time, where a stagger
+ * The five columns of the capability board, one slide each. From `lg` they are staggered the way
+ * the design has them — each column starting at a different height is what makes the grid read as
+ * a loose collage rather than a table. Below `lg` fewer columns are on screen, where a stagger
  * reads as a gap at the top rather than as depth, so the columns line up instead.
  */
 const CapabilityBoardCards = ({ media }: CapabilityBoardCardsProps) => (
-    // pr only: the marquee butts two copies together, and a left pad as well would double the gap
-    // at the seam
-    <div className="flex items-start gap-4 pr-4">
+    <CapabilityBoardSlider>
         <div className={cn(COLUMN_CLASSNAME, "lg:pt-16")}>
             <SuccessCard />
             <InterestsCard />
@@ -471,7 +472,7 @@ const CapabilityBoardCards = ({ media }: CapabilityBoardCardsProps) => (
             <GoalCard />
             <SeminarCard />
         </div>
-    </div>
+    </CapabilityBoardSlider>
 );
 
 export default CapabilityBoardCards;

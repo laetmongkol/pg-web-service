@@ -5,10 +5,6 @@ import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-se
 import FadeIn from "@/app/component/fade-in.components";
 
 import CapabilityBoardCards, { type CapabilityBoardMedia } from "./components/capability-board-cards";
-import DragMarquee from "./components/drag-marquee";
-
-/** Width of one copy of the board — the five columns are sized from it, not from the viewport. */
-const BOARD_WIDTH_PX = 1720;
 
 interface TeamCapabilitySectionProps {
     data?: Record<string, TranslateContentResponseDto>;
@@ -76,14 +72,9 @@ const TeamCapabilitySection = ({ data }: TeamCapabilitySectionProps) => {
                 </div>
             </div>
 
-            {/* full-bleed on purpose: the board has to overflow the frame for the drag to reveal anything */}
-            {/* The board drifts, so any column can pass under the heading: pulling it up far enough
-                to tuck behind the copy collides with it on a wide screen, where the centred heading
-                sits right over the middle columns. mt-0 is as tight as it goes without a collision. */}
-            <FadeIn delay={300} className="mt-6 lg:mt-0 ">
-                <DragMarquee copyWidth={BOARD_WIDTH_PX}>
-                    <CapabilityBoardCards media={media} />
-                </DragMarquee>
+            {/* inside the same max-w-7xl frame as the copy: the frame clips the edge slides to halves */}
+            <FadeIn delay={300} className={cn("mx-auto mt-10 max-w-7xl", "px-4 sm:px-8")}>
+                <CapabilityBoardCards media={media} />
             </FadeIn>
         </section>
     );
