@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import Snap from "lenis/snap";
 import { usePathname } from "next/navigation";
 
 import "lenis/dist/lenis.css";
@@ -10,24 +9,54 @@ import "lenis/dist/lenis.css";
 /** Marks the element whose direct page sections become snap points (set in the public layout). */
 const SNAP_ROOT_ATTRIBUTE = "data-snap-root";
 
+/** How close (fraction of the viewport height) a resting scroll must be to a stop to get pulled in. */
+const SNAP_DISTANCE = 0.25;
+/** No scroll movement for this long (ms) counts as "came to rest". */
+const SETTLE_DELAY = 50;
+const SNAP_DURATION = 0.9;
+/** Share of the navbar height a section's top stops below the screen top: 1 = just under the navbar,
+ * 0 = flush with the screen top (the navbar then sits over the section's top padding). */
+const NAVBAR_OFFSET_RATIO = 1;
+const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
 /**
- * The page's own sections: every `<section>` under the snap root whose nearest section ancestor is
- * the root itself — a section nested inside another one is part of that block, not a stop.
+ * The page's own sections with an `id` — the ones the page names (and links to with `#id`). A
+ * section nested inside another one is part of that block, not a stop.
  */
-const collectSnapTargets = (root: HTMLElement): HTMLElement[] => {
-    const sections = Array.from(root.querySelectorAll<HTMLElement>("section")).filter(
+const collectSnapTargets = (root: HTMLElement): HTMLElement[] =>
+    Array.from(root.querySelectorAll<HTMLElement>("section[id]")).filter(
         (section) => section.parentElement?.closest("section") === root,
     );
-    const footer = document.querySelector<HTMLElement>("footer");
 
-    return footer ? [...sections, footer] : sections;
+/**
+ * Stops as scroll offsets: only each section's top, landing `NAVBAR_OFFSET_RATIO` of the navbar
+ * height below the screen top so the fixed navbar doesn't sit on it — the height comes from
+ * `scroll-padding-top: var(--navbar-height)` on <html>, the same value anchor jumps use. No stop at
+ * a section's bottom: that would pull the page somewhere mid-content rather than to a section.
+ *
+ * Read fresh on every use (a handful of rects): section positions keep moving while sections stream
+ * in and images load, and a cached list would land a few pixels off.
+ */
+const getStops = (root: HTMLElement) => {
+    const navbarHeight = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    const offset = navbarHeight * NAVBAR_OFFSET_RATIO;
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+    return collectSnapTargets(root).map((section) => {
+        const top = section.getBoundingClientRect().top + window.scrollY;
+        return Math.round(Math.min(maxScroll, Math.max(0, top - offset)));
+    });
 };
 
 /**
- * Smooth wheel scrolling plus a "magnet" on every page section. `proximity` only pulls when the
- * scroll comes to rest near a section edge (within `distanceThreshold` of the viewport), so a
- * section taller than the screen can still be read through instead of trapping the visitor. Skipped for reduced motion —
- * native scrolling stays untouched there.
+ * Smooth wheel scrolling plus a "magnet" on every page section: once the scroll comes to rest within
+ * `SNAP_DISTANCE` of a section's top, it eases onto it. Only a resting scroll is judged — a section
+ * taller than the screen can still be read through instead of trapping the visitor. Skipped for reduced
+ * motion — native scrolling stays untouched there.
+ *
+ * Not `lenis/snap`: it decides on a debounce after the last wheel event, measuring where the eased
+ * scroll is *at that moment*. With lerp smoothing the page is still gliding then, far from where it
+ * will stop, so a real wheel scroll almost never got pulled in.
  */
 const SmoothScroll = () => {
     const pathname = usePathname();
@@ -46,62 +75,32 @@ const SmoothScroll = () => {
             allowNestedScroll: true,
         });
 
-        const snap = new Snap(lenis, {
-            type: "proximity",
-            distanceThreshold: "5%",
-            duration: 0.9,
-            easing: (t) => 1 - Math.pow(1 - t, 3),
-            debounce: 50,
-        });
-
-        // Snap points are plain scroll offsets rather than `addElement`, so each can sit a navbar
-        // height above its section — the fixed navbar would otherwise cover the section's top. The
-        // height comes from `scroll-padding-top: var(--navbar-height)` on <html>, the same offset
-        // anchor jumps already use.
-        // A section taller than the screen also gets a stop at its bottom so it can settle flush; a
-        // shorter one only snaps by its top — a bottom stop there would sit a few pixels from the
-        // next section's top and tug the page back and forth between the two.
-        const register = () => {
-            const navbarHeight = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const points = new Set<number>();
-
-            for (const target of collectSnapTargets(root)) {
-                const rect = target.getBoundingClientRect();
-                const top = rect.top + window.scrollY;
-
-                points.add(Math.round(Math.max(0, top - navbarHeight)));
-                if (rect.height > window.innerHeight - navbarHeight) {
-                    points.add(Math.round(Math.min(maxScroll, top + rect.height - window.innerHeight)));
+        // Lenis emits `scroll` every frame while the page moves — wheel glide, touch momentum,
+        // keyboard, its own `scrollTo` — so a quiet gap means the scroll has really stopped. Our own
+        // snap lands exactly on the stop, so the gap after it finds nothing to correct.
+        let settle = 0;
+        const snapWhenSettled = () => {
+            window.clearTimeout(settle);
+            settle = window.setTimeout(() => {
+                const scroll = lenis.scroll;
+                let nearest: number | undefined;
+                for (const stop of getStops(root)) {
+                    if (nearest === undefined || Math.abs(stop - scroll) < Math.abs(nearest - scroll)) {
+                        nearest = stop;
+                    }
                 }
-            }
+                if (nearest === undefined) return;
 
-            const removers = Array.from(points, (point) => snap.add(point));
-            return () => removers.forEach((remove) => remove());
+                const distance = Math.abs(nearest - scroll);
+                if (distance > 1 && distance <= window.innerHeight * SNAP_DISTANCE) {
+                    lenis.scrollTo(nearest, { duration: SNAP_DURATION, easing: easeOutCubic });
+                }
+            }, SETTLE_DELAY);
         };
-
-        let removeTargets = register();
-
-        // Offsets go stale whenever the page height moves — sections streaming in (Suspense, CMS
-        // data), images loading, a viewport resize — so recompute when the snap root resizes.
-        let pending = 0;
-        const reRegister = () => {
-            window.clearTimeout(pending);
-            pending = window.setTimeout(() => {
-                removeTargets();
-                removeTargets = register();
-            }, 200);
-        };
-        const observer = new ResizeObserver(reRegister);
-        observer.observe(root);
-        window.addEventListener("resize", reRegister);
+        lenis.on("scroll", snapWhenSettled);
 
         return () => {
-            window.clearTimeout(pending);
-            observer.disconnect();
-            window.removeEventListener("resize", reRegister);
-            removeTargets();
-            snap.destroy();
+            window.clearTimeout(settle);
             lenis.destroy();
         };
     }, [pathname]);
