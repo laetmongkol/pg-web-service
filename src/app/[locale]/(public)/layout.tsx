@@ -6,6 +6,7 @@ import { languageAppServiceServer } from "@/services/modules/app-service/server"
 
 import Footer from "@/components/layout/footer";
 import Navbar from "@/components/layout/navbar";
+import SmoothScroll from "@/components/layout/smooth-scroll";
 
 import type { Metadata } from "next";
 
@@ -41,9 +42,12 @@ const PublicLayout = async ({ children, params }: PublicLayoutProps) => {
     <div className="relative flex min-h-screen w-full overflow-x-clip flex-col bg-(--surface-default)">
       <main className="flex flex-1">
       <Navbar language={language} languages={languages} menuItems={NAV_LINKS} showLogo />
-        <section className="w-full whitespace-pre-line">{children}</section>
+        <section data-snap-root className="w-full whitespace-pre-line">
+          {children}
+        </section>
       </main>
       <Footer language={language} />
+      <SmoothScroll />
     </div>
   );
 };

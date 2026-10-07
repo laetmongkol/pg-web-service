@@ -10,6 +10,13 @@ html {
   scroll-padding-top: var(--navbar-height);
 }
 
+/* Lenis drives the scroll position itself; a native smooth behaviour on top would animate every
+   frame it sets and make the scroll lag behind the wheel. */
+html.lenis.lenis-smooth,
+html.lenis.lenis-smooth body {
+  scroll-behavior: auto !important;
+}
+
 .required:after {
   content: "*";
   color: var(--color-danger-500);
