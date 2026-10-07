@@ -21,7 +21,7 @@ const OfficeMap = ({ data }: OfficeMapProps) => {
     const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(query)}&hl=th&z=17&output=embed`;
 
     return (
-        <section id="office-map" className="w-full bg-(--surface-elevated) pb-16 sm:pb-20 lg:pb-24">
+        <section id="office-map" className="w-full bg-(--surface-elevated) pb-16 sm:pb-20 lg:pb-24 lg:pt-10">
             <div className={cn("mx-auto w-full max-w-7xl", "px-4 sm:px-8")}>
                 <FadeIn delay={100} className="overflow-hidden rounded-2xl border border-(--border-default)">
                     <iframe
