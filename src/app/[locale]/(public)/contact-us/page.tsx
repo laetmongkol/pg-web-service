@@ -34,7 +34,7 @@ export default async function ContactUsPage({ params }: ContactUsPageProps) {
 
             <section
                 id="contact-us-content"
-                className={cn("w-full bg-(--surface-elevated)", "py-16 sm:py-20 lg:py-24")}
+                className={cn("w-full bg-(--surface-elevated)", "py-6 sm:py-20 lg:py-14")}
             >
                 <div
                     className={cn(

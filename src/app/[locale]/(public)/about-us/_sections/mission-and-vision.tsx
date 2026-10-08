@@ -5,6 +5,7 @@ import {
     extractAttributes,
     PictureAttributes,
 } from "@/lib/cms/content-attributes";
+import { resolveMediaDisplayUrl } from "@/lib/media/media-display-url";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
@@ -113,6 +114,8 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
     }));
 
     const cover = toPicture(coverSection?.image1, mediaCards[0]?.label ?? "");
+    const coverVideo = toPicture(coverSection?.coverVideo, cover.alt);
+    const coverVideoSrc = resolveMediaDisplayUrl(undefined, coverVideo.src);
     const avatars = REVIEW_AVATAR_KEYS.map((key, index) => ({
         key,
         ...toPicture(peopleSection?.[key], `ลูกค้า ${index + 1}`),
@@ -181,19 +184,38 @@ const MissionAndVision = ({ data }: MissionAndVisionProps) => {
                                     "lg:group-hover:left-1/2",
                                 )}
                             >
-                                <FillImage
-                                    src={cover.src}
-                                    alt={cover.alt}
-                                    width={cover.width}
-                                    height={cover.height}
-                                    wrapperClassName="absolute inset-0 h-full w-full"
-                                    className={cn(
-                                        "h-full w-full object-cover object-center",
-                                        "transition-[object-position]! duration-700!",
-                                        REVEAL_EASE,
-                                        "lg:group-hover:object-right",
-                                    )}
-                                />
+                                {coverVideoSrc ? (
+                                    <video
+                                        src={coverVideoSrc}
+                                        poster={cover.src ? resolveMediaDisplayUrl(undefined, cover.src) : undefined}
+                                        aria-label={coverVideo.alt}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        playsInline
+                                        preload="metadata"
+                                        className={cn(
+                                            "absolute inset-0 h-full w-full object-cover object-center",
+                                            "transition-[object-position]! duration-700!",
+                                            REVEAL_EASE,
+                                            "lg:group-hover:object-right",
+                                        )}
+                                    />
+                                ) : (
+                                    <FillImage
+                                        src={cover.src}
+                                        alt={cover.alt}
+                                        width={cover.width}
+                                        height={cover.height}
+                                        wrapperClassName="absolute inset-0 h-full w-full"
+                                        className={cn(
+                                            "h-full w-full object-cover object-center",
+                                            "transition-[object-position]! duration-700!",
+                                            REVEAL_EASE,
+                                            "lg:group-hover:object-right",
+                                        )}
+                                    />
+                                )}
                             </div>
 
                             <div className="absolute inset-x-3 bottom-3 flex gap-3 sm:inset-x-auto sm:right-6 sm:bottom-6">
