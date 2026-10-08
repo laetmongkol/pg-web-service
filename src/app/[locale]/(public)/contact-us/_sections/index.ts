@@ -1,11 +1,4 @@
-import ContactChannels from "./contact-channels";
-import ContactForm from "./contact-form";
-import HeroSection from "./hero-section";
-import OfficeMap from "./office-map";
+import ContactChannelsSection from "./contact-channels-section";
+import OfficeSection from "./office-section";
 
-export {
-    ContactChannels,
-    ContactForm,
-    HeroSection,
-    OfficeMap
-};
+export { ContactChannelsSection, OfficeSection };

@@ -1,0 +1,477 @@
+-- =====================================================================================
+-- CMS seed — PIP Evolution: ทุกหน้าของเว็บ + label ของ navbar/footer  (domain_code = 'pipevolution')
+--
+-- หน้าที่อยู่ในไฟล์นี้: Home, AboutUs, Services, ContactUs  (ภาษา th + en)
+-- เนื้อหา = copy เดียวกับ *-mock.ts ในโค้ด (HOME_MOCK / ABOUT_MOCK / SERVICES_MOCK / CONTACT_MOCK)
+-- section_code = ชื่อ section (hero, partners, about, ...) — อ่านในโค้ดเป็น contents?.["<sectionCode>"]
+-- translate_content_code ตรงกับที่แต่ละ section อ่าน (data?.<code>?.value)
+-- sequence: content_headers = ลำดับ section ในหน้า, translate_contents = ลำดับ content ใน section
+--           (คอลัมน์ที่ 4 ของ tmp_contents)
+-- รายการ (stat1.., service1.., member1..) เป็น prefix + เลข สำหรับ convertObjectToArrayByPrefix
+--
+-- ยังไม่ได้รัน — รันเองหลังตั้ง domain 'pipevolution' ในหลังบ้านเสร็จ
+-- ปลอดภัยกับ domain อื่น: ทุก statement ฝัง domain_code = 'pipevolution' ตายตัว
+-- ไม่มี DELETE / TRUNCATE / UPDATE ที่ไม่ผูก domain — ข้อมูลโดเมนอื่นไม่ถูกแตะ
+-- รันซ้ำได้ (idempotent): ON CONFLICT DO UPDATE ทับเฉพาะแถวของ pipevolution
+--
+-- ต้องมีอยู่ก่อน: domains.domain_code = 'pipevolution' และ languages (th, en) ของ domain นี้
+-- ถ้าไม่มี -> RAISE EXCEPTION แล้ว rollback ทั้งไฟล์ (ไม่เขียนอะไรเลย)
+--
+-- รูปภาพ: media_storage_key = NULL และ attributes ไม่มี mediaStorageKey — อัปโหลดรูปจริงในหลังบ้านทีหลัง
+-- (key แบบไม่มีชื่อโดเมนนำหน้า contents/... — api-app-service เติม '{domain}/' ให้เองตอนอ่านจาก S3)
+-- =====================================================================================
+
+BEGIN;
+
+-- 0) preflight ---------------------------------------------------------------------
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM domains WHERE domain_code = 'pipevolution') THEN
+    RAISE EXCEPTION 'domains.domain_code = % not found — create the tenant first', 'pipevolution';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM languages WHERE domain_code = 'pipevolution' AND language_code = 'th' AND status = 'Y') THEN
+    RAISE EXCEPTION 'languages (th) missing for domain %', 'pipevolution';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM languages WHERE domain_code = 'pipevolution' AND language_code = 'en' AND status = 'Y') THEN
+    RAISE EXCEPTION 'languages (en) missing for domain %', 'pipevolution';
+  END IF;
+
+END $$;
+
+-- 1) staging tables (drop อัตโนมัติตอน COMMIT) --------------------------------------
+CREATE TEMP TABLE tmp_pages (
+  page_code    varchar(128) NOT NULL,
+  page_name    varchar(255),
+  description  text
+) ON COMMIT DROP;
+
+CREATE TEMP TABLE tmp_sections (
+  page_code    varchar(128) NOT NULL,
+  section_code varchar(64)  NOT NULL,
+  description  text,
+  sequence     integer      NOT NULL
+) ON COMMIT DROP;
+
+CREATE TEMP TABLE tmp_contents (
+  page_code    varchar(128) NOT NULL,
+  section_code varchar(64)  NOT NULL,
+  content_code varchar(512) NOT NULL,
+  sequence     integer      NOT NULL,
+  content_type varchar(32)  NOT NULL,
+  link_url     varchar(1024),
+  media_key    varchar(1024),
+  value_th     text,
+  value_en     text,
+  attrs_th     jsonb,
+  attrs_en     jsonb
+) ON COMMIT DROP;
+
+INSERT INTO tmp_pages (page_code, page_name, description) VALUES
+  ('Home', 'Home', 'หน้าแรกของเว็บไซต์ PIP Evolution'),
+  ('AboutUs', 'About Us', 'หน้าเกี่ยวกับเรา'),
+  ('Services', 'Services', 'หน้าบริการของเรา'),
+  ('ContactUs', 'Contact Us', 'หน้าติดต่อเรา');
+
+INSERT INTO tmp_sections (page_code, section_code, description, sequence) VALUES
+  ('Home', 'hero', 'Hero banner', 1),
+  ('Home', 'partners', 'Partners', 2),
+  ('Home', 'about', 'About PIP Evolution + mindset', 3),
+  ('Home', 'services', 'Our services', 4),
+  ('Home', 'whyUs', 'Why PIP Evolution', 5),
+  ('Home', 'portfolio', 'Portfolio', 6),
+  ('Home', 'testimonials', 'Testimonials', 7),
+  ('Home', 'cta', 'Closing CTA', 8),
+  ('AboutUs', 'hero', 'Hero banner', 1),
+  ('AboutUs', 'history', 'Our history + stats', 2),
+  ('AboutUs', 'journey', 'Growth journey', 3),
+  ('AboutUs', 'missionVision', 'Mission and vision', 4),
+  ('AboutUs', 'team', 'Team + trusted by', 5),
+  ('AboutUs', 'cta', 'Closing CTA', 6),
+  ('Services', 'hero', 'Hero banner', 1),
+  ('Services', 'serviceList', 'Service list', 2),
+  ('Services', 'whyChoose', 'Why customers choose us', 3),
+  ('Services', 'capabilities', 'Capabilities', 4),
+  ('Services', 'cta', 'Closing CTA', 5),
+  ('ContactUs', 'hero', 'Hero banner', 1),
+  ('ContactUs', 'channels', 'Contact channels', 2),
+  ('ContactUs', 'office', 'Office + opening hours', 3),
+  ('ContactUs', 'form', 'Send message form', 4);
+
+INSERT INTO tmp_contents (page_code, section_code, content_code, sequence, content_type,
+    link_url, media_key, value_th, value_en, attrs_th, attrs_en) VALUES
+  ('Home', 'hero', 'title1', 1, 'text', NULL, NULL, 'เราสร้างเทคโนโลยี', 'We build technology', NULL, NULL),
+  ('Home', 'hero', 'title2', 2, 'text', NULL, NULL, 'ให้ธุรกิจไปได้ไกลกว่าเดิม', 'that takes business further', NULL, NULL),
+  ('Home', 'hero', 'description', 3, 'text', NULL, NULL, E'PIP Evolution พัฒนา Software และ Digital Solution\nที่ออกแบบให้เหมาะกับธุรกิจ ตั้งแต่แนวคิด การพัฒนา\nไปจนถึงการใช้งานจริง', E'PIP Evolution builds software and digital solutions\ndesigned around your business — from the first idea\nthrough development to real-world use.', NULL, NULL),
+  ('Home', 'hero', 'ctaPrimary', 4, 'button', 'contact-us', NULL, 'ติดต่อเรา', 'Contact us', NULL, NULL),
+  ('Home', 'hero', 'ctaSecondary', 5, 'button', 'about-us', NULL, 'เรียนรู้เกี่ยวกับเรา', 'Learn about us', NULL, NULL),
+  ('Home', 'partners', 'title1', 1, 'text', NULL, NULL, 'พาร์ทเนอร์ที่พร้อม', 'Partners ready', NULL, NULL),
+  ('Home', 'partners', 'title2', 2, 'text', NULL, NULL, 'เติบโตไปพร้อมกับคุณ', 'to grow with you', NULL, NULL),
+  ('Home', 'partners', 'description', 3, 'text', NULL, NULL, E'เราเชื่อในการทำงานร่วมกันระยะยาว\nเพื่อสร้างโซลูชันที่ตอบโจทย์และสร้างคุณค่าให้กับธุรกิจอย่างแท้จริง', E'We believe in long-term partnerships\nthat build solutions with real value for the business.', NULL, NULL),
+  ('Home', 'partners', 'partner1', 4, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 1"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 1"}'::jsonb),
+  ('Home', 'partners', 'partner2', 5, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 2"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 2"}'::jsonb),
+  ('Home', 'partners', 'partner3', 6, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 3"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 3"}'::jsonb),
+  ('Home', 'partners', 'partner4', 7, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 4"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 4"}'::jsonb),
+  ('Home', 'partners', 'partner5', 8, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 5"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 5"}'::jsonb),
+  ('Home', 'partners', 'partner6', 9, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 6"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 6"}'::jsonb),
+  ('Home', 'partners', 'partner7', 10, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 7"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 7"}'::jsonb),
+  ('Home', 'partners', 'partner8', 11, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 8"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 8"}'::jsonb),
+  ('Home', 'partners', 'partner9', 12, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 9"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 9"}'::jsonb),
+  ('Home', 'partners', 'partner10', 13, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 10"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 10"}'::jsonb),
+  ('Home', 'partners', 'partner11', 14, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 11"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 11"}'::jsonb),
+  ('Home', 'partners', 'partner12', 15, 'image', NULL, NULL, '', '', '{"width": 400, "height": 120, "mediaAltText": "พาร์ทเนอร์ 12"}'::jsonb, '{"width": 400, "height": 120, "mediaAltText": "Partner 12"}'::jsonb),
+  ('Home', 'about', 'eyebrow', 1, 'text', NULL, NULL, 'ABOUT PIP EVOLUTION', 'ABOUT PIP EVOLUTION', NULL, NULL),
+  ('Home', 'about', 'title', 2, 'text', NULL, NULL, 'ทำความรู้จัก PIP Evolution', 'Get to know PIP Evolution', NULL, NULL),
+  ('Home', 'about', 'description', 3, 'text', NULL, NULL, E'PIP Evolution บริการให้คำปรึกษาด้านการเงินอย่างมืออาชีพ\nและบริการวางแผนการเงินเชิงกลยุทธ์ด้วยเครื่องมือและทีมงานที่มีความเชี่ยวชาญสูง', E'PIP Evolution offers professional financial consulting\nand strategic financial planning with expert tools and an experienced team.', NULL, NULL),
+  ('Home', 'about', 'button', 4, 'button', 'about-us', NULL, 'เกี่ยวกับเรา', 'About us', NULL, NULL),
+  ('Home', 'about', 'aboutImg', 5, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "สำนักงาน PIP Evolution"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "The PIP Evolution office"}'::jsonb),
+  ('Home', 'about', 'stat1', 6, 'json', NULL, NULL, '3', '3', E'{"label": "ประสบการณ์กว่า 3 ปี\\nในอุตสาหกรรม"}'::jsonb, E'{"label": "3+ years\\nin the industry"}'::jsonb),
+  ('Home', 'about', 'stat2', 7, 'json', NULL, NULL, '50+', '50+', '{"label": "ทีมงานผู้เชี่ยวชาญ"}'::jsonb, '{"label": "Specialists on the team"}'::jsonb),
+  ('Home', 'about', 'stat3', 8, 'json', NULL, NULL, 'ครบวงจร', 'End-to-end', E'{"label": "บริการและให้คำ\\nปรึกษา"}'::jsonb, E'{"label": "Service and\\nconsulting"}'::jsonb),
+  ('Home', 'about', 'mindsetTitle', 9, 'text', NULL, NULL, 'วิธีคิดของเรา', 'How we think', NULL, NULL),
+  ('Home', 'about', 'mindsetDescription', 10, 'text', NULL, NULL, 'ให้บริการโซลูชันเทคโนโลยีครบวงจร ด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์', 'End-to-end technology solutions from an experienced team', NULL, NULL),
+  ('Home', 'about', 'mindset1', 11, 'json', NULL, NULL, 'เข้าใจธุรกิจ', 'Understand the business', E'{"description": "เราเห็นโอกาส\\nในความซับซ้อน"}'::jsonb, E'{"description": "We see opportunity\\nin complexity"}'::jsonb),
+  ('Home', 'about', 'mindset2', 12, 'json', NULL, NULL, 'คิดอย่างเป็นระบบ', 'Think in systems', E'{"description": "เราสร้างโซลูชัน\\nที่ยั่งยืน"}'::jsonb, E'{"description": "We build solutions\\nthat last"}'::jsonb),
+  ('Home', 'about', 'mindset3', 13, 'json', NULL, NULL, 'สร้างไปด้วยกัน', 'Build together', E'{"description": "เราเติบโต\\nไปกับลูกค้า"}'::jsonb, E'{"description": "We grow\\nwith our clients"}'::jsonb),
+  ('Home', 'services', 'eyebrow', 1, 'text', NULL, NULL, 'OUR SERVICES', 'OUR SERVICES', NULL, NULL),
+  ('Home', 'services', 'title', 2, 'text', NULL, NULL, 'บริการของเรา', 'Our services', NULL, NULL),
+  ('Home', 'services', 'subTitle', 3, 'text', NULL, NULL, 'ครบทุกความต้องการ เพื่อการเติบโตของธุรกิจ', 'Everything your business needs to grow', NULL, NULL),
+  ('Home', 'services', 'description', 4, 'text', NULL, NULL, E'เรามอบโซลูชันแบบครบวงจร ตั้งแต่การพัฒนาเทคโนโลยี\nการตลาด ไปจนถึงการให้คำปรึกษาด้าน Trading และ FinTech', E'End-to-end solutions, from technology development\nand marketing to Trading and FinTech consulting', NULL, NULL),
+  ('Home', 'services', 'button', 5, 'button', 'services', NULL, 'ดูบริการทั้งหมด', 'All services', NULL, NULL),
+  ('Home', 'services', 'service1', 6, 'json', NULL, NULL, E'ให้บริการพัฒนาและ\nดูแลระบบเทรด\nอัตโนมัติ (EA)', E'Build and maintain\nautomated trading\nsystems (EA)', '{}'::jsonb, '{}'::jsonb),
+  ('Home', 'services', 'service2', 7, 'json', NULL, NULL, E'ออกแบบโครงสร้าง\nโปรแกรมและ Logic\nการเทรดเฉพาะทาง', E'Design program\nstructure and custom\ntrading logic', '{}'::jsonb, '{}'::jsonb),
+  ('Home', 'services', 'service3', 8, 'json', NULL, NULL, E'มุ่งเน้นความเสถียร\nการบริหารความเสี่ยง\nและการใช้งานจริง', E'Focused on stability,\nrisk management\nand real use', '{}'::jsonb, '{}'::jsonb),
+  ('Home', 'services', 'service4', 9, 'json', NULL, NULL, E'มีการทดสอบ ปรับแต่ง\nและพัฒนาระบบ\nอย่างต่อเนื่อง', E'Continuous testing,\ntuning and\nimprovement', '{}'::jsonb, '{}'::jsonb),
+  ('Home', 'services', 'service5', 10, 'json', NULL, NULL, E'ให้คำแนะนำและ\nบริการหลังการใช้งาน\nอย่างเป็นระบบ', E'Structured guidance\nand after-sales\nsupport', '{}'::jsonb, '{}'::jsonb),
+  ('Home', 'whyUs', 'eyebrow', 1, 'text', NULL, NULL, 'WHY PIP EVOLUTION', 'WHY PIP EVOLUTION', NULL, NULL),
+  ('Home', 'whyUs', 'title1', 2, 'text', NULL, NULL, 'ทำไมต้อง', 'Why', NULL, NULL),
+  ('Home', 'whyUs', 'title2', 3, 'text', NULL, NULL, 'PIP EVOLUTION?', 'PIP EVOLUTION?', NULL, NULL),
+  ('Home', 'whyUs', 'description', 4, 'text', NULL, NULL, E'เราไม่ได้เป็นเพียงผู้พัฒนาเทคโนโลยี\nแต่เราคือพันธมิตรที่พร้อมเติบโตไปกับคุณในทุกขั้นตอนของการเติบโต', E'We are not just a technology developer —\nwe are a partner ready to grow with you at every stage.', NULL, NULL),
+  ('Home', 'whyUs', 'whyImg', 5, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "ทีมงาน PIP Evolution"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "The PIP Evolution team"}'::jsonb),
+  ('Home', 'whyUs', 'reason1', 6, 'json', NULL, NULL, 'ความเชี่ยวชาญของทีมงาน', 'An expert team', E'{"cardTitle": "ความเชี่ยวชาญ\\nของทีมงาน"}'::jsonb, E'{"cardTitle": "An expert\\nteam"}'::jsonb),
+  ('Home', 'whyUs', 'reason2', 7, 'json', NULL, NULL, 'ระบบพัฒนาเอง 100%โดยทีมงาน', '100% built in-house', E'{"cardTitle": "ระบบพัฒนาเอง\\n100% โดยทีมงาน"}'::jsonb, E'{"cardTitle": "100% built\\nin-house"}'::jsonb),
+  ('Home', 'whyUs', 'reason3', 8, 'json', NULL, NULL, 'ความโปร่งใสในการให้บริการ', 'Transparent service', E'{"cardTitle": "ความโปร่งใส\\nในการให้บริการ"}'::jsonb, E'{"cardTitle": "Transparent\\nservice"}'::jsonb),
+  ('Home', 'whyUs', 'reason4', 9, 'json', NULL, NULL, 'ดูแลลูกค้าตลอด 24 ชั่วโมง', '24-hour customer care', E'{"cardTitle": "ดูแลลูกค้า\\nตลอด 24 ชั่วโมง"}'::jsonb, E'{"cardTitle": "24-hour\\ncustomer care"}'::jsonb),
+  ('Home', 'portfolio', 'title1', 1, 'text', NULL, NULL, 'ผลงานที่เรา', 'Work we', NULL, NULL),
+  ('Home', 'portfolio', 'title2', 2, 'text', NULL, NULL, 'สร้างและพัฒนา', 'built and shipped', NULL, NULL),
+  ('Home', 'portfolio', 'description', 3, 'text', NULL, NULL, E'ตัวอย่างโปรเจกต์และ Digital Solution ที่เราออกแบบและพัฒนา\nเพื่อช่วยให้ธุรกิจทำงานได้ง่ายและมีประสิทธิภาพมากขึ้น', E'Projects and digital solutions we designed and built\nto help businesses work more simply and efficiently.', NULL, NULL),
+  ('Home', 'portfolio', 'cta', 4, 'button', 'services', NULL, 'ดูผลงานทั้งหมด', 'See all work', NULL, NULL),
+  ('Home', 'portfolio', 'project1', 5, 'json', NULL, NULL, 'ชื่อโปรเจกต์', 'Project name', E'{"description": "ให้บริการโซลูชันเทคโนโลยีที่ครบวงจร\\nด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์มากกว่า 10 ปี\\nพร้อมสนับสนุนธุรกิจของคุณให้เติบโตอย่างยั่งยืน"}'::jsonb, E'{"description": "End-to-end technology solutions\\nfrom a team with 10+ years of experience,\\nhelping your business grow sustainably."}'::jsonb),
+  ('Home', 'portfolio', 'project2', 6, 'json', NULL, NULL, 'ชื่อโปรเจกต์', 'Project name', E'{"description": "ให้บริการโซลูชันเทคโนโลยีที่ครบวงจร\\nด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์มากกว่า 10 ปี\\nพร้อมสนับสนุนธุรกิจของคุณให้เติบโตอย่างยั่งยืน"}'::jsonb, E'{"description": "End-to-end technology solutions\\nfrom a team with 10+ years of experience,\\nhelping your business grow sustainably."}'::jsonb),
+  ('Home', 'portfolio', 'project3', 7, 'json', NULL, NULL, 'ชื่อโปรเจกต์', 'Project name', E'{"description": "ให้บริการโซลูชันเทคโนโลยีที่ครบวงจร\\nด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์มากกว่า 10 ปี\\nพร้อมสนับสนุนธุรกิจของคุณให้เติบโตอย่างยั่งยืน"}'::jsonb, E'{"description": "End-to-end technology solutions\\nfrom a team with 10+ years of experience,\\nhelping your business grow sustainably."}'::jsonb),
+  ('Home', 'portfolio', 'project4', 8, 'json', NULL, NULL, 'ชื่อโปรเจกต์', 'Project name', E'{"description": "ให้บริการโซลูชันเทคโนโลยีที่ครบวงจร\\nด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์มากกว่า 10 ปี\\nพร้อมสนับสนุนธุรกิจของคุณให้เติบโตอย่างยั่งยืน"}'::jsonb, E'{"description": "End-to-end technology solutions\\nfrom a team with 10+ years of experience,\\nhelping your business grow sustainably."}'::jsonb),
+  ('Home', 'portfolio', 'project5', 9, 'json', NULL, NULL, 'ชื่อโปรเจกต์', 'Project name', E'{"description": "ให้บริการโซลูชันเทคโนโลยีที่ครบวงจร\\nด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์มากกว่า 10 ปี\\nพร้อมสนับสนุนธุรกิจของคุณให้เติบโตอย่างยั่งยืน"}'::jsonb, E'{"description": "End-to-end technology solutions\\nfrom a team with 10+ years of experience,\\nhelping your business grow sustainably."}'::jsonb),
+  ('Home', 'testimonials', 'title1', 1, 'text', NULL, NULL, 'เสียงจาก', 'What our', NULL, NULL),
+  ('Home', 'testimonials', 'title2', 2, 'text', NULL, NULL, 'ลูกค้าของเรา', 'clients say', NULL, NULL),
+  ('Home', 'testimonials', 'description', 3, 'text', NULL, NULL, 'ความไว้วางใจจากลูกค้า คือสิ่งที่ผลักดันให้เราพัฒนาและส่งมอบงานที่ดียิ่งขึ้นในทุกโปรเจกต์', 'Our clients'' trust is what pushes us to deliver better work on every project.', NULL, NULL),
+  ('Home', 'testimonials', 'review1', 4, 'json', NULL, NULL, E'“ทีมงานมีอาชีพ\nเข้าใจธุรกิจเราอย่างแท้จริง\nช่วยให้เราพัฒนาแพลตฟอร์มได้ตามเป้าหมาย และเติบโตต่อเนื่อง”', E'“A professional team that truly understood our business\nand helped us build the platform we planned — and keep growing.”', '{"role": "CEO, Brokerage Firm", "rating": 5}'::jsonb, '{"role": "CEO, Brokerage Firm", "rating": 5}'::jsonb),
+  ('Home', 'testimonials', 'review2', 5, 'json', NULL, NULL, E'“PIP Evolution ไม่ได้แค่ส่งโค้ด\nแต่ให้คำปรึกษา\nและความเชี่ยวชาญที่ช่วยให้เราต่อยอดธุรกิจ ได้อย่างมั่นใจ”', E'“PIP Evolution doesn''t just ship code —\nthey bring advice and expertise\nthat let us grow the business with confidence.”', '{"role": "Founder, FinTech Startup", "rating": 5}'::jsonb, '{"role": "Founder, FinTech Startup", "rating": 5}'::jsonb),
+  ('Home', 'testimonials', 'review3', 6, 'json', NULL, NULL, E'“งานมีคุณภาพ ตรงเวลา\nและทีมให้การดูแลดีมาก\nถือเป็นพาร์ทเนอร์ที่เราไว้วางใจระยะยาว”', E'“Quality work, on time,\nand a team that really looks after us —\na partner we trust for the long run.”', '{"role": "Marketing Director", "rating": 5}'::jsonb, '{"role": "Marketing Director", "rating": 5}'::jsonb),
+  ('Home', 'cta', 'title1', 1, 'text', NULL, NULL, 'มีไอเดียอยู่แล้ว?', 'Already have an idea?', NULL, NULL),
+  ('Home', 'cta', 'title2', 2, 'text', NULL, NULL, 'มาสร้างให้เกิดขึ้นจริงกัน', 'Let''s make it real', NULL, NULL),
+  ('Home', 'cta', 'description', 3, 'text', NULL, NULL, 'ไม่ว่าจะเป็นเว็บไซต์ ระบบหลังบ้าน หรือ Software Solution สำหรับธุรกิจ ทีม PIP Evolution พร้อมช่วยคุณตั้งแต่แนวคิดจนถึงการใช้งานจริง', 'Whether it''s a website, a back-office system or a business software solution, the PIP Evolution team will help from concept to launch.', NULL, NULL),
+  ('Home', 'cta', 'button', 4, 'button', 'contact-us', NULL, 'ติดต่อเรา', 'Contact us', NULL, NULL),
+  ('Home', 'cta', 'ctaImg', 5, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "อาคาร PIP Evolution"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "The PIP Evolution building"}'::jsonb),
+  ('AboutUs', 'hero', 'eyebrow', 1, 'text', NULL, NULL, 'เกี่ยวกับ PIP Evolution', 'About PIP Evolution', NULL, NULL),
+  ('AboutUs', 'hero', 'title1', 2, 'text', NULL, NULL, 'เชื่อมธุรกิจกับเทคโนโลยี', 'Connecting business and technology', NULL, NULL),
+  ('AboutUs', 'hero', 'title2', 3, 'text', NULL, NULL, 'ให้ทุกความซับซ้อนเป็นเรื่องง่าย', 'to make complexity simple', NULL, NULL),
+  ('AboutUs', 'hero', 'description', 4, 'text', NULL, NULL, 'PIP Evolution พัฒนา Software และ Digital Solution ที่เชื่อมเทคโนโลยีเข้ากับความต้องการของธุรกิจ เพื่อสร้างระบบที่ใช้งานได้จริง ยืดหยุ่น และพร้อมเติบโตไปกับองค์กร', 'PIP Evolution builds software and digital solutions that connect technology to what the business needs — systems that work, flex, and grow with the organisation.', NULL, NULL),
+  ('AboutUs', 'hero', 'ctaPrimary', 5, 'button', 'services', NULL, 'บริการของเรา', 'Our services', NULL, NULL),
+  ('AboutUs', 'hero', 'ctaSecondary', 6, 'button', 'contact-us', NULL, 'ติดต่อเรา', 'Contact us', NULL, NULL),
+  ('AboutUs', 'hero', 'heroImg', 7, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "ภาพประกอบการเชื่อมธุรกิจกับเทคโนโลยี"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "Business connected to technology"}'::jsonb),
+  ('AboutUs', 'history', 'label', 1, 'text', NULL, NULL, 'ประวัติการเริ่มต้นของเรา', 'Our story', NULL, NULL),
+  ('AboutUs', 'history', 'title', 2, 'text', NULL, NULL, 'จุดเริ่มต้นของการเดินทาง', 'Where the journey began', NULL, NULL),
+  ('AboutUs', 'history', 'description', 3, 'text', NULL, NULL, 'Pip Evolution ก่อตั้งขึ้นในปี พ.ศ. 2567 (ค.ศ. 2024) โดยมีทุนจดทะเบียน 3,000,000 บาท เรามีบริการให้คำปรึกษาด้านการเงินอย่างมืออาชีพ และบริการวางแผนการเงินเชิงกลยุทธ์ด้วยเครื่องมือและทีมงานที่มีความเชี่ยวชาญสูง ด้านการแลกเปลี่ยนเงินตราต่างประเทศ รวมถึงการซื้อขายสกุลเงินหลากหลายประเภท', 'PIP Evolution was founded in 2024 with registered capital of THB 3,000,000. We provide professional financial consulting and strategic financial planning, backed by expert tools and a specialist team in foreign exchange and multi-currency trading.', NULL, NULL),
+  ('AboutUs', 'history', 'stat1', 4, 'json', NULL, NULL, 'ตั้งแต่ปี 2024', 'Since 2024', '{"label": "ประสบการณ์"}'::jsonb, '{"label": "Experience"}'::jsonb),
+  ('AboutUs', 'history', 'stat2', 5, 'json', NULL, NULL, '99.9%', '99.9%', E'{"label": "เติบโต\\nอย่างไม่หยุดยั้ง"}'::jsonb, E'{"label": "Non-stop\\ngrowth"}'::jsonb),
+  ('AboutUs', 'history', 'stat3', 6, 'json', NULL, NULL, '10,000+', '10,000+', E'{"label": "ลูกค้า\\nที่ใช้งาน"}'::jsonb, E'{"label": "Active\\ncustomers"}'::jsonb),
+  ('AboutUs', 'history', 'stat4', 7, 'json', NULL, NULL, '50+', '50+', E'{"label": "ทีมงาน\\nผู้เชี่ยวชาญ"}'::jsonb, E'{"label": "Specialists\\non the team"}'::jsonb),
+  ('AboutUs', 'journey', 'label', 1, 'text', NULL, NULL, 'การเดินทางของเรา', 'Our journey', NULL, NULL),
+  ('AboutUs', 'journey', 'title', 2, 'text', NULL, NULL, 'เส้นทางการเติบโตของเรา', 'How we have grown', NULL, NULL),
+  ('AboutUs', 'journey', 'description', 3, 'text', NULL, NULL, E'จากจุดเริ่มต้นสู่การเป็น Technology Partner\nเราพัฒนาอย่างต่อเนื่อง ทั้งด้านเทคโนโลยี ทีมงานและความเชี่ยวชาญ\nเพื่อรองรับความต้องการของธุรกิจที่เปลี่ยนแปลงอยู่เสมอ', E'From a starting point to a technology partner,\nwe keep growing our technology, our team and our expertise\nto meet the ever-changing needs of business.', NULL, NULL),
+  ('AboutUs', 'journey', 'milestone1', 4, 'json', NULL, NULL, '2024', '2024', E'{"title": "จุดเริ่มต้น", "description": "เริ่มต้น PIP Evolution ด้วยเป้าหมาย\\nในการพัฒนาเทคโนโลยีที่ช่วยแก้ปัญหา\\nและเพิ่มประสิทธิภาพให้กับธุรกิจ"}'::jsonb, E'{"title": "The beginning", "description": "PIP Evolution starts with one goal:\\ntechnology that solves problems\\nand makes businesses more efficient."}'::jsonb),
+  ('AboutUs', 'journey', 'milestone2', 5, 'json', NULL, NULL, '2025', '2025', E'{"title": "ขยายทีมงาน", "description": "ต่อยอดความเชี่ยวชาญด้าน Software\\nDevelopment และพัฒนาโซลูชัน\\nที่รองรับความต้องการที่ซับซ้อนมากขึ้น"}'::jsonb, E'{"title": "Growing the team", "description": "Deeper software development expertise\\nand solutions for\\nmore complex needs."}'::jsonb),
+  ('AboutUs', 'journey', 'milestone3', 6, 'json', NULL, NULL, '2026', '2026', E'{"title": "ขยายขีดความสามารถ", "description": "ขยายจำนวนทีมงานผู้เชี่ยวชาญ\\nเฉพาะทางพร้อมให้คำปรึกษา\\nและให้บริการอย่างเต็มรูปแบบ"}'::jsonb, E'{"title": "Expanding capability", "description": "More specialist team members\\nready to advise\\nand deliver end to end."}'::jsonb),
+  ('AboutUs', 'journey', 'milestone4', 7, 'json', NULL, NULL, '2027', '2027', E'{"title": "ขยายแบรนด์ขององค์กร", "description": "มุ่งสู่การเป็นพาร์ทเนอร์ด้านเทคโนโลยีที่\\nพร้อมสนับสนุนธุรกิจ ตั้งแต่แนวคิด\\nการพัฒนาไปจนถึงการเติบโตในระยะยาว"}'::jsonb, E'{"title": "Growing the brand", "description": "Becoming a technology partner that\\nsupports business from concept\\nthrough development to long-term growth."}'::jsonb),
+  ('AboutUs', 'journey', 'photo1', 8, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "สำนักงาน PIP Evolution"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "The PIP Evolution office"}'::jsonb),
+  ('AboutUs', 'journey', 'photo2', 9, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "การทำงานร่วมกันของทีม"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "The team working together"}'::jsonb),
+  ('AboutUs', 'journey', 'photo3', 10, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "ก้าวต่อไปของ PIP Evolution"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "PIP Evolution''s next step"}'::jsonb),
+  ('AboutUs', 'missionVision', 'missionTitle', 1, 'text', NULL, NULL, 'พันธกิจของเรา', 'Our mission', NULL, NULL),
+  ('AboutUs', 'missionVision', 'missionDescription', 2, 'text', NULL, NULL, E'สร้าง Software และ Digital Solution ที่ตอบโจทย์ธุรกิจจริง\nด้วยเทคโนโลยีที่เหมาะสม การออกแบบที่เข้าใจผู้ใช้\nและมาตรฐานการพัฒนาที่เชื่อถือได้', E'Build software and digital solutions that fit real business needs,\nwith the right technology, user-centred design\nand development standards you can rely on.', NULL, NULL),
+  ('AboutUs', 'missionVision', 'visionTitle', 3, 'text', NULL, NULL, 'วิสัยทัศน์ของเรา', 'Our vision', NULL, NULL),
+  ('AboutUs', 'missionVision', 'visionDescription', 4, 'text', NULL, NULL, E'มุ่งเป็น Technology Partner ที่ธุรกิจไว้วางใจ\nพร้อมสร้างสรรค์โซลูชันที่ช่วยให้องค์กรเติบโต ปรับตัว\nและก้าวทันโลกดิจิทัลอย่างยั่งยืน', E'To be the technology partner businesses trust,\ncreating solutions that help organisations grow, adapt\nand keep pace with the digital world.', NULL, NULL),
+  ('AboutUs', 'missionVision', 'illustration', 5, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "ภาพประกอบพันธกิจและวิสัยทัศน์"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "Mission and vision illustration"}'::jsonb),
+  ('AboutUs', 'team', 'label', 1, 'text', NULL, NULL, 'ทีมงานคุณภาพของเรา', 'Our team', NULL, NULL),
+  ('AboutUs', 'team', 'title', 2, 'text', NULL, NULL, 'ผู้นำเบื้องหลังแห่งความสำเร็จ', 'The people behind the work', NULL, NULL),
+  ('AboutUs', 'team', 'description', 3, 'text', NULL, NULL, 'ทีมผู้นำที่หลากหลายของเราผสมผสานประสบการณ์การซื้อขายเชิงปริมาณกับวิศวกรรมเครือข่ายหลัก', 'Our leadership blends quantitative trading experience with core network engineering.', NULL, NULL),
+  ('AboutUs', 'team', 'member1', 4, 'json', NULL, NULL, 'Surachai Kertbanjok ( Tum )', 'Surachai Kertbanjok ( Tum )', '{"role": "Headquarters", "initials": "ST"}'::jsonb, '{"role": "Headquarters", "initials": "ST"}'::jsonb),
+  ('AboutUs', 'team', 'member2', 5, 'json', NULL, NULL, 'Preeyawade Koman (June)', 'Preeyawade Koman (June)', '{"role": "Assistant", "initials": "PK"}'::jsonb, '{"role": "Assistant", "initials": "PK"}'::jsonb),
+  ('AboutUs', 'team', 'member3', 6, 'json', NULL, NULL, 'Mudmee', 'Mudmee', '{"role": "Sale in House", "initials": "MM"}'::jsonb, '{"role": "Sale in House", "initials": "MM"}'::jsonb),
+  ('AboutUs', 'team', 'member4', 7, 'json', NULL, NULL, 'Gun', 'Gun', '{"role": "Content in House", "initials": "GU"}'::jsonb, '{"role": "Content in House", "initials": "GU"}'::jsonb),
+  ('AboutUs', 'team', 'member5', 8, 'json', NULL, NULL, 'Pim', 'Pim', '{"role": "Developer", "initials": "PM"}'::jsonb, '{"role": "Developer", "initials": "PM"}'::jsonb),
+  ('AboutUs', 'team', 'trustedTitle', 9, 'text', NULL, NULL, 'ได้รับความไว้วางใจจากหลากหลายธุรกิจ', 'Trusted by businesses of every kind', NULL, NULL),
+  ('AboutUs', 'team', 'trusted1', 10, 'text', NULL, NULL, 'Vanguard', 'Vanguard', NULL, NULL),
+  ('AboutUs', 'team', 'trusted2', 11, 'text', NULL, NULL, 'Apex Trading', 'Apex Trading', NULL, NULL),
+  ('AboutUs', 'team', 'trusted3', 12, 'text', NULL, NULL, 'Offmax Corp', 'Offmax Corp', NULL, NULL),
+  ('AboutUs', 'team', 'trusted4', 13, 'text', NULL, NULL, 'BlueBridge', 'BlueBridge', NULL, NULL),
+  ('AboutUs', 'team', 'trusted5', 14, 'text', NULL, NULL, 'Equitable Systems', 'Equitable Systems', NULL, NULL),
+  ('AboutUs', 'team', 'trusted6', 15, 'text', NULL, NULL, 'Nexa Cloud', 'Nexa Cloud', NULL, NULL),
+  ('AboutUs', 'cta', 'title1', 1, 'text', NULL, NULL, 'พร้อมสร้างสิ่งต่อไป', 'Ready to build what''s next', NULL, NULL),
+  ('AboutUs', 'cta', 'title2', 2, 'text', NULL, NULL, 'ไปด้วยกันหรือยัง?', 'together?', NULL, NULL),
+  ('AboutUs', 'cta', 'description', 3, 'text', NULL, NULL, E'ไม่ว่าคุณกำลังมองหา Software ใหม่ ต้องการพัฒนาระบบเดิม\nหรือมีไอเดียที่อยากทำให้เกิดขึ้นจริง ทีม PIP Evolution\nพร้อมพูดคุยและค้นหาโซลูชันไปพร้อมกับคุณ', E'Whether you need new software, want to improve an existing system\nor have an idea to bring to life, the PIP Evolution team\nis ready to talk it through and find the solution with you.', NULL, NULL),
+  ('AboutUs', 'cta', 'button', 4, 'button', 'contact-us', NULL, 'ติดต่อเรา', 'Contact us', NULL, NULL),
+  ('AboutUs', 'cta', 'ctaImg', 5, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "อาคาร PIP Evolution"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "The PIP Evolution building"}'::jsonb),
+  ('Services', 'hero', 'eyebrow', 1, 'text', NULL, NULL, 'บริการจาก PIP Evolution', 'Services by PIP Evolution', NULL, NULL),
+  ('Services', 'hero', 'title1', 2, 'text', NULL, NULL, 'บริการและโซลูชัน', 'Services and solutions', NULL, NULL),
+  ('Services', 'hero', 'title2', 3, 'text', NULL, NULL, 'ที่ออกแบบเพื่อธุรกิจของคุณ', 'designed for your business', NULL, NULL),
+  ('Services', 'hero', 'description', 4, 'text', NULL, NULL, E'ตั้งแต่การพัฒนาซอฟต์แวร์ ระบบสำหรับองค์กร ไปจนถึง Digital Solution\nเราพร้อมออกแบบและพัฒนาเทคโนโลยีให้เหมาะกับเป้าหมายและการทำงานของธุรกิจคุณ', E'From software development and enterprise systems to digital solutions,\nwe design and build technology around your goals and the way you work.', NULL, NULL),
+  ('Services', 'hero', 'ctaPrimary', 5, 'button', 'contact-us', NULL, 'ติดต่อเรา', 'Contact us', NULL, NULL),
+  ('Services', 'hero', 'heroImg', 6, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "ภาพประกอบบริการและโซลูชัน"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "Services and solutions illustration"}'::jsonb),
+  ('Services', 'serviceList', 'label', 1, 'text', NULL, NULL, 'บริการของเรา', 'Our services', NULL, NULL),
+  ('Services', 'serviceList', 'title', 2, 'text', NULL, NULL, 'เราช่วยธุรกิจของคุณได้อย่างไร', 'How we help your business', NULL, NULL),
+  ('Services', 'serviceList', 'description', 3, 'text', NULL, NULL, 'เราดูแลตั้งแต่การวางแนวคิด ออกแบบ พัฒนา ไปจนถึงการดูแลระบบ เพื่อให้ทุกโซลูชันพร้อมใช้งานจริงและเติบโตไปพร้อมกับธุรกิจ', 'We take care of concept, design, development and maintenance so every solution is ready for real use and grows with the business.', NULL, NULL),
+  ('Services', 'serviceList', 'button', 4, 'button', 'contact-us', NULL, 'ติดต่อเรา', 'Contact us', NULL, NULL),
+  ('Services', 'serviceList', 'service1', 5, 'json', NULL, NULL, 'ให้บริการพัฒนาและดูแลระบบเทรดอัตโนมัติ (EA)', 'Build and maintain automated trading systems (EA)', '{}'::jsonb, '{}'::jsonb),
+  ('Services', 'serviceList', 'service2', 6, 'json', NULL, NULL, 'ออกแบบโครงสร้างโปรแกรมและ Logic การเทรดเฉพาะทาง', 'Design program structure and custom trading logic', '{}'::jsonb, '{}'::jsonb),
+  ('Services', 'serviceList', 'service3', 7, 'json', NULL, NULL, 'มุ่งเน้นความเสถียร การบริหารความเสี่ยง และการใช้งานจริง', 'Focused on stability, risk management and real use', '{}'::jsonb, '{}'::jsonb),
+  ('Services', 'serviceList', 'service4', 8, 'json', NULL, NULL, 'มีการทดสอบ ปรับแต่ง และพัฒนาระบบอย่างต่อเนื่อง', 'Continuous testing, tuning and improvement', '{}'::jsonb, '{}'::jsonb),
+  ('Services', 'serviceList', 'service5', 9, 'json', NULL, NULL, 'ให้คำแนะนำและบริการหลังการใช้งานอย่างเป็นระบบ', 'Structured guidance and after-sales support', '{}'::jsonb, '{}'::jsonb),
+  ('Services', 'whyChoose', 'title1', 1, 'text', NULL, NULL, 'ทำไมลูกค้า', 'Why clients', NULL, NULL),
+  ('Services', 'whyChoose', 'title2', 2, 'text', NULL, NULL, 'ถึงเลือกเรา', 'choose us', NULL, NULL),
+  ('Services', 'whyChoose', 'description', 3, 'text', NULL, NULL, E'เพราะเราไม่ได้เริ่มจากเทคโนโลยี แต่เริ่มจากการเข้าใจธุรกิจ\nเพื่อออกแบบโซลูชันที่เหมาะกับเป้าหมาย งบประมาณ\nและการใช้งานจริง', E'Because we don''t start from technology — we start from understanding the business,\nso the solution fits your goals, your budget\nand how it will actually be used.', NULL, NULL),
+  ('Services', 'whyChoose', 'photo', 4, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "การพูดคุยกับ PIP Evolution ผ่านแชท"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "Chatting with PIP Evolution"}'::jsonb),
+  ('Services', 'whyChoose', 'stat1', 5, 'json', NULL, NULL, '50+', '50+', '{"label": "โปรเจกต์ที่ส่งมอบ"}'::jsonb, '{"label": "Projects delivered"}'::jsonb),
+  ('Services', 'whyChoose', 'stat2', 6, 'json', NULL, NULL, '99%', '99%', '{"label": "ความพึงพอใจของลูกค้า"}'::jsonb, '{"label": "Client satisfaction"}'::jsonb),
+  ('Services', 'whyChoose', 'stat3', 7, 'json', NULL, NULL, '24/7', '24/7', '{"label": "การดูแลและให้คำปรึกษา"}'::jsonb, '{"label": "Care and consulting"}'::jsonb),
+  ('Services', 'capabilities', 'label', 1, 'text', NULL, NULL, 'เราให้บริการลูกค้า', 'What we cover', NULL, NULL),
+  ('Services', 'capabilities', 'title1', 2, 'text', NULL, NULL, 'Everything you need.', 'Everything you need.', NULL, NULL),
+  ('Services', 'capabilities', 'title2', 3, 'text', NULL, NULL, 'We can do.', 'We can do.', NULL, NULL),
+  ('Services', 'capabilities', 'description', 4, 'text', NULL, NULL, 'มากกว่าการพัฒนาซอฟต์แวร์ เราพร้อมสนับสนุนทุกองค์ประกอบด้านเทคโนโลยีที่ช่วยให้ธุรกิจของคุณทำงานได้อย่างเต็มประสิทธิภาพ', 'More than software development — we support every part of the technology that keeps your business running at its best.', NULL, NULL),
+  ('Services', 'capabilities', 'item1', 5, 'text', NULL, NULL, 'Cloud Migration', 'Cloud Migration', NULL, NULL),
+  ('Services', 'capabilities', 'item2', 6, 'text', NULL, NULL, 'AI Integration', 'AI Integration', NULL, NULL),
+  ('Services', 'capabilities', 'item3', 7, 'text', NULL, NULL, 'Security Audit', 'Security Audit', NULL, NULL),
+  ('Services', 'capabilities', 'item4', 8, 'text', NULL, NULL, 'Data Pipeline', 'Data Pipeline', NULL, NULL),
+  ('Services', 'capabilities', 'item5', 9, 'text', NULL, NULL, 'DevOps', 'DevOps', NULL, NULL),
+  ('Services', 'capabilities', 'item6', 10, 'text', NULL, NULL, 'API Development', 'API Development', NULL, NULL),
+  ('Services', 'capabilities', 'item7', 11, 'text', NULL, NULL, 'Technical Support', 'Technical Support', NULL, NULL),
+  ('Services', 'capabilities', 'item8', 12, 'text', NULL, NULL, '24/7 Support', '24/7 Support', NULL, NULL),
+  ('Services', 'cta', 'title1', 1, 'text', NULL, NULL, 'มีโปรเจกต์ในใจ?', 'Got a project in mind?', NULL, NULL),
+  ('Services', 'cta', 'title2', 2, 'text', NULL, NULL, 'มาสร้างให้เกิดขึ้นจริงกัน', 'Let''s make it real', NULL, NULL),
+  ('Services', 'cta', 'description', 3, 'text', NULL, NULL, E'บอกเราว่าธุรกิจของคุณต้องการอะไร ทีม PIP Evolution พร้อมช่วยวางแผน\nออกแบบ และพัฒนาโซลูชันที่เหมาะกับคุณ', E'Tell us what your business needs — the PIP Evolution team will help plan,\ndesign and build the solution that fits.', NULL, NULL),
+  ('Services', 'cta', 'button', 4, 'button', 'contact-us', NULL, 'ติดต่อเรา', 'Contact us', NULL, NULL),
+  ('Services', 'cta', 'ctaImg', 5, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "อาคาร PIP Evolution"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "The PIP Evolution building"}'::jsonb),
+  ('ContactUs', 'hero', 'eyebrow', 1, 'text', NULL, NULL, 'ติดต่อ PIP Evolution', 'Contact PIP Evolution', NULL, NULL),
+  ('ContactUs', 'hero', 'title1', 2, 'text', NULL, NULL, 'มาสร้างอนาคตของเทคโนโลยีด้วยกัน', 'Let''s build the future of technology together', NULL, NULL),
+  ('ContactUs', 'hero', 'description', 3, 'text', NULL, NULL, E'ไม่ว่าคุณจะมีไอเดียสำหรับโปรเจกต์ใหม่ ต้องการพัฒนาระบบ หรือต้องการคำปรึกษาด้านเทคโนโลยี\nทีม PIP Evolution พร้อมพูดคุยและค้นหาโซลูชันที่เหมาะกับคุณ', E'Whether you have an idea for a new project, need a system built or want technology advice,\nthe PIP Evolution team is ready to talk and find the right solution with you.', NULL, NULL),
+  ('ContactUs', 'hero', 'heroImg', 4, 'image', NULL, NULL, '', '', '{"width": 1536, "height": 1024, "mediaAltText": "ภาพประกอบช่องทางการติดต่อ"}'::jsonb, '{"width": 1536, "height": 1024, "mediaAltText": "Contact channels illustration"}'::jsonb),
+  ('ContactUs', 'channels', 'channel1', 1, 'json', NULL, NULL, 'โทรหาเรา', 'Call us', '{"icon": "phone", "label": "เบอร์โทร", "detail": "Office: 062 149 2446", "href": "tel:0621492446"}'::jsonb, '{"icon": "phone", "label": "Phone", "detail": "Office: 062 149 2446", "href": "tel:0621492446"}'::jsonb),
+  ('ContactUs', 'channels', 'channel2', 2, 'json', NULL, NULL, 'ส่งอีเมลถึงเรา', 'Email us', '{"icon": "mail", "label": "ติดต่อทางอีเมล", "detail": "General: pipoffice1001@gmail.com", "href": "mailto:pipoffice1001@gmail.com"}'::jsonb, '{"icon": "mail", "label": "Email", "detail": "General: pipoffice1001@gmail.com", "href": "mailto:pipoffice1001@gmail.com"}'::jsonb),
+  ('ContactUs', 'channels', 'channel3', 3, 'json', NULL, NULL, 'สำนักงานของเรา', 'Our office', E'{"icon": "pin", "label": "สำนักงานใหญ่", "detail": "72/1 ถนนรามอินทรา แขวงอนุสาวรีย์ เขตบางเขน\\nกรุงเทพฯ 10220", "href": ""}'::jsonb, E'{"icon": "pin", "label": "Head office", "detail": "72/1 Ram Inthra Road, Anusawari, Bang Khen,\\nBangkok 10220", "href": ""}'::jsonb),
+  ('ContactUs', 'office', 'title', 1, 'text', NULL, NULL, 'สำนักงานใหญ่ PIP Evolution', 'PIP Evolution head office', NULL, NULL),
+  ('ContactUs', 'office', 'address', 2, 'text', NULL, NULL, '72/1 ถนนรามอินทรา แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพฯ 10220', '72/1 Ram Inthra Road, Anusawari, Bang Khen, Bangkok 10220', NULL, NULL),
+  ('ContactUs', 'office', 'mapQuery', 3, 'text', NULL, NULL, '72/1 ซอยรามอินทรา 19 แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพมหานคร 10220', '72/1 ซอยรามอินทรา 19 แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพมหานคร 10220', NULL, NULL),
+  ('ContactUs', 'office', 'hoursTitle', 4, 'text', NULL, NULL, 'ตารางเวลาทำการ', 'Opening hours', NULL, NULL),
+  ('ContactUs', 'office', 'hours1', 5, 'json', NULL, NULL, 'จันทร์ - ศุกร์', 'Monday - Friday', '{"time": "09:00 น. - 18:00 น."}'::jsonb, '{"time": "09:00 - 18:00"}'::jsonb),
+  ('ContactUs', 'office', 'hours2', 6, 'json', NULL, NULL, 'เสาร์', 'Saturday', '{"time": "10:00 น. - 15:00 น."}'::jsonb, '{"time": "10:00 - 15:00"}'::jsonb),
+  ('ContactUs', 'office', 'hours3', 7, 'json', NULL, NULL, 'อาทิตย์', 'Sunday', '{"time": "ปิดทำการ"}'::jsonb, '{"time": "Closed"}'::jsonb),
+  ('ContactUs', 'form', 'title', 1, 'text', NULL, NULL, 'ส่งข้อความถึงเรา', 'Send us a message', NULL, NULL),
+  ('ContactUs', 'form', 'description', 2, 'text', NULL, NULL, E'กรอกแบบฟอร์มที่ปลอดภัยด้านล่าง\nทีมวิศวกรรมและพันธมิตรผสานรวมของเราจะตอบกลับภายใน 1-2 ชั่วโมงทำการ', E'Fill in the secure form below.\nOur engineering and integration team replies within 1-2 business hours.', NULL, NULL),
+  ('ContactUs', 'form', 'fieldName', 3, 'json', NULL, NULL, 'ชื่อ-นามสกุล', 'Full name', '{"placeholder": "เช่น สมชาย ใจดี"}'::jsonb, '{"placeholder": "e.g. John Smith"}'::jsonb),
+  ('ContactUs', 'form', 'fieldEmail', 4, 'json', NULL, NULL, 'อีเมล', 'Email', '{"placeholder": "เช่น somchai@company.com"}'::jsonb, '{"placeholder": "e.g. john@company.com"}'::jsonb),
+  ('ContactUs', 'form', 'fieldPhone', 5, 'json', NULL, NULL, 'หมายเลขโทรศัพท์ (ไม่บังคับ)', 'Phone (optional)', '{"placeholder": "เช่น +66 81 234 5678"}'::jsonb, '{"placeholder": "e.g. +66 81 234 5678"}'::jsonb),
+  ('ContactUs', 'form', 'fieldTopic', 6, 'json', NULL, NULL, 'หัวข้อสอบถาม', 'Topic', '{"placeholder": "เลือกหัวข้อ", "options": ["พัฒนา Software / ระบบ", "Digital Solution", "ระบบเทรดอัตโนมัติ (EA)", "ขอคำปรึกษา", "อื่น ๆ"]}'::jsonb, '{"placeholder": "Choose a topic", "options": ["Software / system development", "Digital solution", "Automated trading (EA)", "Consulting", "Other"]}'::jsonb),
+  ('ContactUs', 'form', 'fieldMessage', 7, 'json', NULL, NULL, 'ข้อความ', 'Message', '{"placeholder": "อธิบายรายละเอียดเกี่ยวกับโปรเจกต์ ระบบซอฟต์แวร์ หรือข้อสอบถามทั่วไปของคุณ..."}'::jsonb, '{"placeholder": "Tell us about your project, software system or general question..."}'::jsonb),
+  ('ContactUs', 'form', 'submitButton', 8, 'text', NULL, NULL, 'ส่งข้อความ', 'Send message', NULL, NULL),
+  ('ContactUs', 'form', 'submittingLabel', 9, 'text', NULL, NULL, 'กำลังส่ง...', 'Sending...', NULL, NULL),
+  ('ContactUs', 'form', 'successTitle', 10, 'text', NULL, NULL, 'ส่งข้อความเรียบร้อย', 'Message sent', NULL, NULL),
+  ('ContactUs', 'form', 'successMessage', 11, 'text', NULL, NULL, 'ทีมงานจะติดต่อกลับโดยเร็วที่สุด', 'Our team will get back to you shortly.', NULL, NULL),
+  ('ContactUs', 'form', 'errorTitle', 12, 'text', NULL, NULL, 'ส่งข้อความไม่สำเร็จ', 'Could not send', NULL, NULL),
+  ('ContactUs', 'form', 'errorMessage', 13, 'text', NULL, NULL, 'กรุณาลองใหม่อีกครั้ง', 'Please try again.', NULL, NULL);
+
+-- 2) content_pages -----------------------------------------------------------------
+INSERT INTO content_pages
+  (id, uuid, status, created_date, created_by, updated_date, updated_by, created_program, updated_program, version,
+   domain_code, page_code, page_name, page_slug, description, fallback_language_code, parent_page_code)
+SELECT nextval('content_pages_id_seq'::regclass), gen_random_uuid(), 'Y', now(), 'seed-pipevolution', now(), 'seed-pipevolution', 'seed-pipevolution', 'seed-pipevolution', 1,
+       'pipevolution', p.page_code, p.page_name, '', p.description, 'th', NULL
+FROM tmp_pages p
+ON CONFLICT (domain_code, page_code) DO UPDATE SET
+  status = 'Y',
+  page_name = EXCLUDED.page_name,
+  description = EXCLUDED.description,
+  fallback_language_code = EXCLUDED.fallback_language_code,
+  updated_date = now(),
+  updated_by = EXCLUDED.updated_by,
+  updated_program = EXCLUDED.updated_program;
+
+-- 3) content_headers (section ของแต่ละหน้า ตามลำดับที่แสดงจริง) ----------------------
+INSERT INTO content_headers
+  (id, uuid, status, created_date, created_by, updated_date, updated_by, created_program, updated_program, version,
+   domain_code, page_code, section_code, description, sequence)
+SELECT nextval('content_headers_id_seq'::regclass), gen_random_uuid(), 'Y', now(), 'seed-pipevolution', now(), 'seed-pipevolution', 'seed-pipevolution', 'seed-pipevolution', 1,
+       'pipevolution', s.page_code, s.section_code, s.description, s.sequence
+FROM tmp_sections s
+ON CONFLICT (domain_code, page_code, section_code) DO UPDATE SET
+  status = 'Y',
+  description = EXCLUDED.description,
+  sequence = EXCLUDED.sequence,
+  updated_date = now(),
+  updated_by = EXCLUDED.updated_by,
+  updated_program = EXCLUDED.updated_program;
+
+-- 4) translate_contents (คีย์ของ content) ------------------------------------------
+INSERT INTO translate_contents
+  (id, uuid, status, created_date, created_by, updated_date, updated_by, created_program, updated_program, version,
+   domain_code, page_code, section_code, translate_content_code, description, sequence)
+SELECT nextval('translate_contents_id_seq'::regclass), gen_random_uuid(), 'Y', now(), 'seed-pipevolution', now(), 'seed-pipevolution', 'seed-pipevolution', 'seed-pipevolution', 1,
+       'pipevolution', c.page_code, c.section_code, c.content_code, c.content_code, c.sequence
+FROM tmp_contents c
+ON CONFLICT (domain_code, page_code, section_code, translate_content_code) DO UPDATE SET
+  status = 'Y',
+  sequence = EXCLUDED.sequence,
+  updated_date = now(),
+  updated_by = EXCLUDED.updated_by,
+  updated_program = EXCLUDED.updated_program;
+
+-- 5.th) translate_content_values (th) ---------------------------------------------
+INSERT INTO translate_content_values
+  (id, uuid, status, created_date, created_by, updated_date, updated_by, created_program, updated_program, version,
+   domain_code, language_code, page_code, section_code, translate_content_code,
+   value, link_url, media_storage_key, content_type, attributes)
+SELECT nextval('translate_content_values_id_seq'::regclass), gen_random_uuid(), 'Y', now(), 'seed-pipevolution', now(), 'seed-pipevolution', 'seed-pipevolution', 'seed-pipevolution', 1,
+       'pipevolution', 'th', c.page_code, c.section_code, c.content_code,
+       c.value_th, c.link_url, c.media_key, c.content_type, c.attrs_th
+FROM tmp_contents c
+ON CONFLICT (domain_code, page_code, section_code, translate_content_code, language_code) DO UPDATE SET
+  status = 'Y',
+  value = EXCLUDED.value,
+  link_url = EXCLUDED.link_url,
+  media_storage_key = EXCLUDED.media_storage_key,
+  content_type = EXCLUDED.content_type,
+  attributes = EXCLUDED.attributes,
+  updated_date = now(),
+  updated_by = EXCLUDED.updated_by,
+  updated_program = EXCLUDED.updated_program;
+
+-- 5.en) translate_content_values (en) ---------------------------------------------
+INSERT INTO translate_content_values
+  (id, uuid, status, created_date, created_by, updated_date, updated_by, created_program, updated_program, version,
+   domain_code, language_code, page_code, section_code, translate_content_code,
+   value, link_url, media_storage_key, content_type, attributes)
+SELECT nextval('translate_content_values_id_seq'::regclass), gen_random_uuid(), 'Y', now(), 'seed-pipevolution', now(), 'seed-pipevolution', 'seed-pipevolution', 'seed-pipevolution', 1,
+       'pipevolution', 'en', c.page_code, c.section_code, c.content_code,
+       c.value_en, c.link_url, c.media_key, c.content_type, c.attrs_en
+FROM tmp_contents c
+ON CONFLICT (domain_code, page_code, section_code, translate_content_code, language_code) DO UPDATE SET
+  status = 'Y',
+  value = EXCLUDED.value,
+  link_url = EXCLUDED.link_url,
+  media_storage_key = EXCLUDED.media_storage_key,
+  content_type = EXCLUDED.content_type,
+  attributes = EXCLUDED.attributes,
+  updated_date = now(),
+  updated_by = EXCLUDED.updated_by,
+  updated_program = EXCLUDED.updated_program;
+
+
+-- 6) navbar + footer labels — translate_groups + translate_values (next-intl) -------
+INSERT INTO translate_groups
+  (id, uuid, status, created_date, created_by, updated_date, updated_by, created_program, updated_program, version,
+   domain_code, translate_group_code, description)
+SELECT nextval('translate_groups_id_seq'::regclass), gen_random_uuid(), 'Y', now(), 'seed-pipevolution', now(), 'seed-pipevolution', 'seed-pipevolution', 'seed-pipevolution', 1,
+       'pipevolution', g.translate_group_code, g.description
+FROM (VALUES
+  ('navbar.home', 'Layout: navbar.home'),
+  ('navbar.about', 'Layout: navbar.about'),
+  ('navbar.ourBusinesses', 'Layout: navbar.ourBusinesses'),
+  ('navbar.contactUs', 'Layout: navbar.contactUs'),
+  ('navbar.signIn', 'Layout: navbar.signIn'),
+  ('navbar.startTrading', 'Layout: navbar.startTrading'),
+  ('navbar.language', 'Layout: navbar.language'),
+  ('footer.brandName', 'Layout: footer.brandName'),
+  ('footer.brandDescription', 'Layout: footer.brandDescription'),
+  ('footer.navigation.title', 'Layout: footer.navigation.title'),
+  ('footer.services.title', 'Layout: footer.services.title'),
+  ('footer.services.item1', 'Layout: footer.services.item1'),
+  ('footer.services.item2', 'Layout: footer.services.item2'),
+  ('footer.services.item3', 'Layout: footer.services.item3'),
+  ('footer.services.item4', 'Layout: footer.services.item4'),
+  ('footer.contact.title', 'Layout: footer.contact.title'),
+  ('footer.contact.address', 'Layout: footer.contact.address'),
+  ('footer.contact.email', 'Layout: footer.contact.email'),
+  ('footer.contact.phone', 'Layout: footer.contact.phone'),
+  ('footer.copyright', 'Layout: footer.copyright')
+) AS g(translate_group_code, description)
+ON CONFLICT (domain_code, translate_group_code) DO UPDATE SET
+  status = 'Y',
+  description = EXCLUDED.description,
+  updated_date = now(),
+  updated_by = EXCLUDED.updated_by,
+  updated_program = EXCLUDED.updated_program;
+
+INSERT INTO translate_values
+  (id, uuid, status, created_date, created_by, updated_date, updated_by, created_program, updated_program, version,
+   domain_code, language_code, translate_group_code, value)
+SELECT nextval('translate_values_id_seq'::regclass), gen_random_uuid(), 'Y', now(), 'seed-pipevolution', now(), 'seed-pipevolution', 'seed-pipevolution', 'seed-pipevolution', 1,
+       'pipevolution', v.language_code, v.translate_group_code, v.value
+FROM (VALUES
+  ('navbar.home', 'th', 'หน้าแรก'),
+  ('navbar.home', 'en', 'Home'),
+  ('navbar.about', 'th', 'เกี่ยวกับเรา'),
+  ('navbar.about', 'en', 'About Us'),
+  ('navbar.ourBusinesses', 'th', 'บริการ'),
+  ('navbar.ourBusinesses', 'en', 'Services'),
+  ('navbar.contactUs', 'th', 'ติดต่อเรา'),
+  ('navbar.contactUs', 'en', 'Contact Us'),
+  ('navbar.signIn', 'th', 'เข้าสู่ระบบ'),
+  ('navbar.signIn', 'en', 'Sign in'),
+  ('navbar.startTrading', 'th', 'ติดต่อเรา'),
+  ('navbar.startTrading', 'en', 'Contact us'),
+  ('navbar.language', 'th', 'ภาษา'),
+  ('navbar.language', 'en', 'Language'),
+  ('footer.brandName', 'th', 'PIP Evolution'),
+  ('footer.brandName', 'en', 'PIP Evolution'),
+  ('footer.brandDescription', 'th', E'ให้บริการโซลูชันเทคโนโลยีที่ครบวงจร\nด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์มากกว่า 3 ปี\nพร้อมสนับสนุนธุรกิจของคุณให้เติบโตอย่างยั่งยืน'),
+  ('footer.brandDescription', 'en', E'End-to-end technology solutions\nfrom a team with 3+ years of experience,\nhelping your business grow sustainably.'),
+  ('footer.navigation.title', 'th', 'เมนู'),
+  ('footer.navigation.title', 'en', 'Menu'),
+  ('footer.services.title', 'th', 'บริการ'),
+  ('footer.services.title', 'en', 'Services'),
+  ('footer.services.item1', 'th', 'ระบบเทรดอัตโนมัติ (EA)'),
+  ('footer.services.item1', 'en', 'Automated trading (EA)'),
+  ('footer.services.item2', 'th', 'ออกแบบโครงสร้างโปรแกรม'),
+  ('footer.services.item2', 'en', 'Program architecture'),
+  ('footer.services.item3', 'th', 'ให้คำปรึกษาด้านการเงิน'),
+  ('footer.services.item3', 'en', 'Financial consulting'),
+  ('footer.services.item4', 'th', 'วางแผนการเงินเชิงกลยุทธ์'),
+  ('footer.services.item4', 'en', 'Strategic financial planning'),
+  ('footer.contact.title', 'th', 'ติดต่อ'),
+  ('footer.contact.title', 'en', 'Contact'),
+  ('footer.contact.address', 'th', E'72/1 ซ.รามอินทรา 19 แขวงอนุสาวรีย์\nเขตบางเขน กรุงเทพมหานคร 10220'),
+  ('footer.contact.address', 'en', E'72/1 Soi Ram Inthra 19, Anusawari,\nBang Khen, Bangkok 10220'),
+  ('footer.contact.email', 'th', 'pipoffice1001@gmail.com'),
+  ('footer.contact.email', 'en', 'pipoffice1001@gmail.com'),
+  ('footer.contact.phone', 'th', '062 149 2446'),
+  ('footer.contact.phone', 'en', '062 149 2446'),
+  ('footer.copyright', 'th', 'สงวนลิขสิทธิ์'),
+  ('footer.copyright', 'en', 'All rights reserved.')
+) AS v(translate_group_code, language_code, value)
+ON CONFLICT (domain_code, translate_group_code, language_code) DO UPDATE SET
+  status = 'Y',
+  value = EXCLUDED.value,
+  updated_date = now(),
+  updated_by = EXCLUDED.updated_by,
+  updated_program = EXCLUDED.updated_program;
+
+COMMIT;
+
+-- =====================================================================================
+-- ตรวจผลหลังรัน (read-only)
+-- =====================================================================================
+-- SELECT page_code, section_code, count(*) FROM translate_content_values
+--  WHERE domain_code = 'pipevolution' AND language_code = 'th'
+--  GROUP BY page_code, section_code ORDER BY page_code, section_code::int;
+--
+-- SELECT translate_group_code, language_code, value FROM translate_values
+--  WHERE domain_code = 'pipevolution' ORDER BY translate_group_code, language_code;

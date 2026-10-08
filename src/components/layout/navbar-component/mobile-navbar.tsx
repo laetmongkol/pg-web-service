@@ -13,6 +13,7 @@ import LinkCustom from "@/components/link-custom.component"
 import AppLogo from "@/components/layout/logo"
 
 import { LANGUAGE } from "@/shared/constants/common.constants"
+import { BUTTON_SCALE_CLASSNAME } from "@/shared/ui/classes/base.classes"
 import { BUTTON_BASE_CLASSNAME } from "@/shared/ui/classes/button.classes"
 
 // import ToggleTheme from "./toggle-theme"
@@ -80,7 +81,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
       <div className="flex w-full flex-1 items-center justify-between gap-3 lg:hidden">
         {showLogo ? (
           <LinkCustom href={`/${language}`} className="shrink-0">
-            <AppLogo width={80} className="h-5 sm:h-5" />
+            <AppLogo width={80} tone="invert" className="h-5 sm:h-5" />
           </LinkCustom>
         ) : (
           <div aria-hidden="true" />
@@ -91,8 +92,9 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
             onClick={() => setIsOpen(true)}
             className={cn(
               "inline-flex size-8 items-center justify-center rounded-lg",
-              "hover:bg-(--color-primary-hover)",
-              "hover:cursor-pointer text-(--color-primary)",
+              "hover:bg-white/10",
+              BUTTON_SCALE_CLASSNAME,
+              "hover:cursor-pointer text-(--text-navbar)",
             )}
             aria-label="Open menu"
           >
@@ -167,7 +169,12 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
               <p className="mb-2 px-1 text-xs font-medium tracking-wide text-(--text-secondary) uppercase">
                 {labels.language}
               </p>
-              <LanguageSelector currentLanguage={language} languages={languages} variant="segmented" />
+              <LanguageSelector
+                currentLanguage={language}
+                languages={languages}
+                variant="segmented"
+                tone="onLight"
+              />
             </div>
           </aside>
           </>,

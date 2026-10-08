@@ -24,7 +24,7 @@ export default function DesktopNavbar({ language, navLinks, languages, showLogo 
         <div className={cn("hidden min-w-0 flex-1 items-center justify-between gap-6 lg:flex")}>
             {showLogo ? (
                 <LinkCustom href={`/${language}`} className="flex shrink-0 items-center">
-                    <AppLogo width={80} />
+                    <AppLogo width={80} tone="invert" />
                 </LinkCustom>
             ) : (
                 <div aria-hidden="true" className="shrink-0" />

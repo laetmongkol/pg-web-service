@@ -28,8 +28,8 @@ const NAV_LINK_ICONS: Partial<Record<NavLinkKey, LucideIcon>> = {
   "navbar.contactUs": MessageCircleQuestion,
 }
 
-const NAV_LINK_ACTIVE_CLASS = "font-semibold text-(--color-primary) px-3 py-1"
-const NAV_LINK_INACTIVE_CLASS = "text-(--text-secondary) hover:text-(--color-primary) px-3 py-1"
+const NAV_LINK_ACTIVE_CLASS = "font-semibold text-(--text-navbar) px-3 py-1"
+const NAV_LINK_INACTIVE_CLASS = "text-(--text-navbar-muted) hover:text-(--text-navbar) px-3 py-1"
 
 function getNavHref(language: LANGUAGE, href: string) {
   return `/${language}${href ? `/${href}` : ""}`
@@ -148,7 +148,7 @@ function DesktopNavLink({
         <ChevronDown
           size={14}
           strokeWidth={2.5}
-          className={cn("text-(--color-primary-400) transition-transform", open && "rotate-180")}
+          className={cn("text-(--text-navbar-muted) transition-transform", open && "rotate-180")}
         />
       </LinkCustom>
 

@@ -16,6 +16,8 @@ interface LanguageSelectorProps {
   currentLanguage: string
   languages: LanguageResponseDto[]
   variant?: "dropdown" | "mobile" | "segmented"
+  /** Segmented only — `onDark` for glass nav, `onLight` for mobile sheet */
+  tone?: "onDark" | "onLight"
 }
 
 const FLAG_ICON_SIZE_CLASS: Record<number, string> = {
@@ -90,9 +92,11 @@ function MobileLanguageToggle({
 function SegmentedLanguageToggle({
   currentLanguage,
   languages,
+  tone = "onDark",
 }: {
   currentLanguage: string
   languages: LanguageResponseDto[]
+  tone?: "onDark" | "onLight"
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -118,42 +122,58 @@ function SegmentedLanguageToggle({
     router.replace(pathParts.join("/"))
   }
 
+  const activeClass =
+    tone === "onDark"
+      ? "font-semibold text-(--text-navbar)"
+      : "font-semibold text-(--text-primary)"
+  const mutedClass =
+    tone === "onDark"
+      ? "text-(--text-navbar-muted) hover:text-(--text-navbar)"
+      : "text-(--text-secondary) hover:text-(--text-primary)"
+  const dividerClass = tone === "onDark" ? "text-(--text-navbar-muted)" : "text-(--text-muted)"
+
   return (
     <div
-      // inline-flex, not flex: in the mobile sheet this sits in a plain block, where a
-      // block-level flex row stretched the track across the whole panel
-      className="inline-flex shrink-0 items-center gap-1 rounded-full bg-(--color-primary)/6 p-1"
+      className="inline-flex shrink-0 items-center gap-1.5 text-sm tracking-wide"
       role="group"
       aria-label="language selector"
     >
-      {options.map(({ code, label, disabled }) => {
+      {options.map(({ code, label, disabled }, index) => {
         const isActive = code === currentLanguage
 
         return (
-          <button
-            key={code}
-            type="button"
-            disabled={disabled}
-            onClick={() => handleLanguageChange(code)}
-            aria-pressed={isActive}
-            className={cn(
-              "inline-flex min-w-11 items-center justify-center rounded-full px-3 py-1.5",
-              "text-sm tracking-wide transition-colors outline-none",
-              isActive
-                ? "bg-(--color-primary) text-(--text-invert)"
-                : "text-(--text-secondary) hover:text-(--color-primary)",
-              disabled ? "cursor-not-allowed opacity-40" : "hover:cursor-pointer",
-            )}
-          >
-            {label}
-          </button>
+          <span key={code} className="inline-flex items-center gap-1.5">
+            {index > 0 ? (
+              <span aria-hidden className={dividerClass}>
+                |
+              </span>
+            ) : null}
+            <button
+              type="button"
+              disabled={disabled}
+              onClick={() => handleLanguageChange(code)}
+              aria-pressed={isActive}
+              className={cn(
+                "outline-none transition-colors",
+                isActive ? activeClass : mutedClass,
+                disabled ? "cursor-not-allowed opacity-40" : "hover:cursor-pointer",
+              )}
+            >
+              {label}
+            </button>
+          </span>
         )
       })}
     </div>
   )
 }
 
-const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: LanguageSelectorProps) => {
+const LanguageSelector = ({
+  currentLanguage,
+  languages,
+  variant = "dropdown",
+  tone = "onDark",
+}: LanguageSelectorProps) => {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -168,7 +188,13 @@ const LanguageSelector = ({ currentLanguage, languages, variant = "dropdown" }: 
   }
 
   if (variant === "segmented") {
-    return <SegmentedLanguageToggle currentLanguage={currentLanguage} languages={languages} />
+    return (
+      <SegmentedLanguageToggle
+        currentLanguage={currentLanguage}
+        languages={languages}
+        tone={tone}
+      />
+    )
   }
 
   const currentLanguageData = languages.find((l) => l.languageCode === currentLanguage)

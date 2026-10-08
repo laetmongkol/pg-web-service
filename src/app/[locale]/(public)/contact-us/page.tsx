@@ -1,15 +1,15 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import cn from "@/lib/tw-merge";
-import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
 import type { Metadata } from "next";
 
-import { isSupportedLanguage } from "@/proxies/language.proxy";
-import { LANGUAGE } from "@/shared/constants/common.constants";
+import LightPanel from "../_shared/light-panel";
+import PageHero from "../_shared/page-hero";
+import { PIP_MOCK_IMAGE } from "../_shared/styles";
 
-import { ContactChannels, ContactForm, HeroSection, OfficeMap } from "./_sections";
+import { ContactChannelsSection, OfficeSection } from "./_sections";
+import { CONTACT_MOCK } from "./_sections/contact-mock";
 
 interface ContactUsPageProps {
     params: Promise<{ locale: string }>;
@@ -21,34 +21,26 @@ export async function generateMetadata({ params }: ContactUsPageProps): Promise<
 }
 
 export default async function ContactUsPage({ params }: ContactUsPageProps) {
-    const { locale: routeLocale } = await params;
-    setRequestLocale(routeLocale);
-    const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
+    const { locale } = await params;
+    setRequestLocale(locale);
 
-    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are "1".."4", in page order.
-    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "ContactUs");
+    const { hero } = CONTACT_MOCK;
 
+    // Mockup: every section renders CONTACT_MOCK copy. Once the PIP Evolution CMS rows are seeded,
+    // fetch getTranslateContentsCached(language, "ContactUs") and pass each section its data.
     return (
-        <div className="relative flex flex-col bg-(--surface-elevated)">
-            <HeroSection data={data?.["1"]} />
-
-            <section
-                id="contact-us-content"
-                className={cn("w-full bg-(--surface-elevated)", "py-6 sm:py-20 lg:py-14")}
-            >
-                <div
-                    className={cn(
-                        "mx-auto grid w-full max-w-7xl gap-12",
-                        "px-4 sm:px-8",
-                        "lg:grid-cols-2 lg:gap-16",
-                    )}
-                >
-                    <ContactChannels data={data?.["2"]} />
-                    <ContactForm data={data?.["3"]} />
-                </div>
-            </section>
-
-            <OfficeMap data={data?.["4"]} />
+        <div className="relative flex flex-col bg-(--section-dark)">
+            <PageHero
+                eyebrow={hero.eyebrow}
+                titleLines={[...hero.titleLines]}
+                description={hero.description}
+                image={PIP_MOCK_IMAGE}
+                imageAlt={hero.titleLines.join(" ")}
+            />
+            <LightPanel curveTop curveBottom className="mt-12">
+                <ContactChannelsSection />
+            </LightPanel>
+            <OfficeSection />
         </div>
     );
 }
