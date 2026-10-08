@@ -1,19 +1,19 @@
-import AboutStrategySection from "./about-strategy-section";
+import AboutSection from "./about-section";
 import CtaSection from "./cta-section";
 import HeroSection from "./hero-section";
-import OurMissionSection from "./our-mission-section";
-import OurServicesSection from "./our-services-section";
-import ReviewSection from "./review-section";
-import TeamCapabilitySection from "./team-capability-section";
-import TrustedPartnerSection from "./trusted-partner-section";
+import PartnersSection from "./partners-section";
+import PortfolioSection from "./portfolio-section";
+import ServicesSection from "./services-section";
+import TestimonialsSection from "./testimonials-section";
+import WhyUsSection from "./why-us-section";
 
 export {
-    AboutStrategySection,
+    AboutSection,
     CtaSection,
     HeroSection,
-    OurMissionSection,
-    OurServicesSection,
-    ReviewSection,
-    TeamCapabilitySection,
-    TrustedPartnerSection
+    PartnersSection,
+    PortfolioSection,
+    ServicesSection,
+    TestimonialsSection,
+    WhyUsSection,
 };

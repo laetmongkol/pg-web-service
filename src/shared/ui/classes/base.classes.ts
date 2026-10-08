@@ -13,6 +13,22 @@ export const BASE_DISABLED_CLASSNAME = cn(
 
 export const BASE_TRANSITION_CLASSNAME = "outline-none transition-colors";
 
+/**
+ * Smooth hover / press scale for every button and button-like link. `!` because the global base
+ * styles reset transitions. Tailwind v4 `scale-*` / `translate-*` write the standalone `scale` /
+ * `translate` properties, not `transform`, so both must be listed or the hover jumps instead of easing.
+ */
+export const BUTTON_SCALE_CLASSNAME = cn(
+    "transition-[transform,translate,scale,background-color,color,border-color,opacity]! duration-300! ease-out",
+    "hover:scale-105 active:scale-95 motion-reduce:transition-none! motion-reduce:hover:scale-100",
+);
+
+/** Same as BUTTON_SCALE_CLASSNAME but gentler, for full-width buttons and list rows. */
+export const BUTTON_SCALE_SUBTLE_CLASSNAME = cn(
+    "transition-[transform,translate,scale,background-color,color,border-color,opacity]! duration-300! ease-out",
+    "hover:scale-[1.02] active:scale-[0.98] motion-reduce:transition-none! motion-reduce:hover:scale-100",
+);
+
 /** Locked / non-editable field surface — distinct from editable `--surface-muted` fields. */
 export const FORM_FIELD_LOCKED_CLASSNAME = cn(
     "cursor-default bg-(--surface-page) text-(--text-secondary) border-(--border-muted)",

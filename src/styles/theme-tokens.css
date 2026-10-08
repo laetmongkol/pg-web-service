@@ -7,32 +7,132 @@
 }
 
 /* =========================================================
-   BRAND PALETTE — exact values from "Sriwilai - Brand Guidelines",
-   p.8 (COLOR PALETTE). Do not tweak these seven; every scale below
-   is derived from them so the brand values stay traceable.
+   BRAND PALETTE — Pip Evolution CI (Brand + Supporting Colors).
+   Do not tweak these seven; every scale below is derived from
+   them so the brand values stay traceable.
    ========================================================= */
 
 :root {
-  /* LOGO / HEADER WITH SILVER COLOR */
-  --brand-mid-grey-dark: #8B8B8B;
-  --brand-mid-grey-light: #A3A3A3;
-  --brand-white-grey: #F8F8F8;
+  /* BRAND */
+  --brand-primary: #2275BC;
+  --brand-secondary: #274288;
+  --brand-background: #0E4E7C;
 
-  /* MAIN THEME / BODY / GENERAL ARTWORK */
-  --brand-light-grey: #F2F2F2;
-  --brand-off-white: #D3D0CB;
-  --brand-grey: #999999;
-  --brand-stone: #3D3E39;
+  /* SUPPORTING */
+  --brand-accent: #4C9AD4;
+  --brand-surface: #FFFFFF;
+  --brand-surface-dark: #0B3A5E;
+  --brand-border: #3D8DCC;
 
-  /* GRADIENT SILVER — "mix of mid grey dark tone, mid grey light tone,
-     plain white". The guideline calls the silver treatment intentionally
-     flexible, so this is the default sheen, not the only allowed one. */
-  --brand-gradient-silver: linear-gradient(135deg,
-      var(--brand-mid-grey-dark) 0%,
-      var(--brand-mid-grey-light) 28%,
-      #FFFFFF 52%,
-      var(--brand-mid-grey-light) 74%,
-      var(--brand-mid-grey-dark) 100%);
+  /* GRADIENT — primary → accent → secondary */
+  --brand-gradient: linear-gradient(135deg,
+      var(--brand-secondary) 0%,
+      var(--brand-background) 35%,
+      var(--brand-primary) 65%,
+      var(--brand-accent) 100%);
+
+  /* Hero headline — white → cool silver/blue */
+  --text-gradient: linear-gradient(180deg,
+      #FFFFFF 0%,
+      #E8F0F8 42%,
+      #B8C9DC 100%);
+
+  /* Primary CTA on dark hero */
+  --hero-cta-gradient: linear-gradient(135deg,
+      var(--brand-primary) 0%,
+      var(--brand-accent) 100%);
+
+  /* Aliases for existing className refs (old silver CI names) */
+  --brand-gradient-silver: var(--brand-gradient);
+  --brand-grey: var(--brand-secondary);
+}
+
+/* =========================================================
+   NEUTRAL / SILVER — Design System (PIP Evolution — Design System.pdf)
+   ========================================================= */
+
+:root {
+  --neutral-black: #1E1E1E;
+  --neutral-dark-gray: #333333;
+  --neutral-gray: #818285;
+  --neutral-light-gray: #E6E7E7;
+  --neutral-off-white: #F5F5F5;
+  --neutral-white: #FFFFFF;
+
+  /* Star rating fill (testimonials) */
+  --color-rating: #F5A623;
+}
+
+/* =========================================================
+   PUBLIC PAGES — one colour per role, shared by home / about /
+   services / contact. Sections are either "dark" (navy) or
+   "light" (off-white panel / white card); pick the token for the
+   surface you are on and never hard-code a hex in a component.
+   ========================================================= */
+
+:root {
+  /* SURFACES */
+  --section-dark: var(--brand-background);
+  --section-light: var(--neutral-off-white);
+  --surface-card: var(--neutral-white);
+  --surface-card-dark: linear-gradient(180deg, var(--brand-background) 0%, var(--brand-surface-dark) 100%);
+  --glass-on-dark: rgba(255, 255, 255, 0.08);
+  /* Image cards with text on the bottom (services) — photo fades into navy under the copy */
+  --card-image-fade: linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--brand-surface-dark) 85%, transparent) 78%, var(--brand-surface-dark) 100%);
+  --glass-on-light: color-mix(in srgb, var(--brand-accent) 55%, transparent);
+
+  /* TEXT on dark (navy) sections */
+  --text-on-dark: var(--neutral-white);
+  --text-body-on-dark: rgba(255, 255, 255, 0.8);
+  --text-muted-on-dark: rgba(255, 255, 255, 0.6);
+
+  /* TEXT on light panels and white cards */
+  --text-on-light: var(--brand-secondary);
+  --text-body-on-light: var(--brand-secondary);
+  --text-muted-on-light: var(--neutral-gray);
+  --text-label: var(--brand-primary);
+
+  /* BORDERS */
+  --border-on-dark: rgba(255, 255, 255, 0.2);
+  --border-on-light: color-mix(in srgb, var(--brand-secondary) 15%, transparent);
+
+  /* BUTTONS */
+  --button-on-dark: var(--brand-primary);
+  --button-on-light: var(--brand-secondary);
+  --button-text: var(--neutral-white);
+
+  /* ACCENTS — icons, timeline line, small labels on dark */
+  --icon-accent: var(--brand-primary);
+  --line-accent: var(--brand-border);
+  --label-on-dark: var(--brand-accent);
+
+  /* HEADING GRADIENTS — every h1/h2 uses one of these two */
+  --gradient-heading-on-dark: linear-gradient(90deg,
+      var(--color-primary-100) 0%,
+      var(--neutral-white) 50%,
+      var(--color-primary-100) 100%);
+  --gradient-heading-on-light: linear-gradient(90deg,
+      var(--color-primary-150) 0%,
+      var(--brand-secondary) 45%,
+      var(--color-primary-150) 100%);
+
+  /* HERO / FOOTER GLOW */
+  --glow-horizon: linear-gradient(180deg,
+      transparent 35%,
+      var(--brand-primary) 80%,
+      var(--brand-accent) 100%);
+  --glow-corners:
+      radial-gradient(ellipse 24% 30% at 0% 100%, rgba(255, 255, 255, 0.85) 0%, color-mix(in srgb, var(--color-primary-100) 45%, transparent) 40%, transparent 100%),
+      radial-gradient(ellipse 24% 30% at 100% 100%, rgba(255, 255, 255, 0.85) 0%, color-mix(in srgb, var(--color-primary-100) 45%, transparent) 40%, transparent 100%);
+  --glow-footer-top: linear-gradient(180deg,
+      var(--color-primary-25) 0%,
+      var(--color-primary-150) 6%,
+      var(--brand-primary) 22%,
+      transparent 50%);
+  --section-dark-gradient: linear-gradient(160deg,
+      var(--brand-background) 0%,
+      var(--brand-background) 45%,
+      var(--brand-primary) 100%);
 }
 
 /* =========================================================
@@ -40,51 +140,55 @@
    ========================================================= */
 
 :root {
-  /* PRIMARY (stone) — tints of --brand-stone, light → dark */
-  --color-primary-10: #F3F3F3;
-  --color-primary-25: #E6E6E5;
-  --color-primary-50: #D4D5D3;
-  --color-primary-100: #C1C1C0;
-  --color-primary-150: #A8A8A6;
-  --color-primary-200: #8E8F8C;
-  --color-primary-250: #777874;
-  --color-primary-300: #60615D;
-  --color-primary-350: #4D4D49;
-  /* brand/primary + background/dark — STONE */
-  --color-primary-400: #3D3E39;
+  /* PRIMARY — tints/shades of --brand-primary (#2275BC) */
+  --color-primary-10: #F0F7FC;
+  --color-primary-25: #E1EFF8;
+  --color-primary-50: #C8E2F3;
+  --color-primary-100: #A8D0EB;
+  --color-primary-150: #7FB8DF;
+  /* brand/accent */
+  --color-primary-200: #4C9AD4;
+  /* brand/border */
+  --color-primary-250: #3D8DCC;
+  --color-primary-300: #2E81C4;
+  --color-primary-350: #286FB0;
+  /* brand/primary */
+  --color-primary-400: #2275BC;
 
-  /* SECONDARY (silver) — light → dark, ending on the two logo greys */
-  --color-secondary-50: #FCFCFC;
-  --color-secondary-100: #F8F8F8;
-  /* WHITE GREY ↑ */
-  --color-secondary-200: #F2F2F2;
-  /* LIGHT GREY ↑ */
-  --color-secondary-300: #E4E2DF;
-  /* brand/accent on dark surfaces — OFF WHITE */
-  --color-secondary-400: #D3D0CB;
-  --color-secondary-500: #C2C0BC;
-  --color-secondary-600: #B0AFAC;
-  /* MID GREY LIGHT TONE */
-  --color-secondary-700: #A3A3A3;
-  /* GREY */
-  --color-secondary-800: #999999;
-  /* MID GREY DARK TONE */
-  --color-secondary-900: #8B8B8B;
+  /* SECONDARY — light → --brand-secondary (#274288) */
+  --color-secondary-50: #F2F4F9;
+  --color-secondary-100: #E4E8F2;
+  --color-secondary-200: #C8D0E4;
+  --color-secondary-300: #9AABD0;
+  --color-secondary-400: #6B85B8;
+  --color-secondary-500: #4A66A0;
+  --color-secondary-600: #35548F;
+  --color-secondary-700: #2E4A8B;
+  /* brand/secondary */
+  --color-secondary-800: #274288;
+  --color-secondary-900: #1E3470;
 
-  /* SURFACE neutral — light → dark, bottoming out on LIGHT GREY */
+  /* SURFACE light ramp → white */
   --surface-50: #FFFFFF;
-  --surface-100: #FEFEFE;
-  /* surface/card */
-  --surface-200: #FDFDFD;
-  --surface-300: #FCFCFC;
-  /* background/secondary */
-  --surface-400: #FBFBFB;
-  --surface-500: #FAFAFA;
-  --surface-600: #F8F8F8;
-  --surface-700: #F6F6F6;
-  --surface-800: #F4F4F4;
-  /* background/primary + surface/default — LIGHT GREY */
-  --surface-900: #F2F2F2;
+  --surface-100: #F7FAFD;
+  --surface-200: #F0F7FC;
+  --surface-300: #E8F2F9;
+  --surface-400: #E1EFF8;
+  --surface-500: #D6E9F5;
+  --surface-600: #C8E2F3;
+  --surface-700: #B8D8EE;
+  --surface-800: #A8D0EB;
+  --surface-900: #98C7E6;
+
+  /* SURFACE DARK ramp (background / surface-dark) */
+  --surface-dark-50: #1A6A9E;
+  --surface-dark-100: #0E4E7C;
+  /* brand/background */
+  --surface-dark-200: #0C476F;
+  --surface-dark-300: #0B3A5E;
+  /* brand/surface-dark */
+  --surface-dark-400: #093252;
+  --surface-dark-500: #072A45;
 
   /* SUCCESS */
   --color-success-50: #ECFDF5;
@@ -106,15 +210,15 @@
   --color-danger-600: #B91C1C;
   --color-danger-700: #991B1B;
 
-  /* INFO */
-  --color-info-50: #EFF6FF;
-  --color-info-100: #DBEAFE;
-  --color-info-200: #BFDBFE;
-  --color-info-300: #93C5FD;
-  --color-info-400: #60A5FA;
-  --color-info-500: #0069FF;
-  --color-info-600: #2563EB;
-  --color-info-700: #1D4ED8;
+  /* INFO — aligned with brand primary */
+  --color-info-50: #F0F7FC;
+  --color-info-100: #E1EFF8;
+  --color-info-200: #C8E2F3;
+  --color-info-300: #7FB8DF;
+  --color-info-400: #4C9AD4;
+  --color-info-500: #2275BC;
+  --color-info-600: #274288;
+  --color-info-700: #0E4E7C;
 
   /* AMBER */
   --color-amber-500: #FF9933;
@@ -135,41 +239,43 @@
      muted    = form inputs, secondary sections inside a card
      elevated = floating elements (tooltip, modal)
   */
-  --surface-page: var(--surface-900);
-  --surface-default: var(--surface-200);
-  --surface-muted: var(--surface-400);
+  --surface-page: var(--surface-200);
+  --surface-default: var(--brand-surface);
+  --surface-muted: var(--surface-300);
   --surface-elevated: var(--surface-50);
   --surface-code-inline: var(--surface-300);
   --surface-code-block: var(--surface-200);
   --surface-blockquote: var(--surface-400);
-  --surface-navbar: var(--color-primary-50);
-  --surface-invert: var(--color-primary-400);
+  --surface-navbar: rgba(11, 58, 94, 0.35);
+  --surface-navbar-scrolled: rgba(11, 58, 94, 0.72);
+  --surface-invert: var(--brand-background);
+  --border-navbar: rgba(255, 255, 255, 0.12);
+  --text-navbar: #FFFFFF;
+  --text-navbar-muted: rgba(255, 255, 255, 0.65);
 
   /* TEXT */
-  --text-primary: var(--color-primary-400);
-  --text-secondary: var(--color-primary-250);
-  --text-muted: var(--color-primary-100);
+  --text-primary: var(--brand-secondary);
+  --text-secondary: var(--brand-background);
+  --text-muted: var(--color-primary-250);
   --text-invert: #FFFFFF;
-  /* text on a dark/inverted surface */
-  --text-disabled: var(--color-primary-50);
+  --text-disabled: var(--color-primary-100);
 
   /* BORDER */
-  --border-default: var(--color-primary-25);
-  --border-muted: var(--color-primary-10);
-  --border-strong: var(--color-primary-150);
+  --border-default: var(--color-primary-50);
+  --border-muted: var(--color-primary-25);
+  --border-strong: var(--brand-border);
 
   /* BRAND MAPPING */
-  --color-primary: var(--color-primary-400);
+  --color-primary: var(--brand-primary);
   --color-primary-hover: var(--color-primary-350);
-  --color-primary-active: var(--color-primary-300);
-  --color-primary-readable: var(--color-primary-400);
+  --color-primary-active: var(--brand-background);
+  --color-primary-readable: var(--brand-primary);
 
-  /* The accent sits on stone-dark surfaces (hero, footer), so it maps to the
-     off-white end of the silver ramp — the darker logo greys (700–900) would
-     drop below readable contrast there. Hover/active move it up the ramp. */
-  --color-secondary: var(--color-secondary-400);
-  --color-secondary-hover: var(--color-secondary-300);
-  --color-secondary-active: var(--color-secondary-500);
+  --color-secondary: var(--brand-secondary);
+  --color-secondary-hover: var(--color-secondary-700);
+  --color-secondary-active: var(--color-secondary-900);
+
+  --color-accent: var(--brand-accent);
 
   /* STATE */
   --state-hover-opacity: 0.9;
@@ -177,16 +283,14 @@
   --state-disabled-opacity: 0.5;
 
   /* FOCUS */
-  --focus-ring: var(--color-primary-400);
+  --focus-ring: var(--brand-primary);
 
-  /* SHADOW — white cards on a light grey background need visible lift */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.09), 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+  /* SHADOW */
+  --shadow-sm: 0 1px 3px rgba(14, 78, 124, 0.08), 0 1px 2px rgba(14, 78, 124, 0.05);
+  --shadow-md: 0 4px 8px rgba(14, 78, 124, 0.10), 0 2px 4px rgba(14, 78, 124, 0.06);
+  --shadow-lg: 0 10px 20px rgba(14, 78, 124, 0.14), 0 4px 8px rgba(14, 78, 124, 0.08);
 
-  /* TOAST ACCENTS — the only four tokens the toasts still borrowed from
-     @radix-ui/themes/styles.css. That import shipped 812 KB of unused CSS
-     (98% of the bundle, render-blocking), so the values are inlined here. */
+  /* TOAST ACCENTS */
   --gray-a3: #0000000f;
   --gray-a11: #0000009b;
   --amber-3: #fff7c2;
@@ -195,11 +299,11 @@
   /* AUTH LAYOUT */
   --layout-auth-bg-image: linear-gradient(150deg,
       #FFFFFF 0%,
-      var(--brand-white-grey) 30%,
-      var(--brand-light-grey) 55%,
-      var(--brand-white-grey) 78%,
+      var(--color-primary-10) 30%,
+      var(--color-primary-25) 55%,
+      var(--color-primary-10) 78%,
       #FFFFFF 100%);
-  --layout-auth-blob-fill: var(--color-secondary-400);
+  --layout-auth-blob-fill: var(--brand-accent);
   --layout-auth-ring-opacity: 0.25;
   --layout-auth-gold-blob-opacity: 0.12;
   --layout-auth-accent-blob-opacity: 0.08;
@@ -214,43 +318,49 @@
   color-scheme: dark;
 
   /* SURFACE */
-  --surface-page: var(--color-primary-400);
-  --surface-default: var(--color-primary-350);
-  --surface-muted: var(--color-primary-300);
-  --surface-elevated: var(--color-primary-350);
-  --surface-code-inline: var(--color-primary-300);
-  --surface-code-block: var(--color-primary-350);
-  --surface-blockquote: var(--color-primary-300);
-  --surface-navbar: var(--color-primary-400);
-  --surface-invert: var(--surface-900);
+  --surface-page: var(--brand-surface-dark);
+  --surface-default: var(--brand-background);
+  --surface-muted: var(--surface-dark-200);
+  --surface-elevated: var(--surface-dark-100);
+  --surface-code-inline: var(--surface-dark-200);
+  --surface-code-block: var(--surface-dark-300);
+  --surface-blockquote: var(--surface-dark-200);
+  --surface-navbar: rgba(11, 58, 94, 0.45);
+  --surface-navbar-scrolled: rgba(11, 58, 94, 0.85);
+  --surface-invert: var(--brand-surface);
+  --border-navbar: rgba(255, 255, 255, 0.12);
+  --text-navbar: #FFFFFF;
+  --text-navbar-muted: rgba(255, 255, 255, 0.65);
 
   /* TEXT */
-  --text-primary: var(--color-primary-10);
-  --text-secondary: var(--color-primary-50);
-  --text-muted: var(--color-primary-150);
-  --text-invert: var(--color-primary-400);
-  --text-disabled: var(--color-primary-200);
+  --text-primary: var(--surface-50);
+  --text-secondary: var(--color-primary-100);
+  --text-muted: var(--color-primary-200);
+  --text-invert: var(--brand-secondary);
+  --text-disabled: var(--color-primary-250);
 
-  /* TOAST ACCENTS — see the light block above. */
+  /* TOAST ACCENTS */
   --gray-a3: #ffffff12;
   --gray-a11: #ffffffaf;
   --amber-3: #302008;
   --amber-11: #ffca16;
 
   /* BORDER */
-  --border-default: var(--color-primary-250);
-  --border-muted: var(--color-primary-300);
-  --border-strong: var(--color-primary-150);
+  --border-default: var(--brand-border);
+  --border-muted: var(--surface-dark-200);
+  --border-strong: var(--brand-accent);
 
   /* BRAND MAPPING */
-  --color-primary: var(--color-primary-400);
-  --color-primary-hover: var(--color-primary-350);
-  --color-primary-active: var(--color-primary-300);
-  --color-primary-readable: var(--color-primary-50);
+  --color-primary: var(--brand-accent);
+  --color-primary-hover: var(--color-primary-150);
+  --color-primary-active: var(--brand-primary);
+  --color-primary-readable: var(--brand-accent);
 
-  --color-secondary: var(--color-secondary-400);
-  --color-secondary-hover: var(--color-secondary-300);
-  --color-secondary-active: var(--color-secondary-500);
+  --color-secondary: var(--color-primary-100);
+  --color-secondary-hover: var(--surface-50);
+  --color-secondary-active: var(--color-primary-50);
+
+  --color-accent: var(--brand-accent);
 
   /* STATE */
   --state-hover-opacity: 0.9;
@@ -258,9 +368,9 @@
   --state-disabled-opacity: 0.5;
 
   /* FOCUS */
-  --focus-ring: var(--color-primary-300);
+  --focus-ring: var(--brand-accent);
 
-  /* SHADOW — deeper for dark surfaces */
+  /* SHADOW */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.30);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.55);
