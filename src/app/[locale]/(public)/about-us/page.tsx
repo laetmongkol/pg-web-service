@@ -1,19 +1,18 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
 import type { Metadata } from "next";
 
 import { isSupportedLanguage } from "@/proxies/language.proxy";
 import { LANGUAGE } from "@/shared/constants/common.constants";
 
-import CtaCard from "../_shared/cta-card";
+import CtaSection from "../_shared/cta-section";
 import LightPanel from "../_shared/light-panel";
 import PageHero from "../_shared/page-hero";
-import { PIP_MOCK_IMAGE } from "../_shared/styles";
 
 import { HistorySection, JourneySection, MissionVisionSection, TeamSection } from "./_sections";
-import { ABOUT_MOCK } from "./_sections/about-mock";
 
 interface AboutUsPageProps {
     params: Promise<{ locale: string }>;
@@ -29,37 +28,21 @@ export default async function AboutUsPage({ params }: AboutUsPageProps) {
     setRequestLocale(routeLocale);
     const language = (await isSupportedLanguage(routeLocale)) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
-    const { hero, cta } = ABOUT_MOCK;
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are the section names below.
+    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "AboutUs");
 
-    // Mockup: every section renders ABOUT_MOCK copy. Once the PIP Evolution CMS rows are seeded,
-    // fetch getTranslateContentsCached(language, "AboutUs") and pass each section its data.
     return (
         <div className="relative flex flex-col bg-(--section-dark)">
-            <PageHero
-                eyebrow={hero.eyebrow}
-                titleLines={[...hero.titleLines]}
-                description={hero.description}
-                primary={{ label: hero.primary, href: `/${language}/${hero.primaryLink}` }}
-                secondary={{ label: hero.secondary, href: `/${language}/${hero.secondaryLink}` }}
-                image={PIP_MOCK_IMAGE}
-                imageAlt={hero.titleLines.join(" ")}
-            />
+            <PageHero data={data?.["hero"]} language={language} />
             <LightPanel curveTop curveBottom className="mt-12">
-                <HistorySection />
+                <HistorySection data={data?.["history"]} />
             </LightPanel>
-            <JourneySection />
+            <JourneySection data={data?.["journey"]} />
             <LightPanel>
-                <MissionVisionSection />
+                <MissionVisionSection data={data?.["missionVision"]} />
             </LightPanel>
-            <TeamSection />
-            <CtaCard
-                title1={cta.title1}
-                title2={cta.title2}
-                description={cta.description}
-                button={cta.button}
-                href={`/${language}/${cta.buttonLink}`}
-                image={PIP_MOCK_IMAGE}
-            />
+            <TeamSection data={data?.["team"]} />
+            <CtaSection data={data?.["cta"]} language={language} />
         </div>
     );
 }

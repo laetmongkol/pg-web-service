@@ -1,6 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
 import type { Metadata } from "next";
 
@@ -9,7 +10,6 @@ import { LANGUAGE } from "@/shared/constants/common.constants";
 
 import {
     AboutSection,
-    CtaSection,
     HeroSection,
     PartnersSection,
     PortfolioSection,
@@ -17,6 +17,7 @@ import {
     TestimonialsSection,
     WhyUsSection,
 } from "./_sections";
+import CtaSection from "./_shared/cta-section";
 import LightPanel from "./_shared/light-panel";
 
 interface HomePageProps {
@@ -33,23 +34,23 @@ export default async function HomePage({ params }: HomePageProps) {
     setRequestLocale(routeLocale);
     const language = await isSupportedLanguage(routeLocale) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are the section names below.
+    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "Home");
+
     return (
         <div className="relative flex flex-col bg-(--section-dark)">
-            <HeroSection language={language} />
-            {/* Mockup: every section renders HOME_MOCK copy. Once the PIP Evolution CMS rows are
-                seeded, fetch getTranslateContentsCached(language, "Home") and pass each section
-                data?.["<sectionCode>"] (hero, partners, about, services, whyUs, portfolio, testimonials, cta). */}
+            <HeroSection data={data?.["hero"]} language={language} />
             <LightPanel curveTop curveBottom className="mt-20">
-                <PartnersSection />
-                <AboutSection language={language} />
+                <PartnersSection data={data?.["partners"]} />
+                <AboutSection data={data?.["about"]} language={language} />
             </LightPanel>
-            <ServicesSection language={language} />
+            <ServicesSection data={data?.["services"]} language={language} />
             <LightPanel>
-                <WhyUsSection />
+                <WhyUsSection data={data?.["whyUs"]} />
             </LightPanel>
-            <PortfolioSection language={language} />
-            <TestimonialsSection />
-            <CtaSection language={language} />
+            <PortfolioSection data={data?.["portfolio"]} language={language} />
+            <TestimonialsSection data={data?.["testimonials"]} />
+            <CtaSection data={data?.["cta"]} language={language} />
         </div>
     );
 }

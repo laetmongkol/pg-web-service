@@ -1,5 +1,4 @@
 import AboutSection from "./about-section";
-import CtaSection from "./cta-section";
 import HeroSection from "./hero-section";
 import PartnersSection from "./partners-section";
 import PortfolioSection from "./portfolio-section";
@@ -9,7 +8,6 @@ import WhyUsSection from "./why-us-section";
 
 export {
     AboutSection,
-    CtaSection,
     HeroSection,
     PartnersSection,
     PortfolioSection,

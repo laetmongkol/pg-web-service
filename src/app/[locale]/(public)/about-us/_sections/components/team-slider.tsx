@@ -13,6 +13,7 @@ import { buildLoopSlides, createAutoplay } from "../../../_shared/keen-autoplay"
 import "keen-slider/keen-slider.min.css";
 
 export interface TeamMember {
+    key: string;
     name: string;
     role: string;
     /** Shown in a blue circle when there is no photo yet. */
@@ -53,11 +54,11 @@ const TeamSlider = ({ members }: { members: TeamMember[] }) => {
 
     return (
         <div ref={sliderRef} className="keen-slider cursor-grab active:cursor-grabbing">
-            {slideData.map(({ name, role, initials, photo }, index) => {
+            {slideData.map(({ key, name, role, initials, photo }, index) => {
                 const isPeeking = peekFlags[index] === "1";
 
                 return (
-                    <div key={`${name}-${index}`} className="keen-slider__slide">
+                    <div key={`${key}-${index}`} className="keen-slider__slide">
                         <article
                             className={cn(
                                 "flex h-full flex-col items-center rounded-3xl bg-(--surface-card) px-5 pb-8 pt-5 text-center",

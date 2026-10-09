@@ -10,10 +10,6 @@ import LinkCustom from "@/components/link-custom.component";
 import HeroBackdrop from "../_shared/hero-backdrop";
 import { HERO_CTA_PRIMARY_CLASSNAME, HERO_CTA_SECONDARY_CLASSNAME } from "../_shared/page-hero";
 
-import { HOME_MOCK } from "./home-mock";
-
-const MOCK = HOME_MOCK.hero;
-
 // Watermark face — closest match to the design's wide geometric lettering.
 const watermarkFont = Montserrat({ subsets: ["latin"], weight: "600", display: "swap" });
 
@@ -23,13 +19,7 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ data, language }: HeroSectionProps) => {
-    const title1 = data?.title1?.value || MOCK.title1;
-    const title2 = data?.title2?.value || MOCK.title2;
-    const description = data?.description?.value || MOCK.description;
-    const ctaPrimary = data?.ctaPrimary?.value || MOCK.ctaPrimary;
-    const ctaPrimaryLink = data?.ctaPrimary?.linkUrl || MOCK.ctaPrimaryLink;
-    const ctaSecondary = data?.ctaSecondary?.value || MOCK.ctaSecondary;
-    const ctaSecondaryLink = data?.ctaSecondary?.linkUrl || MOCK.ctaSecondaryLink;
+    if (!data) return null;
 
     return (
         <HeroBackdrop
@@ -84,8 +74,8 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                             "text-3xl leading-tight sm:text-5xl lg:text-6xl lg:leading-[1.15]",
                         )}
                     >
-                        <span className="block">{title1}</span>
-                        <span className="block">{title2}</span>
+                        <span className="block">{data?.title1?.value}</span>
+                        <span className="block">{data?.title2?.value}</span>
                     </h1>
                 </FadeIn>
 
@@ -93,25 +83,25 @@ const HeroSection = ({ data, language }: HeroSectionProps) => {
                     delay={200}
                     className={cn("mt-5 max-w-md whitespace-pre-line text-(--text-body-on-dark)", "text-sm leading-relaxed sm:text-base")}
                 >
-                    {description}
+                    {data?.description?.value}
                 </FadeIn>
 
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
                     <FadeIn delay={300}>
                         <LinkCustom
-                            href={`/${language}/${ctaPrimaryLink}`}
+                            href={`/${language}/${data?.ctaPrimary?.linkUrl}`}
                             className={HERO_CTA_PRIMARY_CLASSNAME}
                         >
-                            {ctaPrimary}
+                            {data?.ctaPrimary?.value}
                             <ArrowUpRight size={18} strokeWidth={2.25} aria-hidden />
                         </LinkCustom>
                     </FadeIn>
                     <FadeIn delay={400}>
                         <LinkCustom
-                            href={`/${language}/${ctaSecondaryLink}`}
+                            href={`/${language}/${data?.ctaSecondary?.linkUrl}`}
                             className={HERO_CTA_SECONDARY_CLASSNAME}
                         >
-                            {ctaSecondary}
+                            {data?.ctaSecondary?.value}
                         </LinkCustom>
                     </FadeIn>
                 </div>

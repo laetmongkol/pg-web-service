@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
@@ -8,15 +9,9 @@ import FillImage from "@/components/fill-image.component";
 import LinkCustom from "@/components/link-custom.component";
 
 import PillLabel from "../../_shared/pill-label";
-import {
-    HEADING_GRADIENT_LIGHT_CLASSNAME,
-    PIP_MOCK_IMAGE,
-    SECTION_CONTAINER_CLASSNAME,
-} from "../../_shared/styles";
+import { HEADING_GRADIENT_LIGHT_CLASSNAME, SECTION_CONTAINER_CLASSNAME } from "../../_shared/styles";
 
-import { SERVICES_MOCK } from "./services-mock";
-
-const MOCK = SERVICES_MOCK.list;
+const SERVICE_KEYS = ["service1", "service2", "service3", "service4", "service5"] as const;
 
 /** First row is two wide cards, the rest sit three-up. */
 const WIDE_COUNT = 2;
@@ -30,8 +25,26 @@ const CORNER_CLASSNAME = [
     "sm:rounded-br-[3rem]",
 ];
 
+type ServiceItem = {
+    key: string;
+    title: string;
+    image: string;
+};
+
+/** service1..5 — value is the service name, plus the row's picture. */
+function getServices(data: Record<string, TranslateContentResponseDto>): ServiceItem[] {
+    return SERVICE_KEYS.flatMap((key) => {
+        const item = data?.[key];
+        if (!item?.value) return [];
+
+        const pictureAttributes = extractAttributes<PictureAttributes>(item);
+        return [{ key, title: item.value, image: pictureAttributes?.mediaStorageKey ?? "" }];
+    });
+}
+
 interface ServiceCardProps {
     title: string;
+    image: string;
     button: string;
     href: string;
     cornerClassName?: string;
@@ -41,7 +54,7 @@ interface ServiceCardProps {
  * Photo fills the card, copy sits on the bottom. On hover (pointer screens) the button rises out
  * of a collapsed row under the title, pushing the title up; touch screens always show it.
  */
-const ServiceCard = ({ title, button, href, cornerClassName }: ServiceCardProps) => (
+const ServiceCard = ({ title, image, button, href, cornerClassName }: ServiceCardProps) => (
     <article
         className={cn(
             "group relative isolate flex h-72 flex-col justify-end overflow-hidden rounded-[1.25rem] px-6 pb-7 text-center sm:h-80 lg:h-[21rem]",
@@ -50,7 +63,7 @@ const ServiceCard = ({ title, button, href, cornerClassName }: ServiceCardProps)
         )}
     >
         <FillImage
-            src={PIP_MOCK_IMAGE}
+            src={image}
             alt=""
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
             wrapperClassName="absolute inset-0 -z-10"
@@ -94,18 +107,17 @@ interface ServiceListSectionProps {
 }
 
 const ServiceListSection = ({ data, language }: ServiceListSectionProps) => {
-    const label = data?.label?.value || MOCK.label;
-    const title = data?.title?.value || MOCK.title;
-    const description = data?.description?.value || MOCK.description;
-    const button = data?.button?.value || MOCK.button;
-    const href = `/${language}/${data?.button?.linkUrl || MOCK.buttonLink}`;
+    if (!data) return null;
+    const services = getServices(data);
+    const button = data?.button?.value ?? "";
+    const href = `/${language}/${data?.button?.linkUrl}`;
 
     return (
         <section id="our-services" className="w-full py-16 sm:py-20 lg:py-24">
             <div className={SECTION_CONTAINER_CLASSNAME}>
                 <div className="flex flex-col items-center text-center">
                     <FadeIn>
-                        <PillLabel>{label}</PillLabel>
+                        <PillLabel>{data?.label?.value}</PillLabel>
                     </FadeIn>
                     <FadeIn delay={80}>
                         <h2
@@ -114,20 +126,21 @@ const ServiceListSection = ({ data, language }: ServiceListSectionProps) => {
                                 "mt-5 font-bold text-3xl leading-tight sm:text-4xl lg:text-[3.25rem]",
                             )}
                         >
-                            {title}
+                            {data?.title?.value}
                         </h2>
                     </FadeIn>
                     <FadeIn delay={140} className="mt-5 max-w-4xl text-sm text-(--text-on-light) sm:text-base">
-                        {description}
+                        {data?.description?.value}
                     </FadeIn>
                 </div>
 
                 <FadeIn delay={200} className="mt-12 flex flex-col gap-4 sm:gap-2.5 lg:mt-20">
                     <ul className="grid gap-4 sm:grid-cols-2 sm:gap-2.5">
-                        {MOCK.items.slice(0, WIDE_COUNT).map((item, index) => (
-                            <li key={item}>
+                        {services.slice(0, WIDE_COUNT).map(({ key, title, image }, index) => (
+                            <li key={key}>
                                 <ServiceCard
-                                    title={item}
+                                    title={title}
+                                    image={image}
                                     button={button}
                                     href={href}
                                     cornerClassName={CORNER_CLASSNAME[index]}
@@ -136,10 +149,11 @@ const ServiceListSection = ({ data, language }: ServiceListSectionProps) => {
                         ))}
                     </ul>
                     <ul className="grid gap-4 sm:grid-cols-3 sm:gap-2.5">
-                        {MOCK.items.slice(WIDE_COUNT).map((item, index) => (
-                            <li key={item}>
+                        {services.slice(WIDE_COUNT).map(({ key, title, image }, index) => (
+                            <li key={key}>
                                 <ServiceCard
-                                    title={item}
+                                    title={title}
+                                    image={image}
                                     button={button}
                                     href={href}
                                     cornerClassName={CORNER_CLASSNAME[WIDE_COUNT + index]}

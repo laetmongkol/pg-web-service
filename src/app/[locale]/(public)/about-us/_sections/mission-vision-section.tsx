@@ -1,79 +1,67 @@
 import { Eye, Target } from "lucide-react";
 
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
-import { PIP_MOCK_IMAGE, SECTION_CONTAINER_CLASSNAME } from "../../_shared/styles";
+import { SECTION_CONTAINER_CLASSNAME } from "../../_shared/styles";
 
-import { ABOUT_MOCK } from "./about-mock";
 
-const MOCK = ABOUT_MOCK.missionVision;
+/** One card per row pair: `<key>Title` + `<key>Description`. */
+const CARDS = [
+    { key: "mission", Icon: Target },
+    { key: "vision", Icon: Eye },
+] as const;
 
-const ICONS = { mission: Target, vision: Eye };
+/** Concentric rings with the single `illustration` image (the floating glass icons) laid over them. */
+const OrbitIllustration = ({ data }: { data: Record<string, TranslateContentResponseDto> }) => {
+    const illustrationPictureAttributes = extractAttributes<PictureAttributes>(data?.illustration);
 
-/** Glass tiles orbiting the centre one, as % of the orbit box. */
-const ORBIT_TILES = [
-    { left: 26, top: 16 },
-    { left: 73, top: 16 },
-    { left: 13, top: 66 },
-    { left: 86, top: 60 },
-    { left: 42, top: 88 },
-];
-
-const OrbitIllustration = () => (
-    <div className="relative mx-auto aspect-square w-full max-w-[22rem] sm:max-w-[26rem]">
-        {[100, 75, 50].map((size) => (
-            <span
-                key={size}
-                aria-hidden
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-(--border-on-light)"
-                style={{ width: `${size}%`, height: `${size}%` }}
-            />
-        ))}
-        <FillImage
-            src={PIP_MOCK_IMAGE}
-            alt=""
-            sizes="96px"
-            wrapperClassName="absolute left-1/2 top-1/2 size-20 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl sm:size-24"
-            className="object-cover"
-        />
-        {ORBIT_TILES.map(({ left, top }) => (
-            <span
-                key={`${left}-${top}`}
-                className="absolute size-14 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl sm:size-20"
-                style={{ left: `${left}%`, top: `${top}%` }}
-            >
-                <FillImage
-                    src={PIP_MOCK_IMAGE}
-                    alt=""
-                    sizes="80px"
-                    wrapperClassName="size-full"
-                    className="object-cover"
+    return (
+        <div className="relative mx-auto aspect-square w-full max-w-[22rem] sm:max-w-[26rem]">
+            {[100, 75, 50].map((size) => (
+                <span
+                    key={size}
+                    aria-hidden
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-(--border-on-light)"
+                    style={{ width: `${size}%`, height: `${size}%` }}
                 />
-            </span>
-        ))}
-    </div>
-);
+            ))}
+            {/* a touch wider than the rings, like the design — icons sit on and just outside the outer ring */}
+            <FillImage
+                src={illustrationPictureAttributes?.mediaStorageKey ?? ""}
+                alt={illustrationPictureAttributes?.mediaAltText ?? ""}
+                width={illustrationPictureAttributes?.width}
+                height={illustrationPictureAttributes?.height}
+                sizes="(max-width: 640px) 90vw, 480px"
+                wrapperClassName="absolute left-1/2 top-1/2 aspect-[6/5] w-[115%] -translate-x-1/2 -translate-y-1/2"
+                className="object-contain"
+            />
+        </div>
+    );
+};
 
 interface MissionVisionSectionProps {
     data?: Record<string, TranslateContentResponseDto>;
 }
 
-const MissionVisionSection = ({ data }: MissionVisionSectionProps) => (
+const MissionVisionSection = ({ data }: MissionVisionSectionProps) => {
+    if (!data) return null;
+
+    return (
     <section id="mission-and-vision" className="w-full py-16 sm:py-20 lg:py-28">
         <div className={cn(SECTION_CONTAINER_CLASSNAME, "grid items-center gap-12 lg:grid-cols-2 lg:gap-16")}>
             <FadeIn>
-                <OrbitIllustration />
+                <OrbitIllustration data={data} />
             </FadeIn>
 
             <div className="flex flex-col gap-6 sm:gap-8">
-                {MOCK.items.map(({ icon, title, description }, index) => {
-                    const Icon = ICONS[icon];
-                    const itemTitle = data?.[`${icon}Title`]?.value || title;
-                    const itemDescription = data?.[`${icon}Description`]?.value || description;
+                {CARDS.map(({ key: icon, Icon }, index) => {
+                    const itemTitle = data?.[`${icon}Title`]?.value;
+                    const itemDescription = data?.[`${icon}Description`]?.value;
 
                     return (
                         <FadeIn
@@ -101,6 +89,7 @@ const MissionVisionSection = ({ data }: MissionVisionSectionProps) => (
             </div>
         </div>
     </section>
-);
+    );
+};
 
 export default MissionVisionSection;

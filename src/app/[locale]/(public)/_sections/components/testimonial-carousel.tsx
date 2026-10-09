@@ -10,6 +10,7 @@ import { buildLoopSlides, createAutoplay } from "../../_shared/keen-autoplay";
 import "keen-slider/keen-slider.min.css";
 
 export interface Testimonial {
+    key: string;
     role: string;
     quote: string;
     avatar: string;
@@ -38,8 +39,8 @@ const TestimonialCarousel = ({ items }: { items: Testimonial[] }) => {
 
     return (
         <div ref={sliderRef} className="keen-slider cursor-grab active:cursor-grabbing">
-            {slideData.map(({ role, quote, avatar }, index) => (
-                <div key={`${role}-${index}`} className="keen-slider__slide">
+            {slideData.map(({ key, role, quote, avatar }, index) => (
+                <div key={`${key}-${index}`} className="keen-slider__slide">
                     <article className="relative flex h-full min-h-56 flex-col rounded-2xl bg-(--surface-card) px-6 py-5 text-(--text-on-light)">
                         <Quote
                             aria-hidden

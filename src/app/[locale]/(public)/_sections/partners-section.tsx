@@ -1,3 +1,4 @@
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
@@ -5,13 +6,18 @@ import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
 import DragMarquee from "../_shared/drag-marquee";
-import { HOME_HEADING_GRADIENT_LIGHT_CLASSNAME, HOME_MOCK, HOME_MOCK_IMAGE } from "./home-mock";
+import { HEADING_GRADIENT_LIGHT_CLASSNAME } from "../_shared/styles";
 
-const MOCK = HOME_MOCK.partners;
+const PARTNER_KEYS = Array.from({ length: 12 }, (_, index) => `partner${index + 1}`);
 
-const PartnerRow = ({ names }: { names: string[] }) => (
+interface PartnerLogo {
+    name: string;
+    image: string;
+}
+
+const PartnerRow = ({ logos }: { logos: PartnerLogo[] }) => (
     <div className="flex w-max items-center">
-        {names.map((name, index) => (
+        {logos.map(({ name, image }, index) => (
             <span
                 key={`${name}-${index}`}
                 className={cn(
@@ -21,7 +27,7 @@ const PartnerRow = ({ names }: { names: string[] }) => (
             >
                 {/* wide logo artwork fills the chip — no separate label */}
                 <FillImage
-                    src={HOME_MOCK_IMAGE}
+                    src={image}
                     alt={name}
                     sizes="160px"
                     /* eager: an unloaded logo measures 0 wide and would collapse the track */
@@ -35,14 +41,27 @@ const PartnerRow = ({ names }: { names: string[] }) => (
     </div>
 );
 
+/** partner1..12 image rows — value is the brand name, the logo is the row's picture. */
+function getPartnerLogos(data: Record<string, TranslateContentResponseDto>): PartnerLogo[] {
+    return PARTNER_KEYS.flatMap((key) => {
+        const item = data?.[key];
+        if (!item?.value) return [];
+
+        const pictureAttributes = extractAttributes<PictureAttributes>(item);
+        return [{ name: item.value, image: pictureAttributes?.mediaStorageKey ?? "" }];
+    });
+}
+
 interface PartnersSectionProps {
     data?: Record<string, TranslateContentResponseDto>;
 }
 
 const PartnersSection = ({ data }: PartnersSectionProps) => {
-    const title1 = data?.title1?.value || MOCK.title1;
-    const title2 = data?.title2?.value || MOCK.title2;
-    const description = data?.description?.value || MOCK.description;
+    if (!data) return null;
+    const logos = getPartnerLogos(data);
+    // two rows drifting in opposite directions
+    const half = Math.ceil(logos.length / 2);
+    const rows = [logos.slice(0, half), logos.slice(half)];
 
     return (
         <section id="partners" className="w-full pt-8 pb-14 sm:pt-12 lg:pb-20">
@@ -55,26 +74,26 @@ const PartnersSection = ({ data }: PartnersSectionProps) => {
                 <FadeIn>
                     <h2
                         className={cn(
-                            HOME_HEADING_GRADIENT_LIGHT_CLASSNAME,
+                            HEADING_GRADIENT_LIGHT_CLASSNAME,
                             "font-bold text-3xl leading-tight sm:text-4xl lg:text-5xl lg:leading-[1.2]",
                         )}
                     >
-                        <span className="block">{title1}</span>
-                        <span className="block">{title2}</span>
+                        <span className="block">{data?.title1?.value}</span>
+                        <span className="block">{data?.title2?.value}</span>
                     </h2>
                 </FadeIn>
-                <FadeIn delay={100} className="max-w-md text-sm leading-relaxed text-(--text-on-light) lg:pb-2">
-                    {description}
+                <FadeIn delay={100} className="max-w-md whitespace-pre-line text-sm leading-relaxed text-(--text-on-light) lg:pb-2">
+                    {data?.description?.value}
                 </FadeIn>
             </div>
 
             <FadeIn delay={200} className="mt-10 flex flex-col gap-4 lg:mt-14">
                 <DragMarquee copiesPerHalf={2}>
-                    <PartnerRow names={MOCK.rows[0]} />
+                    <PartnerRow logos={rows[0]} />
                 </DragMarquee>
                 {/* negative speed drifts the second row the other way */}
                 <DragMarquee copiesPerHalf={2} speed={-18}>
-                    <PartnerRow names={MOCK.rows[1]} />
+                    <PartnerRow logos={rows[1]} />
                 </DragMarquee>
             </FadeIn>
         </section>

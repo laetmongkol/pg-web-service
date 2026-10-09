@@ -19,10 +19,11 @@ export interface CtaCardProps {
     button: string;
     href: string;
     image: string;
+    imageAlt: string;
 }
 
 /** White closing card used at the bottom of every public page: headline + button, round photo in rings. */
-const CtaCard = ({ title1, title2, description, button, href, image }: CtaCardProps) => (
+const CtaCard = ({ title1, title2, description, button, href, image, imageAlt }: CtaCardProps) => (
     <section id="cta" className="w-full px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
         <FadeIn
             className={cn(
@@ -72,7 +73,7 @@ const CtaCard = ({ title1, title2, description, button, href, image }: CtaCardPr
                 </svg>
                 <FillImage
                     src={image}
-                    alt={title2}
+                    alt={imageAlt}
                     sizes="240px"
                     wrapperClassName="relative size-48 overflow-hidden rounded-full sm:size-60"
                     className="object-cover"
