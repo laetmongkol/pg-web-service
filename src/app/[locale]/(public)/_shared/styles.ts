@@ -1,8 +1,3 @@
-import { BACKEND_IMAGE_PREFIX } from "@/lib/media/image-loader";
-
-/** One placeholder used for every image across the public pages while they are mockups. */
-export const PIP_MOCK_IMAGE = `${BACKEND_IMAGE_PREFIX}contents/2026-09-22T06-28-23_e8d0cdd7-e281-41e4-a085-498d799a7df3.png`;
-
 /*
  * Colour lives in src/styles/theme-tokens.css ("PUBLIC PAGES" block). These constants only bind
  * those tokens to Tailwind classes so every section uses the same role → colour mapping.

@@ -17,28 +17,8 @@ interface FooterProps {
   language?: LANGUAGE
 }
 
-/**
- * Mockup copy for PIP Evolution. The footer.* CMS values are still the template brand's, so
- * only the menu labels (navbar.* keys) come from the catalog until those rows are reseeded.
- */
-const FOOTER_MOCK = {
-  brandName: "PIP Evolution",
-  brandDescription:
-    "ให้บริการโซลูชันเทคโนโลยีที่ครบวงจร\nด้วยทีมผู้เชี่ยวชาญที่มีประสบการณ์มากกว่า 3 ปี\nพร้อมสนับสนุนธุรกิจของคุณให้เติบโตอย่างยั่งยืน",
-  menuTitle: "เมนู",
-  servicesTitle: "บริการ",
-  services: [
-    "ระบบเทรดอัตโนมัติ (EA)",
-    "ออกแบบโครงสร้างโปรแกรม",
-    "ให้คำปรึกษาด้านการเงิน",
-    "วางแผนการเงินเชิงกลยุทธ์",
-  ],
-  contactTitle: "ติดต่อ",
-  address: "72/1 ซ.รามอินทรา 19 แขวงอนุสาวรีย์\nเขตบางเขน กรุงเทพมหานคร 10220",
-  email: "pipoffice1001@gmail.com",
-  phone: "062 149 2446",
-  copyright: "สงวนลิขสิทธิ์",
-}
+/** footer.services.item1..n — the services column, one translate_values key per line. */
+const SERVICE_ITEM_KEYS = ["footer.services.item1", "footer.services.item2", "footer.services.item3", "footer.services.item4", "footer.services.item5", "footer.services.item6"]
 
 interface FooterSocialItem {
   label: string
@@ -57,6 +37,12 @@ const BODY_LINK_CLASSNAME = cn(BODY_CLASSNAME, "transition-colors hover:text-(--
 
 export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
   const t = await getTranslations()
+  // A missing key renders nothing instead of the raw key name.
+  const tr = (key: string) => (t.has(key) ? t(key).trim() : "")
+
+  const services = SERVICE_ITEM_KEYS.map(tr).filter(Boolean)
+  const email = tr("footer.contact.email")
+  const phone = tr("footer.contact.phone")
 
   return (
     <footer className="w-full bg-(--section-dark) px-2 pb-2 sm:px-3 sm:pb-3 lg:px-4 lg:pb-4">
@@ -97,9 +83,9 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
                   wrapperClassName="size-9 shrink-0 overflow-hidden rounded-lg"
                   className="object-cover"
                 />
-                <span className="text-2xl font-bold">{FOOTER_MOCK.brandName}</span>
+                <span className="text-2xl font-bold">{tr("footer.brandName")}</span>
               </LinkCustom>
-              <p className={cn("mt-5 whitespace-pre-line", BODY_CLASSNAME)}>{FOOTER_MOCK.brandDescription}</p>
+              <p className={cn("mt-5 whitespace-pre-line", BODY_CLASSNAME)}>{tr("footer.brandDescription")}</p>
 
               <div className="mt-8 flex items-center gap-4">
                 {SOCIAL_LINKS.map(({ label, href, Icon }) => (
@@ -118,7 +104,7 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
             </div>
 
             <div className="flex flex-col">
-              <h3 className={HEADING_CLASSNAME}>{FOOTER_MOCK.menuTitle}</h3>
+              <h3 className={HEADING_CLASSNAME}>{tr("footer.navigation.title")}</h3>
               <ul className="mt-5 flex flex-col gap-3">
                 {NAV_LINKS.map(({ key, href }) => (
                   <li key={key}>
@@ -131,9 +117,9 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
             </div>
 
             <div className="flex flex-col">
-              <h3 className={HEADING_CLASSNAME}>{FOOTER_MOCK.servicesTitle}</h3>
+              <h3 className={HEADING_CLASSNAME}>{tr("footer.services.title")}</h3>
               <ul className="mt-5 flex flex-col gap-3">
-                {FOOTER_MOCK.services.map((service) => (
+                {services.map((service) => (
                   <li key={service}>
                     <LinkCustom href={`/${language}/services`} className={BODY_LINK_CLASSNAME}>
                       {service}
@@ -144,25 +130,29 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
             </div>
 
             <div className="flex flex-col">
-              <h3 className={HEADING_CLASSNAME}>{FOOTER_MOCK.contactTitle}</h3>
+              <h3 className={HEADING_CLASSNAME}>{tr("footer.contact.title")}</h3>
               <ul className="mt-5 flex flex-col gap-3">
-                <li className={cn(BODY_CLASSNAME, "whitespace-pre-line")}>{FOOTER_MOCK.address}</li>
-                <li>
-                  <LinkCustom href={`mailto:${FOOTER_MOCK.email}`} className={BODY_LINK_CLASSNAME}>
-                    {FOOTER_MOCK.email}
-                  </LinkCustom>
-                </li>
-                <li>
-                  <LinkCustom href={`tel:${FOOTER_MOCK.phone.replace(/\s/g, "")}`} className={BODY_LINK_CLASSNAME}>
-                    {FOOTER_MOCK.phone}
-                  </LinkCustom>
-                </li>
+                <li className={cn(BODY_CLASSNAME, "whitespace-pre-line")}>{tr("footer.contact.address")}</li>
+                {email ? (
+                  <li>
+                    <LinkCustom href={`mailto:${email}`} className={BODY_LINK_CLASSNAME}>
+                      {email}
+                    </LinkCustom>
+                  </li>
+                ) : null}
+                {phone ? (
+                  <li>
+                    <LinkCustom href={`tel:${phone.replace(/\s/g, "")}`} className={BODY_LINK_CLASSNAME}>
+                      {phone}
+                    </LinkCustom>
+                  </li>
+                ) : null}
               </ul>
             </div>
           </div>
 
           <div className="mt-12 border-t border-(--border-on-dark) pt-4 text-center text-sm text-(--text-body-on-dark)">
-            {`© ${new Date().getFullYear()} ${FOOTER_MOCK.brandName} ${FOOTER_MOCK.copyright}`}
+            {`© ${new Date().getFullYear()} ${tr("footer.brandName")} ${tr("footer.copyright")}`}
           </div>
         </div>
       </div>

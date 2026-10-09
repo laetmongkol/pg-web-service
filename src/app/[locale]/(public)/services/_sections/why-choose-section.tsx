@@ -1,14 +1,28 @@
+import { extractAttributes, PictureAttributes } from "@/lib/cms/content-attributes";
 import cn from "@/lib/tw-merge";
 import { TranslateContentResponseDto } from "@/services/generated-cli/api-app-service";
 
 import FadeIn from "@/app/component/fade-in.components";
 import FillImage from "@/components/fill-image.component";
 
-import { PIP_MOCK_IMAGE, SECTION_CONTAINER_CLASSNAME } from "../../_shared/styles";
+import { SECTION_CONTAINER_CLASSNAME } from "../../_shared/styles";
 
-import { SERVICES_MOCK } from "./services-mock";
+const STAT_KEYS = ["stat1", "stat2", "stat3"] as const;
 
-const MOCK = SERVICES_MOCK.whyChoose;
+type WhyChooseStat = {
+    key: string;
+    value: string;
+    label: string;
+};
+
+/** stat1..3 — value is the figure, attribute1 the label under it. */
+function getStats(data: Record<string, TranslateContentResponseDto>): WhyChooseStat[] {
+    return STAT_KEYS.flatMap((key) => {
+        const item = data?.[key];
+        if (!item?.value) return [];
+        return [{ key, value: item.value, label: item.attribute1 ?? "" }];
+    });
+}
 
 interface WhyChooseSectionProps {
     data?: Record<string, TranslateContentResponseDto>;
@@ -16,22 +30,29 @@ interface WhyChooseSectionProps {
 
 /** White card with the phone photo breaking out of its top edge, copy and three stats on the right. */
 const WhyChooseSection = ({ data }: WhyChooseSectionProps) => {
-    const title1 = data?.title1?.value || MOCK.title1;
-    const title2 = data?.title2?.value || MOCK.title2;
-    const description = data?.description?.value || MOCK.description;
+    if (!data) return null;
+    const stats = getStats(data);
+    const photoPictureAttributes = extractAttributes<PictureAttributes>(data?.photo);
 
     return (
         <section id="why-choose-us" className="w-full pb-16 pt-24 sm:pb-20 lg:pb-24 lg:pt-36">
             <FadeIn className={SECTION_CONTAINER_CLASSNAME}>
                 <div className="relative grid rounded-[2rem] bg-(--surface-card) sm:rounded-[2.5rem] lg:grid-cols-2">
-                    {/* the photo pokes ~5rem above the card on desktop */}
-                    <div className="relative -mt-16 h-80 overflow-hidden rounded-t-[2rem] sm:h-[26rem] lg:-mt-20 lg:h-auto lg:min-h-[34rem] lg:rounded-none lg:rounded-bl-[2.5rem]">
+                    {/* Cut-out hand + phone: the image layer starts ~5rem above the card so the phone pokes
+                        out of the top edge, and sits on the card's bottom so the wrist runs into the
+                        bottom-left corner — only that corner is clipped to the card's curve. */}
+                    <div className="relative h-80 sm:h-[26rem] lg:h-auto lg:min-h-[28rem]">
                         <FillImage
-                            src={PIP_MOCK_IMAGE}
-                            alt={`${title1} ${title2}`}
-                            sizes="(max-width: 1024px) 100vw, 600px"
-                            wrapperClassName="absolute inset-0"
-                            className="object-cover object-top"
+                            src={photoPictureAttributes?.mediaStorageKey ?? ""}
+                            alt={photoPictureAttributes?.mediaAltText ?? ""}
+                            width={photoPictureAttributes?.width}
+                            height={photoPictureAttributes?.height}
+                            sizes="(max-width: 1024px) 100vw, 640px"
+                            wrapperClassName={cn(
+                                "absolute inset-x-0 bottom-0 -top-16 overflow-hidden lg:-top-20",
+                                "lg:rounded-bl-[2.5rem]",
+                            )}
+                            className="object-contain object-bottom lg:object-left-bottom"
                         />
                     </div>
 
@@ -42,14 +63,14 @@ const WhyChooseSection = ({ data }: WhyChooseSectionProps) => {
                                 "bg-[image:var(--gradient-heading-on-light)] bg-clip-text text-transparent",
                             )}
                         >
-                            <span className="block">{title1}</span>
-                            <span className="block">{title2}</span>
+                            <span className="block">{data?.title1?.value}</span>
+                            <span className="block">{data?.title2?.value}</span>
                         </h2>
-                        <p className="mt-5 whitespace-pre-line text-sm leading-relaxed sm:text-base">{description}</p>
+                        <p className="mt-5 whitespace-pre-line text-sm leading-relaxed sm:text-base">{data?.description?.value}</p>
 
                         <ul className="mt-10 grid grid-cols-3 gap-4 sm:max-w-md">
-                            {MOCK.stats.map(({ value, label }) => (
-                                <li key={value} className="flex flex-col">
+                            {stats.map(({ key, value, label }) => (
+                                <li key={key} className="flex flex-col">
                                     <span className="text-2xl font-bold sm:text-[2rem]">{value}</span>
                                     <span className="mt-1.5 text-[0.6875rem] leading-snug">{label}</span>
                                 </li>

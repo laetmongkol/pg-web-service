@@ -1,15 +1,17 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { translateContentAppServiceServer } from "@/services/modules/app-service/server";
 
 import type { Metadata } from "next";
 
+import { isSupportedLanguage } from "@/proxies/language.proxy";
+import { LANGUAGE } from "@/shared/constants/common.constants";
+
 import LightPanel from "../_shared/light-panel";
 import PageHero from "../_shared/page-hero";
-import { PIP_MOCK_IMAGE } from "../_shared/styles";
 
 import { ContactChannelsSection, OfficeSection } from "./_sections";
-import { CONTACT_MOCK } from "./_sections/contact-mock";
 
 interface ContactUsPageProps {
     params: Promise<{ locale: string }>;
@@ -21,26 +23,20 @@ export async function generateMetadata({ params }: ContactUsPageProps): Promise<
 }
 
 export default async function ContactUsPage({ params }: ContactUsPageProps) {
-    const { locale } = await params;
-    setRequestLocale(locale);
+    const { locale: routeLocale } = await params;
+    setRequestLocale(routeLocale);
+    const language = (await isSupportedLanguage(routeLocale)) ? (routeLocale as LANGUAGE) : LANGUAGE.TH;
 
-    const { hero } = CONTACT_MOCK;
+    // { [sectionCode]: { [translateContentCode]: dto } } — section codes are the section names below.
+    const data = await translateContentAppServiceServer.getTranslateContentsCached(language, "ContactUs");
 
-    // Mockup: every section renders CONTACT_MOCK copy. Once the PIP Evolution CMS rows are seeded,
-    // fetch getTranslateContentsCached(language, "ContactUs") and pass each section its data.
     return (
         <div className="relative flex flex-col bg-(--section-dark)">
-            <PageHero
-                eyebrow={hero.eyebrow}
-                titleLines={[...hero.titleLines]}
-                description={hero.description}
-                image={PIP_MOCK_IMAGE}
-                imageAlt={hero.titleLines.join(" ")}
-            />
+            <PageHero data={data?.["hero"]} language={language} />
             <LightPanel curveTop curveBottom className="mt-12">
-                <ContactChannelsSection />
+                <ContactChannelsSection data={data?.["channels"]} />
             </LightPanel>
-            <OfficeSection />
+            <OfficeSection data={data?.["office"]} formData={data?.["form"]} />
         </div>
     );
 }
