@@ -17,14 +17,14 @@ const AppLogo = ({ width = 80, className, tone = "brand" }: AppLogoProps) => {
   const height = Math.round(width * 0.4);
 
   return (
-    <span className="relative inline-block select-none">
+    <span className="relative inline-flex select-none items-center align-middle">
       <FillImage
         src={LOGO_SRC}
         alt={COMPANY_BRAND_NAME}
         width={width}
         height={height}
         sizes={`${width}px`}
-        className={cn("h-8 w-auto object-contain object-left opacity-0 sm:h-9", className)}
+        className={cn("block h-8 w-auto object-contain object-left opacity-0 sm:h-9", className)}
         unoptimized
         priority
       />
