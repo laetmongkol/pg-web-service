@@ -10,6 +10,7 @@ import {
   BUTTON_COLOR_VARIANT_CLASSNAME,
   BUTTON_SIZE_CLASSNAME,
 } from "@/shared/ui/classes/button.classes";
+import { BUTTON_SCALE_CLASSNAME, BUTTON_SCALE_SUBTLE_CLASSNAME } from "@/shared/ui/classes/base.classes"
 
 export type ButtonType = "button" | "submit" | "reset";
 export type ButtonIconPosition = "start" | "end";
@@ -46,6 +47,8 @@ const ButtonCustom = ({
       {...props}
       className={cn(
         BUTTON_BASE_CLASSNAME,
+        fullWidth ? BUTTON_SCALE_SUBTLE_CLASSNAME : BUTTON_SCALE_CLASSNAME,
+        "disabled:hover:scale-100",
         BUTTON_SIZE_CLASSNAME[size],
         BUTTON_COLOR_VARIANT_CLASSNAME[color][variant],
         fullWidth && "w-full",

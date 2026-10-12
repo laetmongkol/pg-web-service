@@ -1,15 +1,6 @@
-import CtaSection from "./cta-section";
-import HeroSection from "./hero-section";
-import MissionAndVision from "./mission-and-vision";
-import OurHistory from "./our-history";
-import OurJourney from "./our-journey";
-import OurValue from "./our-value";
+import HistorySection from "./history-section";
+import JourneySection from "./journey-section";
+import MissionVisionSection from "./mission-vision-section";
+import TeamSection from "./team-section";
 
-export {
-    CtaSection,
-    HeroSection,
-    MissionAndVision,
-    OurHistory,
-    OurJourney,
-    OurValue
-};
+export { HistorySection, JourneySection, MissionVisionSection, TeamSection };

@@ -31,12 +31,12 @@ const NavbarShell = ({ children }: { children: ReactNode }) => {
       <div
         className={cn(
           "pointer-events-auto mx-auto flex min-h-12 max-w-7xl items-center justify-between gap-4",
-          "rounded-full border border-(--surface-default)/60 backdrop-blur-lg",
-          "px-6 py-2",
+          "rounded-full border border-(--border-navbar) backdrop-blur-xl",
+          "px-5 py-2 sm:px-7",
           "transition-[background-color,box-shadow] duration-300",
           isScrolled
-            ? "bg-(--surface-default)/95 shadow-[var(--shadow-lg)]"
-            : "bg-(--surface-default)/85 shadow-[var(--shadow-md)]",
+            ? "bg-(--surface-navbar-scrolled) shadow-[var(--shadow-lg)]"
+            : "bg-(--surface-navbar) shadow-[0_8px_32px_rgba(0,0,0,0.18)]",
         )}
       >
         {children}
