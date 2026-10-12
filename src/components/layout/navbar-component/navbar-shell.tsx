@@ -30,7 +30,7 @@ const NavbarShell = ({ children }: { children: ReactNode }) => {
     >
       <div
         className={cn(
-          "pointer-events-auto mx-auto flex min-h-12 max-w-5xl items-center justify-between gap-4",
+          "pointer-events-auto mx-auto flex min-h-12 max-w-7xl items-center justify-between gap-4",
           "rounded-full border border-(--border-navbar) backdrop-blur-xl",
           "px-5 py-2 sm:px-7",
           "transition-[background-color,box-shadow] duration-300",
