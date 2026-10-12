@@ -46,61 +46,68 @@ const PageHero = ({ data, language }: PageHeroProps) => {
         // may grow past it when the copy + a usable illustration don't fit — e.g. iPad Pro landscape,
         // where 16:8 of 1032px is only ~500px and the illustration was squeezed to nothing.
         <HeroBackdrop cardClassName="lg:aspect-auto lg:min-h-[min(calc((100vw-2rem)/2),1080px)]">
-            <div className="flex flex-1 flex-col items-center px-4 pt-[calc(var(--navbar-height)+2.5rem)] text-center sm:px-8 lg:pt-[calc(var(--navbar-height)+3.5rem)]">
-                <FadeIn className="flex items-center gap-2.5 text-sm text-(--text-on-dark) sm:text-base">
-                    <span aria-hidden className="size-1.5 rounded-full bg-(--surface-card)" />
-                    {data?.eyebrow?.value}
-                </FadeIn>
-
-                <FadeIn delay={100}>
-                    <h1
-                        className={cn(
-                            "mt-5 max-w-4xl font-bold",
-                            "bg-[image:var(--gradient-heading-on-dark)] bg-clip-text text-transparent",
-                            "text-3xl leading-tight sm:text-5xl lg:text-[3.5rem] lg:leading-[1.25]",
-                        )}
-                    >
-                        {titleLines.map((line) => (
-                            <span key={line} className="block">
-                                {line}
-                            </span>
-                        ))}
-                    </h1>
-                </FadeIn>
-
-                <FadeIn
-                    delay={200}
-                    className="mt-5 max-w-3xl whitespace-pre-line text-xs leading-relaxed text-(--text-body-on-dark) sm:text-sm"
-                >
-                    {data?.description?.value}
-                </FadeIn>
-
-                {data?.ctaPrimary?.value || data?.ctaSecondary?.value ? (
-                    <FadeIn delay={300} className="mt-7 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
-                        {data?.ctaPrimary?.value ? (
-                            <LinkCustom
-                                href={`/${language}/${data?.ctaPrimary?.linkUrl}`}
-                                className={HERO_CTA_PRIMARY_CLASSNAME}
-                            >
-                                {data?.ctaPrimary?.value}
-                                <ArrowUpRight size={20} strokeWidth={2} aria-hidden />
-                            </LinkCustom>
-                        ) : null}
-                        {data?.ctaSecondary?.value ? (
-                            <LinkCustom
-                                href={`/${language}/${data?.ctaSecondary?.linkUrl}`}
-                                className={HERO_CTA_SECONDARY_CLASSNAME}
-                            >
-                                {data?.ctaSecondary?.value}
-                            </LinkCustom>
-                        ) : null}
+            <div className="flex flex-1 flex-col items-center px-4 pt-[calc(var(--navbar-height)+2.5rem)] text-center sm:px-8 lg:pt-[calc(var(--navbar-height)+1.5rem)]">
+                {/* copy block: my-auto centres it in the space between the navbar and the illustration */}
+                <div className="flex flex-col items-center lg:my-auto">
+                    <FadeIn className="flex items-center gap-2.5 text-sm text-(--text-on-dark) sm:text-base">
+                        <span aria-hidden className="size-1.5 rounded-full bg-(--surface-card)" />
+                        {data?.eyebrow?.value}
                     </FadeIn>
-                ) : null}
 
-                {/* the illustration takes whatever height is left and sits on the bottom glow */}
+                    <FadeIn delay={100}>
+                        <h1
+                            className={cn(
+                                "mt-5 max-w-4xl font-bold",
+                                "bg-[image:var(--gradient-heading-on-dark)] bg-clip-text text-transparent",
+                                "text-3xl leading-tight sm:text-5xl lg:text-[3.5rem] lg:leading-[1.25]",
+                            )}
+                        >
+                            {titleLines.map((line) => (
+                                <span key={line} className="block">
+                                    {line}
+                                </span>
+                            ))}
+                        </h1>
+                    </FadeIn>
+
+                    <FadeIn
+                        delay={200}
+                        className="mt-5 max-w-3xl whitespace-pre-line text-xs leading-relaxed text-(--text-body-on-dark) sm:text-sm"
+                    >
+                        {data?.description?.value}
+                    </FadeIn>
+
+                    {data?.ctaPrimary?.value || data?.ctaSecondary?.value ? (
+                        <FadeIn
+                            delay={300}
+                            className="mt-7 flex flex-wrap items-center justify-center gap-x-10 gap-y-3"
+                        >
+                            {data?.ctaPrimary?.value ? (
+                                <LinkCustom
+                                    href={`/${language}/${data?.ctaPrimary?.linkUrl}`}
+                                    className={HERO_CTA_PRIMARY_CLASSNAME}
+                                >
+                                    {data?.ctaPrimary?.value}
+                                    <ArrowUpRight size={20} strokeWidth={2} aria-hidden />
+                                </LinkCustom>
+                            ) : null}
+                            {data?.ctaSecondary?.value ? (
+                                <LinkCustom
+                                    href={`/${language}/${data?.ctaSecondary?.linkUrl}`}
+                                    className={HERO_CTA_SECONDARY_CLASSNAME}
+                                >
+                                    {data?.ctaSecondary?.value}
+                                </LinkCustom>
+                            ) : null}
+                        </FadeIn>
+                    ) : null}
+                </div>
+
+                {/* fixed height (scales with the card width) so the copy above gets the free space;
+                    sits on the bottom glow */}
                 <FadeIn
                     delay={400}
-                    className="relative mt-8 aspect-[16/10] w-full max-w-2xl sm:aspect-[16/9] lg:mt-6 lg:aspect-auto lg:min-h-[18rem] lg:flex-1 xl:min-h-[12rem]"
+                    className="relative mt-8 aspect-[16/10] w-full max-w-3xl sm:aspect-[16/9] lg:mt-6 lg:aspect-auto lg:h-[18vw] lg:max-h-[30rem] lg:min-h-[15rem] lg:max-w-4xl lg:shrink-0"
                 >
                     <FillImage
                         src={heroPictureAttributes?.mediaStorageKey ?? ""}

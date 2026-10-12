@@ -18,11 +18,11 @@ const WIDE_COUNT = 2;
 
 /** The outer corner of the grid gets the big radius, like one rounded block cut into cards. */
 const CORNER_CLASSNAME = [
-    "sm:rounded-tl-[3rem]",
-    "sm:rounded-tr-[3rem]",
-    "sm:rounded-bl-[3rem]",
+    "sm:rounded-tl-[2.5rem]",
+    "sm:rounded-tr-[2.5rem]",
+    "sm:rounded-bl-[2.5rem]",
     "",
-    "sm:rounded-br-[3rem]",
+    "sm:rounded-br-[2.5rem]",
 ];
 
 type ServiceItem = {
@@ -51,13 +51,14 @@ interface ServiceCardProps {
 }
 
 /**
- * Photo fills the card, copy sits on the bottom. On hover (pointer screens) the button rises out
+ * 3D illustration shown whole in the upper part of the card (it carries its own navy backdrop that
+ * melts into the card), copy on the bottom. On hover (pointer screens) the button rises out
  * of a collapsed row under the title, pushing the title up; touch screens always show it.
  */
 const ServiceCard = ({ title, image, button, href, cornerClassName }: ServiceCardProps) => (
     <article
         className={cn(
-            "group relative isolate flex h-72 flex-col justify-end overflow-hidden rounded-[1.25rem] px-6 pb-7 text-center sm:h-80 lg:h-[21rem]",
+            "group relative isolate flex h-72 flex-col justify-end overflow-hidden rounded-xl px-6 pb-7 text-center sm:h-80 lg:h-[21.5rem]",
             "bg-[image:var(--surface-card-dark)] text-(--text-on-dark)",
             cornerClassName,
         )}
@@ -66,8 +67,8 @@ const ServiceCard = ({ title, image, button, href, cornerClassName }: ServiceCar
             src={image}
             alt=""
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-            wrapperClassName="absolute inset-0 -z-10"
-            className="object-cover transition-transform! duration-700! group-hover:scale-105"
+            wrapperClassName="absolute inset-x-0 top-0 bottom-[24%] -z-10"
+            className="object-contain object-top transition-transform! duration-700! group-hover:scale-105"
         />
         <div aria-hidden className="absolute inset-0 -z-10 bg-[image:var(--card-image-fade)]" />
 

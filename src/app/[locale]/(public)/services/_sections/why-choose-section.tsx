@@ -49,7 +49,7 @@ const WhyChooseSection = ({ data }: WhyChooseSectionProps) => {
                             height={photoPictureAttributes?.height}
                             sizes="(max-width: 1024px) 100vw, 640px"
                             wrapperClassName={cn(
-                                "absolute inset-x-0 bottom-0 -top-16 overflow-hidden lg:-top-20",
+                                "absolute inset-x-0 -bottom-1 -top-16 overflow-hidden lg:-top-20",
                                 "lg:rounded-bl-[2.5rem]",
                             )}
                             className="object-contain object-bottom lg:object-left-bottom"
