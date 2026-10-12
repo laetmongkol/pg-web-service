@@ -80,7 +80,7 @@ export default function MobileNavbar({ language, navLinks, languages, showLogo =
     <>
       <div className="flex w-full flex-1 items-center justify-between gap-3 lg:hidden">
         {showLogo ? (
-          <LinkCustom href={`/${language}`} className="shrink-0">
+          <LinkCustom href={`/${language}`} className="flex shrink-0 items-center">
             <AppLogo width={80} tone="invert" className="h-5 sm:h-5" />
           </LinkCustom>
         ) : (
