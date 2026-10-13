@@ -142,6 +142,7 @@ const JourneySection = ({ data }: JourneySectionProps) => {
                 <FadeIn delay={120} className="mt-14 grid grid-cols-3 items-end gap-3 sm:gap-6 lg:mt-10 lg:gap-9">
                     {PHOTO_KEYS.map((key, index) => (
                         <FillImage
+                            draggable={false}
                             key={key}
                             src={extractAttributes<PictureAttributes>(data?.[key])?.mediaStorageKey ?? ""}
                             alt={extractAttributes<PictureAttributes>(data?.[key])?.mediaAltText ?? ""}

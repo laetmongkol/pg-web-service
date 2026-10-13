@@ -64,6 +64,7 @@ const ServiceCard = ({ title, image, button, href, cornerClassName }: ServiceCar
         )}
     >
         <FillImage
+            draggable={false}
             src={image}
             alt=""
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"

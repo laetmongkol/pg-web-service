@@ -32,6 +32,7 @@ const OrbitIllustration = ({ data }: { data: Record<string, TranslateContentResp
             ))}
             {/* a touch wider than the rings, like the design — icons sit on and just outside the outer ring */}
             <FillImage
+                draggable={false}
                 src={illustrationPictureAttributes?.mediaStorageKey ?? ""}
                 alt={illustrationPictureAttributes?.mediaAltText ?? ""}
                 width={illustrationPictureAttributes?.width}

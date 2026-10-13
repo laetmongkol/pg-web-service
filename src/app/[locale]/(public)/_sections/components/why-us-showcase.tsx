@@ -39,6 +39,7 @@ const WhyUsShowcase = ({ items, image, imageAlt, intro }: WhyUsShowcaseProps) =>
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="relative pb-6 pl-0 sm:pl-6">
                 <FillImage
+                    draggable={false}
                     src={image}
                     alt={imageAlt}
                     sizes="(max-width: 1024px) 100vw, 560px"

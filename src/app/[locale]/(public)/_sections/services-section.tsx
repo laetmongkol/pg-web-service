@@ -98,6 +98,7 @@ const ServicesSection = ({ data, language }: ServicesSectionProps) => {
                                 )}
                             >
                                 <FillImage
+                                    draggable={false}
                                     src={image}
                                     alt=""
                                     sizes="(max-width: 640px) 45vw, 160px"

@@ -75,6 +75,7 @@ export default async function Footer({ language = LANGUAGE.TH }: FooterProps) {
             <div className="flex flex-col items-start">
               <LinkCustom href={`/${language}`} className="flex items-center gap-3">
                 <FillImage
+                  draggable={false}
                   src={"/PIPEvolution.png"}
                   alt=""
                   width={40}
