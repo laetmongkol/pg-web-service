@@ -19,6 +19,7 @@ const AppLogo = ({ width = 80, className, tone = "brand" }: AppLogoProps) => {
   return (
     <span className="relative inline-flex select-none items-center align-middle">
       <FillImage
+        draggable={false}
         src={LOGO_SRC}
         alt={COMPANY_BRAND_NAME}
         width={width}
