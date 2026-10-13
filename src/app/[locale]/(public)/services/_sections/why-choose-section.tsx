@@ -43,6 +43,7 @@ const WhyChooseSection = ({ data }: WhyChooseSectionProps) => {
                         bottom-left corner — only that corner is clipped to the card's curve. */}
                     <div className="relative h-80 sm:h-[26rem] lg:h-auto lg:min-h-[28rem]">
                         <FillImage
+                            draggable={false}
                             src={photoPictureAttributes?.mediaStorageKey ?? ""}
                             alt={photoPictureAttributes?.mediaAltText ?? ""}
                             width={photoPictureAttributes?.width}

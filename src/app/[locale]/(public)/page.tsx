@@ -40,7 +40,7 @@ export default async function HomePage({ params }: HomePageProps) {
     return (
         <div className="relative flex flex-col bg-(--section-dark)">
             <HeroSection data={data?.["hero"]} language={language} />
-            <LightPanel curveTop curveBottom className="mt-20">
+            <LightPanel curveTop curveBottom className="mt-12">
                 <PartnersSection data={data?.["partners"]} />
                 <AboutSection data={data?.["about"]} language={language} />
             </LightPanel>

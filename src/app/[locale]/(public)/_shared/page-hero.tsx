@@ -110,6 +110,7 @@ const PageHero = ({ data, language }: PageHeroProps) => {
                     className="relative mt-8 aspect-[16/10] w-full max-w-3xl sm:aspect-[16/9] lg:mt-6 lg:aspect-auto lg:h-[18vw] lg:max-h-[30rem] lg:min-h-[15rem] lg:max-w-4xl lg:shrink-0"
                 >
                     <FillImage
+                        draggable={false}
                         src={heroPictureAttributes?.mediaStorageKey ?? ""}
                         alt={heroPictureAttributes?.mediaAltText ?? ""}
                         priority

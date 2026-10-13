@@ -42,6 +42,7 @@ const ProjectCard = ({ name, description, image, imageSizes, className }: Projec
             alt={name}
             sizes={imageSizes}
             wrapperClassName="aspect-[323/260] w-full overflow-hidden"
+            draggable={false}
             className="object-cover"
         />
         <div className="px-7 pb-8 pt-2">

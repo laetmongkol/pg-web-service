@@ -127,6 +127,7 @@ const AboutSection = ({ data, language }: AboutSectionProps) => {
 
                     <FadeIn delay={150} direction="left">
                         <FillImage
+                            draggable={false}
                             src={aboutPictureAttributes?.mediaStorageKey ?? ""}
                             alt={aboutPictureAttributes?.mediaAltText ?? ""}
                             sizes="(max-width: 1024px) 100vw, 520px"
@@ -156,6 +157,7 @@ const AboutSection = ({ data, language }: AboutSectionProps) => {
                                     )}
                                 >
                                     <FillImage
+                                        draggable={false}
                                         src={itemImage}
                                         alt=""
                                         sizes="80px"

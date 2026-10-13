@@ -72,6 +72,7 @@ const CtaCard = ({ title1, title2, description, button, href, image, imageAlt }:
                     ))}
                 </svg>
                 <FillImage
+                    draggable={false}
                     src={image}
                     alt={imageAlt}
                     sizes="240px"
