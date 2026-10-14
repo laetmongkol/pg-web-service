@@ -115,7 +115,7 @@ const ServiceListSection = ({ data, language }: ServiceListSectionProps) => {
     const href = `/${language}/${data?.button?.linkUrl}`;
 
     return (
-        <section id="our-services" className="w-full py-16 sm:py-20 lg:py-24">
+        <section id="our-services" className="w-full pt-8 pb-16 lg:py-24">
             <div className={SECTION_CONTAINER_CLASSNAME}>
                 <div className="flex flex-col items-center text-center">
                     <FadeIn>

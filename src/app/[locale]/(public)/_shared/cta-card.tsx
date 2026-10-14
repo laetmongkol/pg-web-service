@@ -24,7 +24,7 @@ export interface CtaCardProps {
 
 /** White closing card used at the bottom of every public page: headline + button, round photo in rings. */
 const CtaCard = ({ title1, title2, description, button, href, image, imageAlt }: CtaCardProps) => (
-    <section id="cta" className="w-full px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
+    <section id="cta" className="w-full px-4 pt-8 pb-16 sm:px-8 lg:py-24">
         <FadeIn
             className={cn(
                 "relative mx-auto grid max-w-7xl overflow-hidden rounded-[2rem] bg-(--surface-card) sm:rounded-[2.5rem]",

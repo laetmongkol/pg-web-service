@@ -64,7 +64,7 @@ const PartnersSection = ({ data }: PartnersSectionProps) => {
     const rows = [logos.slice(0, half), logos.slice(half)];
 
     return (
-        <section id="partners" className="w-full pt-8 pb-14 sm:pt-12 lg:pb-20">
+        <section id="partners" className="w-full pt-8 pb-16 lg:pt-12 lg:pb-20">
             <div
                 className={cn(
                     "mx-auto flex max-w-7xl flex-col gap-6 px-4 sm:px-8",
