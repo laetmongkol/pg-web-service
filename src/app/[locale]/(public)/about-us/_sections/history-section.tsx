@@ -32,7 +32,7 @@ const HistorySection = ({ data }: HistorySectionProps) => {
     const stats = getStats(data);
 
     return (
-        <section id="our-history" className="w-full py-16 sm:py-20 lg:py-24">
+        <section id="our-history" className="w-full pt-8 pb-16 lg:py-24">
             <div
                 className={cn(
                     SECTION_CONTAINER_CLASSNAME,

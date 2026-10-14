@@ -25,7 +25,7 @@ const CapabilitiesSection = ({ data }: CapabilitiesSectionProps) => {
     const items = getItems(data);
 
     return (
-        <section id="capabilities" className="w-full py-16 text-(--text-on-dark) sm:py-20 lg:py-24">
+        <section id="capabilities" className="w-full pt-8 pb-16 text-(--text-on-dark) lg:py-24">
             <div className={cn(SECTION_CONTAINER_CLASSNAME, "flex flex-col items-center text-center")}>
                 <FadeIn>
                     <PillLabel tone="dark">{data?.label?.value}</PillLabel>

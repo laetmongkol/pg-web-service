@@ -55,7 +55,7 @@ const ContactChannelsSection = ({ data }: ContactChannelsSectionProps) => {
     const channels = getChannels(data);
 
     return (
-        <section id="contact-channels" className="w-full py-14 sm:py-20">
+        <section id="contact-channels" className="w-full pt-8 pb-16 lg:py-20">
             <FadeIn className={SECTION_CONTAINER_CLASSNAME}>
                 <ul className="grid gap-4 sm:grid-cols-3 sm:gap-5">
                     {channels.map(({ key, title, label, detail, icon: Icon, href }) => (

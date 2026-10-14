@@ -53,7 +53,7 @@ const MissionVisionSection = ({ data }: MissionVisionSectionProps) => {
     if (!data) return null;
 
     return (
-    <section id="mission-and-vision" className="w-full py-16 sm:py-20 lg:py-28">
+    <section id="mission-and-vision" className="w-full pt-8 pb-16 lg:py-28">
         <div className={cn(SECTION_CONTAINER_CLASSNAME, "grid items-center gap-12 lg:grid-cols-2 lg:gap-16")}>
             <FadeIn>
                 <OrbitIllustration data={data} />

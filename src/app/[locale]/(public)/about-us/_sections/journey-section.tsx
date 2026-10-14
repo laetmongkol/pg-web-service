@@ -57,7 +57,7 @@ const JourneySection = ({ data }: JourneySectionProps) => {
     const milestones = getMilestones(data);
 
     return (
-        <section id="our-journey" className="w-full overflow-hidden py-16 text-(--text-on-dark) sm:py-20 lg:py-24">
+        <section id="our-journey" className="w-full overflow-hidden pt-16 pb-16 text-(--text-on-dark) lg:py-24">
             <div className={SECTION_CONTAINER_CLASSNAME}>
                 <FadeIn>
                     <PillLabel tone="dark">{data?.label?.value}</PillLabel>

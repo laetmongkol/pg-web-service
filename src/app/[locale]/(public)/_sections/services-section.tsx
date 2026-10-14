@@ -46,7 +46,7 @@ const ServicesSection = ({ data, language }: ServicesSectionProps) => {
         <section
             id="services"
             className={cn(
-                "relative isolate w-full overflow-hidden pb-16 pt-24 sm:pb-20 lg:pb-24 lg:pt-28",
+                "relative isolate w-full overflow-hidden pb-16 pt-16 sm:pb-20 lg:pb-24 lg:pt-28",
                 "bg-[image:var(--section-dark-gradient)]",
             )}
         >

@@ -47,7 +47,7 @@ const TeamSection = ({ data }: TeamSectionProps) => {
     const trustedNames = getTrustedNames(data);
 
     return (
-        <section id="our-team" className="w-full overflow-hidden pb-10 pt-20 text-(--text-on-dark) sm:pt-24 lg:pt-36">
+        <section id="our-team" className="w-full overflow-hidden pt-8 pb-16 text-(--text-on-dark) lg:pb-10 lg:pt-36">
             <div className={cn(SECTION_CONTAINER_CLASSNAME, "flex flex-col items-center text-center")}>
                 <FadeIn>
                     <PillLabel tone="dark">{data?.label?.value}</PillLabel>

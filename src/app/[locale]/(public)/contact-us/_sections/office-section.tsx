@@ -35,7 +35,7 @@ const OfficeSection = ({ data, formData }: OfficeSectionProps) => {
         : "";
 
     return (
-        <section id="contact-form" className="w-full pb-16 pt-20 text-(--text-on-dark) sm:pb-20 lg:pb-24 lg:pt-24">
+        <section id="contact-form" className="w-full pt-16 pb-16 text-(--text-on-dark) lg:pb-24 lg:pt-24">
             <div className={cn(SECTION_CONTAINER_CLASSNAME, "grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-10")}>
                 <FadeIn className="flex flex-col">
                     <h2 className="text-xl font-bold sm:text-[1.375rem]">{data?.title?.value}</h2>

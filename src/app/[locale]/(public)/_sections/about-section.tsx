@@ -69,7 +69,7 @@ const AboutSection = ({ data, language }: AboutSectionProps) => {
     const aboutPictureAttributes = extractAttributes<PictureAttributes>(data?.aboutImg);
 
     return (
-        <section id="about" className="w-full pb-16 pt-10 sm:pb-20 lg:pb-24">
+        <section id="about" className="w-full pt-8 pb-16 lg:pt-10 lg:pb-24">
             <div className="mx-auto max-w-7xl px-4 text-(--text-on-light) sm:px-8">
                 <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
                     <div className="flex flex-col items-start">

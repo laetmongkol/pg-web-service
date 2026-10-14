@@ -31,7 +31,7 @@ const WhyUsSection = ({ data }: WhyUsSectionProps) => {
     const whyPictureAttributes = extractAttributes<PictureAttributes>(data?.whyImg);
 
     return (
-        <section id="why-us" className="w-full py-12 sm:py-14">
+        <section id="why-us" className="w-full pt-8 pb-16 lg:py-14">
             <FadeIn className="mx-auto max-w-7xl px-4 text-(--text-on-light) sm:px-8">
                 <WhyUsShowcase
                     items={reasons}
