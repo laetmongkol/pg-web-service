@@ -152,22 +152,26 @@ const AboutSection = ({ data, language }: AboutSectionProps) => {
                                 <li
                                     key={key}
                                     className={cn(
-                                        "flex items-center gap-6 sm:px-6 lg:px-8",
+                                        "flex items-center justify-center gap-6 sm:px-6 lg:px-8",
                                         index > 0 && "sm:border-l sm:border-(--border-on-light)",
                                     )}
                                 >
-                                    <FillImage
-                                        draggable={false}
-                                        src={itemImage}
-                                        alt=""
-                                        sizes="80px"
-                                        wrapperClassName="size-16 shrink-0 overflow-hidden rounded-2xl sm:size-[4.5rem]"
-                                        className="object-contain"
-                                    />
-                                    <span className="flex flex-1 flex-col items-center text-center">
-                                        <span className="text-base font-bold">{itemTitle}</span>
-                                        <span className="mt-2 whitespace-pre-line text-xs leading-relaxed">{itemDescription}</span>
-                                    </span>
+                                    <div className="flex justify-center w-1/2">
+                                        <FillImage
+                                            draggable={false}
+                                            src={itemImage}
+                                            alt=""
+                                            sizes="80px"
+                                            wrapperClassName="size-16 shrink-0 overflow-hidden rounded-2xl sm:size-[4.5rem]"
+                                            className="object-contain"
+                                        />
+                                    </div>
+                                    <div className="flex w-1/2 justify-center">
+                                        <span className="flex flex-col items-center text-center">
+                                            <span className="text-base font-bold">{itemTitle}</span>
+                                            <span className="mt-2 whitespace-pre-line text-xs leading-relaxed">{itemDescription}</span>
+                                        </span>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
