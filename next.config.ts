@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   // No image server on Pages; assets are already sized and compressed.
   images: { unoptimized: true },
+  // Dev only: let the preview browser load the dev bundle over 127.0.0.1 as well as localhost.
+  allowedDevOrigins: ["127.0.0.1"],
   // Pin the workspace root to this project; sibling services under the parent dir otherwise make
   // Turbopack infer the parent as root, which breaks `tailwindcss` resolution in CSS imports.
   turbopack: {

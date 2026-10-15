@@ -50,3 +50,5 @@ next-env.d.ts
 
 *.local.sh
 *.local
+# Blender autosave backups
+*.blend1

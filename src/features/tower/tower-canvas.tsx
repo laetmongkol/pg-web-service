@@ -16,7 +16,7 @@ export default function TowerCanvas({ lite, offsetRatio, onReady }: TowerCanvasP
     <Canvas
       dpr={lite ? [1, 1.5] : [1, 2]}
       gl={{ antialias: !lite, powerPreference: "high-performance" }}
-      camera={{ fov: lite ? 50 : 38, near: 0.5, far: 160, position: [20, 5, 20] }}
+      camera={{ fov: lite ? 62 : 52, near: 0.3, far: 1400, position: [-30, 3, 82] }}
     >
       <Suspense fallback={null}>
         <TowerScene lite={lite} offsetRatio={offsetRatio} onReady={onReady} />

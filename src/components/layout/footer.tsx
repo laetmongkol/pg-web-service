@@ -10,14 +10,14 @@ export default async function Footer() {
   const services = (await getTranslations("services")).raw("items") as Service[]
 
   const links = [
+    { href: "#about", label: nav("about") },
     { href: "#services", label: nav("services") },
-    { href: "#capability", label: nav("capability") },
-    { href: "#process", label: nav("process") },
+    { href: "#why", label: nav("why") },
     { href: "#contact", label: nav("cta") },
   ]
 
   return (
-    <footer className="relative bg-ink text-ivory">
+    <footer className="relative z-20 border-t border-ivory/10 bg-night-950 text-ivory">
       <div className="mx-auto max-w-[1440px] px-4 pt-16 pb-10 md:px-[72px]">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">

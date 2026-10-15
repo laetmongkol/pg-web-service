@@ -13,6 +13,14 @@
   --color-rust: #af3d25;
   --color-paper: #fffdf8;
 
+  /* Night palette (v6): the site sits on the tower at blue hour → night. */
+  --color-night-950: #070b1c;
+  --color-night-900: #0b1026;
+  --color-night-800: #131b3b;
+  --color-night-700: #1f2a55;
+  --color-mist: #aeb7d6;
+  --color-gold: #f2c27b;
+
   --font-sans: var(--font-anuphan), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
@@ -46,7 +54,7 @@
 }
 
 html {
-  background: var(--color-ink);
+  background: var(--color-night-950);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
 }
@@ -76,4 +84,121 @@ html.lenis body {
 ::selection {
   background: var(--color-coral);
   color: var(--color-ink);
+}
+
+/* Design 1 (/design/1): the same sections recoloured as a torch-lit dungeon. Tailwind utilities
+   read these variables, so overriding them on a wrapper re-themes everything inside it. */
+.theme-dungeon {
+  --color-night-950: #120b08;
+  --color-night-900: #1c130e;
+  --color-night-800: #2a1d15;
+  --color-night-700: #3d2a1d;
+  --color-mist: #cbb497;
+  --color-gold: #e8b04b;
+  --color-coral: #ff8a3d;
+  --color-ivory: #f3e4c8;
+}
+
+/* Frosted glass surfaces for cards (both designs). Built from the theme tokens, so the dungeon
+   wrapper turns them into smoked amber glass with no extra rules. Layers, back to front:
+   blurred backdrop + tinted fill → ::before light-catching rim → ::after soft sheen that follows
+   the pointer (--glass-x / --glass-y, set by GlassPointer). Variants only swap the variables, so
+   they never fight `glass` over utility order. */
+@utility glass {
+  position: relative;
+  isolation: isolate;
+  background: var(
+    --glass-fill,
+    linear-gradient(
+        160deg,
+        color-mix(in oklab, var(--color-ivory) 11%, transparent),
+        color-mix(in oklab, var(--color-ivory) 3%, transparent) 42%,
+        color-mix(in oklab, var(--color-night-950) 30%, transparent)
+      ),
+      color-mix(in oklab, var(--color-night-900) 52%, transparent)
+  );
+  backdrop-filter: blur(var(--glass-blur, 18px)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 18px)) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--color-ivory) 22%, transparent),
+    inset 0 -1px 0 color-mix(in oklab, var(--color-night-950) 45%, transparent),
+    0 24px 60px -28px rgb(0 0 0 / 0.75);
+  transition:
+    transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 300ms ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      140deg,
+      color-mix(in oklab, var(--color-ivory) 42%, transparent),
+      color-mix(in oklab, var(--color-ivory) 6%, transparent) 38%,
+      transparent 60%,
+      color-mix(in oklab, var(--glass-rim, var(--color-coral)) 40%, transparent)
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      420px circle at var(--glass-x, 18%) var(--glass-y, -10%),
+      color-mix(in oklab, var(--glass-sheen, var(--color-ivory)) 14%, transparent),
+      transparent 55%
+    );
+    opacity: 0.7;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        inset 0 1px 0 color-mix(in oklab, var(--color-ivory) 30%, transparent),
+        inset 0 -1px 0 color-mix(in oklab, var(--color-night-950) 45%, transparent),
+        0 30px 70px -28px rgb(0 0 0 / 0.85);
+    }
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+
+  /* No backdrop blur: a solid panel. Less transparency asked for (Windows "Transparency effects"
+     off): keep the glass rim and sheen but fill it nearly opaque, so text never fights the scene. */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: var(--glass-solid, color-mix(in oklab, var(--color-night-900) 94%, transparent));
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    background:
+      var(--glass-fill-reduced, linear-gradient(160deg, color-mix(in oklab, var(--color-ivory) 9%, transparent), transparent 45%)),
+      var(--glass-solid, color-mix(in oklab, var(--color-night-900) 86%, transparent));
+  }
+}
+
+/* Warm-tinted glass for the highlighted cards (core products, the quote, the AI step). */
+@utility glass-accent {
+  --glass-rim: var(--color-gold);
+  --glass-solid: color-mix(in oklab, color-mix(in oklab, var(--color-coral) 24%, var(--color-night-900)) 88%, transparent);
+  --glass-sheen: var(--color-gold);
+  --glass-fill:
+    linear-gradient(
+      150deg,
+      color-mix(in oklab, var(--color-coral) 34%, transparent),
+      color-mix(in oklab, var(--color-coral) 10%, transparent) 50%,
+      color-mix(in oklab, var(--color-night-950) 35%, transparent)
+    ),
+    color-mix(in oklab, var(--color-night-900) 45%, transparent);
 }
