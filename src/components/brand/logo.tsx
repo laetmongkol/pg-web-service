@@ -1,5 +1,7 @@
 import Image from "next/image"
 
+import { assetPath } from "@/lib/asset-path"
+
 interface LogoProps {
   tone?: "ink" | "ivory"
   width?: number
@@ -11,7 +13,7 @@ interface LogoProps {
 export default function Logo({ tone = "ink", width = 132, className, priority }: LogoProps) {
   return (
     <Image
-      src={`/brand/pg-solution-logo-${tone}.png`}
+      src={assetPath(`/brand/pg-solution-logo-${tone}.png`)}
       alt="PG Solution"
       width={width}
       height={Math.round((width * 152) / 1031)}

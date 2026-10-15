@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next"
 
+// Generated once at build time for the static export.
+export const dynamic = "force-static"
+
 import { routing } from "@/i18n/routing"
 import { SITE } from "@/shared/constants/site.constants"
 

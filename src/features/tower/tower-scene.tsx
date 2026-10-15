@@ -5,10 +5,12 @@ import { useFrame, useThree } from "@react-three/fiber"
 import { Sparkles, useGLTF } from "@react-three/drei"
 import * as THREE from "three"
 
+import { assetPath } from "@/lib/asset-path"
+
 import { CHAPTER_COUNT, type PoseKey, towerState } from "./tower-state"
 
-export const TOWER_MODEL = "/models/pg-tower.glb"
-const DRACO_PATH = "/draco/"
+export const TOWER_MODEL = assetPath("/models/pg-tower.glb")
+const DRACO_PATH = assetPath("/draco/")
 
 const INK = new THREE.Color("#1f1d1b")
 /** Ground level of the model (Blender z = -44): below it the camera sits inside the shaft. */

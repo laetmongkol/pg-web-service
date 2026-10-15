@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next"
 
+// Generated once at build time for the static export.
+export const dynamic = "force-static"
+
 import { SITE } from "@/shared/constants/site.constants"
 
 export default function robots(): MetadataRoute.Robots {

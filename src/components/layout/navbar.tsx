@@ -1,5 +1,6 @@
-import Link from "next/link"
 import { getLocale, getTranslations } from "next-intl/server"
+
+import { assetPath } from "@/lib/asset-path"
 
 import Logo from "@/components/brand/logo"
 import ButtonLink from "@/components/ui/button-link"
@@ -39,14 +40,15 @@ export default async function Navbar() {
             </li>
           ))}
         </ul>
-        <Link
-          href={`/${other}`}
+        {/* Full page load: the locale owns <html lang>, and static hosting has no RSC payload to swap. */}
+        <a
+          href={assetPath(`/${other}/`)}
           hrefLang={other}
           aria-label={t("language")}
           className="font-mono text-[12px] text-ink underline-offset-4 hover:underline"
         >
           {t("languageShort")}
-        </Link>
+        </a>
         <ButtonLink href="#contact" size="sm" className="hidden sm:inline-flex">
           {t("cta")}
         </ButtonLink>

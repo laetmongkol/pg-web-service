@@ -4,6 +4,7 @@ import { useCallback, useState } from "react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 
+import { assetPath } from "@/lib/asset-path"
 import cn from "@/lib/tw-merge"
 
 import DepthGauge from "./depth-gauge"
@@ -30,7 +31,7 @@ export default function TowerStage({ depthLabel }: { depthLabel: string }) {
     <>
       <div aria-hidden className="fixed inset-0 -z-10 bg-ink">
         <Image
-          src="/images/tower-fallback.webp"
+          src={assetPath("/images/tower-fallback.webp")}
           alt=""
           fill
           priority
