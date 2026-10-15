@@ -1,58 +1,27 @@
-import LinkCustom from "@/components/link-custom.component";
+import Link from "next/link"
 
-import { isSupportedLanguage } from "@/proxies/language.proxy";
-import { LANGUAGE } from "@/shared/constants/common.constants";
+import { anuphan, jetbrains } from "@/app/fonts"
+import { routing } from "@/i18n/routing"
 
-interface NotFoundPageProps {
-  params?: Promise<{ locale?: string }> | { locale?: string };
-}
-
-export default async function NotFoundPage({ params }: NotFoundPageProps) {
-  const resolvedParams = await params;
-  const routeLocale = resolvedParams?.locale;
-  const language = await isSupportedLanguage(routeLocale) ? routeLocale : LANGUAGE.TH;
-
+export default function NotFound() {
+  // Root layout renders no <html>; URLs outside a locale land here and need their own document.
   return (
-    <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden text-center">
-
-      {/* Ambient blobs */}
-      <span aria-hidden="true" className="pointer-events-none absolute -left-28 -top-20 z-5 h-96 w-96 rounded-full bg-(--color-primary) blur-3xl animate-[blob-pulse-soft_5s_ease-in-out_infinite]" />
-      <span aria-hidden="true" className="pointer-events-none absolute top-35 right-100 z-5 h-67 w-67 rounded-full bg-(--color-primary) blur-3xl animate-[blob-pulse-soft_5.6s_ease-in-out_infinite] [animation-delay:-0.2s]" />
-      <span aria-hidden="true" className="pointer-events-none absolute -bottom-16 -right-20 z-5 h-72 w-72 rounded-full bg-(--color-primary) blur-3xl animate-[blob-pulse-soft_6.2s_ease-in-out_infinite] [animation-delay:-0.4s]" />
-      <span aria-hidden="true" className="pointer-events-none absolute -bottom-24 left-80 z-5 h-40 w-40 rounded-full bg-(--color-primary) blur-3xl animate-[blob-pulse-soft_5.2s_ease-in-out_infinite] [animation-delay:-0.6s]" />
-
-      {/* Background digits */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-9 flex select-none items-center justify-center gap-1">
-        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--color-primary) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.8s]">4</span>
-        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--color-primary) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.6s]">0</span>
-        <span className="text-[clamp(9rem,20vw,16rem)] font-black leading-none text-(--color-primary) opacity-10 animate-bounce [animation-duration:3s] [animation-delay:-0.4s]">4</span>
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center">
-        <p className="text-xs font-semibold uppercase tracking-widest text-(--color-primary)">404</p>
-        <h1 className="mt-2 text-[clamp(1.75rem,5vw,2.75rem)] font-bold leading-tight text-(--text-primary)">
-          Page not found
-        </h1>
-        <p className="mt-3 max-w-120 text-sm leading-relaxed text-(--text-secondary)">
-          The page you are looking for does not exist or may have been moved.
-        </p>
-
-        {/* Rotating border button */}
-        <div className="relative mt-8 rounded-lg p-0.5 overflow-hidden">
-          {/* Spinning conic light */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-[-200%] animate-spin [animation-duration:3s] bg-[conic-gradient(from_0deg,transparent_35%,var(--color-primary)_47%,white_50%,var(--color-primary)_53%,transparent_65%)]"
-          />
-          <LinkCustom
-            href={`/${language}`}
-            className="relative z-10 flex items-center justify-center rounded-md bg-(--surface-default) px-8 py-2.5 text-sm font-medium text-(--text-primary) transition-colors duration-200 hover:bg-(--surface-default)"
-          >
-            Back to home
-          </LinkCustom>
-        </div>
-      </div>
-    </main>
-  );
+    <html lang={routing.defaultLocale} className={`${anuphan.variable} ${jetbrains.variable}`}>
+      <body>
+        <main className="flex min-h-screen items-center bg-ink px-6 text-ivory">
+          <div className="mx-auto w-full max-w-2xl">
+            <p className="font-mono text-label text-coral">404</p>
+            <h1 className="mt-4 text-h1 font-semibold">ไม่พบหน้านี้</h1>
+            <p className="mt-4 text-body text-stone">หน้าที่คุณเปิดอาจถูกย้ายหรือไม่มีอยู่แล้ว</p>
+            <Link
+              href={`/${routing.defaultLocale}`}
+              className="mt-10 inline-flex h-12 items-center rounded-control bg-coral px-6 font-medium text-ink"
+            >
+              กลับหน้าแรก
+            </Link>
+          </div>
+        </main>
+      </body>
+    </html>
+  )
 }

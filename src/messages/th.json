@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "title": "PG Solution — ซอฟต์แวร์สำหรับเทรด การตลาดด้วย AI และระบบธุรกิจ",
+    "description": "PG Solution พัฒนาซอฟต์แวร์สำหรับเทคโนโลยีเทรด การตลาดด้วย AI และระบบการทำงานของธุรกิจ"
+  },
+  "nav": {
+    "services": "บริการ",
+    "capability": "ความสามารถ",
+    "process": "แนวทางการทำงาน",
+    "cta": "คุยโจทย์กับทีม",
+    "language": "English",
+    "languageShort": "EN",
+    "skip": "ข้ามไปยังเนื้อหา",
+    "depth": "ชั้น"
+  },
+  "hero": {
+    "eyebrow": "TRADING TECH / AI MARKETING",
+    "title": "พัฒนาเทคโนโลยี\nให้ธุรกิจเดินต่อ.",
+    "lead": "เชื่อมข้อมูล ระบบ และ AI ให้ตอบโจทย์การทำงาน ตั้งแต่งานเทรดและการตลาด ไปจนถึงระบบธุรกิจ",
+    "cta": "เริ่มจากโจทย์ของคุณ",
+    "note": "Software for trading,\nAI marketing and business.",
+    "flow": "DATA → LOGIC → ACTION",
+    "flowCaption": "ระบบเดียวกัน แต่ต่อยอดได้หลายทิศทาง",
+    "scroll": "เลื่อนลงเพื่อเข้าไปในหอ",
+    "pillars": [
+      { "title": "Trading technology", "body": "ข้อมูลตลาด คำสั่งซื้อขาย และระบบเทรด" },
+      { "title": "AI marketing", "body": "งบโฆษณา ครีเอทีฟ และการตัดสินใจ" },
+      { "title": "Business systems", "body": "งานขาย บุคคล สต็อก และการชำระเงิน" },
+      { "title": "Digital experience", "body": "เว็บไซต์และหน้าที่พร้อมใช้งานจริง" }
+    ]
+  },
+  "services": {
+    "label": "02 / SERVICES",
+    "title": "ระบบที่สร้างแยกส่วนได้\nและเชื่อมกันเป็นภาพเดียว",
+    "lead": "เราอธิบายสิ่งที่จะสร้าง ขอบเขต และการเชื่อมต่อก่อนเริ่มงาน เพื่อให้แต่ละระบบตอบโจทย์วันนี้และมีพื้นที่พัฒนาต่อ",
+    "note": "เริ่มจากระบบเดียว หรือวางเป็น ecosystem ที่ข้อมูลไหลต่อกัน — ขอบเขตจะถูกกำหนดจากวิธีทำงานจริงของธุรกิจ",
+    "noteTag": "MODULAR / CONNECTED",
+    "items": [
+      { "name": "PG Broker API", "tag": "TRADING", "body": "เชื่อมข้อมูลตลาดและคำสั่งซื้อขาย" },
+      { "name": "PG Ads AI", "tag": "MARKETING", "body": "จัดการงบและครีเอทีฟโฆษณาด้วย AI" },
+      { "name": "PG AI", "tag": "AI SYSTEM", "body": "โมเดลและเวิร์กโฟลว์ AI สำหรับองค์กร" },
+      { "name": "PG CRM", "tag": "OPERATIONS", "body": "ลูกค้า กระบวนการขาย และการติดตาม" },
+      { "name": "PG HR", "tag": "OPERATIONS", "body": "พนักงาน เงินเดือน และเวลาทำงาน" },
+      { "name": "PG Commerce", "tag": "COMMERCE", "body": "ร้านออนไลน์ สต็อก และการชำระเงิน" },
+      { "name": "PG Pages", "tag": "EXPERIENCE", "body": "แลนดิ้งเพจจากเทมเพลตพร้อมใช้" },
+      { "name": "PG Web", "tag": "EXPERIENCE", "body": "เว็บไซต์องค์กรและการดูแลระบบ" }
+    ]
+  },
+  "capability": {
+    "label": "03 / FEATURED CAPABILITY",
+    "title": "เริ่มจาก capability หลัก\nแล้วเชื่อมงานรอบข้างให้ครบ",
+    "lead": "PG Broker API และ PG Ads AI แสดงวิธีที่เราเปลี่ยนข้อมูลให้เป็นการทำงาน ส่วน PG AI และระบบธุรกิจช่วยต่อ workflow ให้จบในที่ที่ทีมใช้งานจริง",
+    "broker": {
+      "name": "PG Broker API",
+      "tag": "CORE / TRADING",
+      "body": "เชื่อมข้อมูลตลาดและคำสั่งซื้อขาย",
+      "stream": "MARKET DATA STREAM",
+      "status": "CONNECTED",
+      "steps": ["SOURCE", "NORMALIZE", "ORDER", "STATUS"],
+      "detail": "กำหนด source, โครงสร้างข้อมูล, logic ของคำสั่ง และสถานะที่ต้องติดตามอย่างชัดเจน เพื่อให้ทีมเห็นว่าแต่ละจุดเชื่อมทำหน้าที่อะไร"
+    },
+    "ads": {
+      "name": "PG Ads AI",
+      "tag": "CORE / MARKETING",
+      "body": "จัดการงบและครีเอทีฟโฆษณาด้วย AI",
+      "creativeTag": "CREATIVE 03",
+      "creative": "ข้อความที่เหมาะกับกลุ่มเป้าหมาย",
+      "rows": [
+        { "key": "BUDGET", "value": "จัดสรรตามเงื่อนไข" },
+        { "key": "AUDIENCE", "value": "แยกกลุ่มเพื่อทดลอง" },
+        { "key": "CREATIVE", "value": "จัดการเวอร์ชัน" },
+        { "key": "REVIEW", "value": "ส่งกลับเพื่อปรับ" }
+      ],
+      "detail": "ออกแบบกติกาสำหรับงบ กลุ่มเป้าหมาย ครีเอทีฟ และขั้นตอน review ให้ AI ช่วยในจุดที่เหมาะสม โดยทีมยังเห็นเหตุผลและควบคุมได้"
+    },
+    "extensions": "CONNECTED EXTENSIONS",
+    "extensionItems": ["PG AI", "CRM / HR / Commerce", "Pages / Web"]
+  },
+  "principles": {
+    "label": "04 / PRINCIPLES",
+    "title": "คิดเป็นระบบ\nสื่อสารอย่างมนุษย์",
+    "items": [
+      { "name": "Clarity", "sub": "ชัดเจนตั้งแต่โจทย์ถึงการใช้งาน", "body": "ขอบเขต logic และขั้นตอนถัดไป ทุกทีมมองเห็นตรงกัน" },
+      { "name": "Craft", "sub": "ใส่ใจทั้งระบบและประสบการณ์", "body": "รายละเอียดทางเทคนิคและวิธีใช้งานเดินไปด้วยกัน" },
+      { "name": "Momentum", "sub": "พัฒนาต่อได้ตามธุรกิจ", "body": "ระบบไม่ปิดทางเลือก และพร้อมรับความเปลี่ยนแปลง" }
+    ]
+  },
+  "process": {
+    "label": "05 / WORKING PROCESS",
+    "title": "เริ่มจาก requirements ที่ชัด\nแล้วสร้างให้ทีมเห็นความคืบหน้า",
+    "lead": "วิธีทำงานของเราแบ่งการตัดสินใจออกเป็นขั้น เพื่อคุยขอบเขตได้ตรงกัน ทดสอบจุดเชื่อมได้เร็ว และปรับจากการใช้งานจริง",
+    "steps": [
+      { "name": "รับโจทย์", "body": "ทำความเข้าใจเป้าหมาย ผู้ใช้ ข้อมูล และข้อจำกัดที่มีอยู่" },
+      { "name": "กำหนดขอบเขต", "body": "แยกสิ่งที่ต้องสร้าง จุดเชื่อม และนิยามการทำงานร่วมกัน" },
+      { "name": "พัฒนาเป็นระยะ", "body": "จัดลำดับแกนหลักก่อน เติมรายละเอียด และ review ร่วมกัน" },
+      { "name": "เชื่อมระบบ", "body": "ทดสอบข้อมูล สถานะ และ workflow ระหว่างระบบที่เกี่ยวข้อง" },
+      { "name": "ปรับจากการใช้จริง", "body": "เรียนรู้จากการทำงานจริง แล้ววางรอบพัฒนาถัดไป" }
+    ],
+    "summary": "อธิบายสิ่งที่จะสร้าง ก่อนอธิบายว่าสิ่งนั้นจะเปลี่ยนธุรกิจอย่างไร",
+    "summaryTag": "REQUIREMENTS → SCOPE → BUILD → LEARN"
+  },
+  "ecosystem": {
+    "label": "06 / CONNECTED ECOSYSTEM",
+    "title": "ข้อมูลหนึ่งชุด เดินผ่าน workflow\nและกลับมาเป็นการตัดสินใจ",
+    "lead": "Architecture ที่ดีไม่ใช่การรวมทุกอย่างไว้ในระบบเดียว แต่คือการกำหนดว่าอะไรเป็น source, logic อยู่ที่ไหน และใครต้องเห็นผลลัพธ์",
+    "map": "SYSTEM MAP / PRACTICAL FLOW",
+    "mapNote": "จุดที่ระบบตัดสินใจหรือส่งงานต่อ",
+    "columns": [
+      { "step": "01 / INPUT", "name": "Data", "items": ["Market & orders", "Customer activity", "Commerce events"] },
+      { "step": "02 / ORCHESTRATE", "name": "Workflows", "items": ["Rules & status", "Team handoff", "Review & approval"] },
+      { "step": "03 / ASSIST", "name": "AI", "items": ["Model & prompt", "Decision support", "Human control"] },
+      { "step": "04 / OPERATE", "name": "Business systems", "items": ["CRM & HR", "Commerce", "Pages & Web"] }
+    ],
+    "loop": "REAL USE / FEEDBACK / NEXT ITERATION"
+  },
+  "useCases": {
+    "label": "07 / USE CASES",
+    "title": "ผลลัพธ์ที่อธิบายได้จากวิธีทำงาน\nไม่ใช่คำสัญญาลอย ๆ",
+    "lead": "แต่ละ use case เริ่มจากการมองงานจริงว่าใครใช้ข้อมูลอะไร ต้องตัดสินใจเมื่อไร และระบบควรช่วยลดจุดสะดุดตรงไหน",
+    "items": [
+      { "tag": "TRADING OPERATIONS", "name": "งานเทรดที่เห็นสถานะชัด", "body": "เชื่อมข้อมูลตลาด คำสั่ง และสถานะที่ต้องติดตามให้อยู่ใน flow เดียวกัน" },
+      { "tag": "AI MARKETING", "name": "การตลาดที่ AI ช่วยอย่างมีกรอบ", "body": "จัดการงบ ครีเอทีฟ กลุ่มเป้าหมาย และการ review โดยทีมยังควบคุมเหตุผลได้" },
+      { "tag": "SALES WORKFLOW", "name": "ทีมขายทำงานต่อจากข้อมูลเดียวกัน", "body": "พาลูกค้าและกิจกรรมจากช่องทางต่าง ๆ เข้าสู่กระบวนการติดตามที่ชัดเจน" },
+      { "tag": "CONNECTED BUSINESS", "name": "หน้าบ้านและหลังบ้านไม่แยกขาด", "body": "เชื่อมเว็บไซต์ ร้านค้า สต็อก การชำระเงิน และงานดูแลให้ข้อมูลเดินต่อ" }
+    ]
+  },
+  "contact": {
+    "label": "08 / START A CONVERSATION",
+    "title": "เริ่มจากโจทย์ของคุณ\nแล้วค่อยวางระบบที่ใช่.",
+    "lead": "เล่าให้เราฟังว่าทีมกำลังทำงานอย่างไร ข้อมูลอยู่ที่ไหน และอยากให้ระบบช่วยตรงจุดใด เราจะเริ่มจากการทำความเข้าใจ requirements และขอบเขตที่เป็นไปได้",
+    "checklist": ["สิ่งที่ต้องการสร้างหรือเชื่อม", "ผู้ใช้และ workflow ที่เกี่ยวข้อง", "ระบบหรือข้อมูลที่มีอยู่แล้ว"],
+    "form": {
+      "title": "คุยโจทย์กับทีม",
+      "tag": "PROJECT INQUIRY",
+      "name": "ชื่อ / องค์กร",
+      "namePlaceholder": "ระบุชื่อที่ใช้ติดต่อ",
+      "channel": "ช่องทางติดต่อ",
+      "channelPlaceholder": "ระบุช่องทางที่สะดวก",
+      "type": "ประเภทโครงการ",
+      "typePlaceholder": "เช่น Trading, AI, Business system หรือ Website",
+      "detail": "รายละเอียดโจทย์",
+      "detailPlaceholder": "เล่าบริบท ระบบที่มีอยู่ และสิ่งที่อยากให้ดีขึ้น",
+      "privacy": "ข้อมูลนี้ใช้เพื่อทำความเข้าใจโครงการและติดต่อกลับตามช่องทางที่คุณระบุ",
+      "submit": "ส่งรายละเอียดโครงการ",
+      "errors": {
+        "name": "ระบุชื่อหรือองค์กรเพื่อให้ทีมรู้ว่าจะติดต่อใคร",
+        "channel": "ระบุอีเมล เบอร์โทร หรือ LINE ที่ติดต่อกลับได้",
+        "detail": "เล่าโจทย์อย่างน้อย 20 ตัวอักษร เพื่อให้ทีมเตรียมคำถามได้ตรง"
+      },
+      "notConnected": "ฟอร์มนี้ยังไม่ได้เชื่อมกับระบบรับโจทย์ ข้อมูลจึงยังไม่ถูกส่ง"
+    }
+  },
+  "footer": {
+    "about": "PG Solution พัฒนาซอฟต์แวร์สำหรับเทคโนโลยีเทรด การตลาดด้วย AI และระบบการทำงานของธุรกิจ",
+    "tagline": "TRADING TECH / AI MARKETING",
+    "services": "SERVICES",
+    "navigation": "NAVIGATION",
+    "rights": "PG SOLUTION / ALL RIGHTS RESERVED"
+  }
+}
