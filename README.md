@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PG Solution — corporate website
 
-## Getting Started
-
-First, run the development server:
+A single-page site (TH/EN) that scrolls down a 3D tower: 8 chambers, from the spire to the forge, one chapter per chamber.
+It's a static page only — no backend, CMS or API.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev        # http://localhost:3008
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Path | Contents |
+|---|---|
+| `src/messages/{th,en}.json` | All copy on the page (from the PG Solution corporate website PDF) |
+| `src/app/[locale]/page.tsx` | The one page: Navbar → TowerStage → 8 chapters → Footer |
+| `src/features/story/` | Each chapter's content (HTML over the 3D) |
+| `src/features/tower/` | The 3D scene (R3F), the scroll → camera path, the depth gauge, the fallback image |
+| `src/app/globals.css` | Tokens from the design system v1.1 (Ink / Ivory / Coral / Stone / Muted / Rust) |
+| `public/models/pg-tower.glb` | The 3D model (Draco) exported from `design/3d/pg-tower.blend` |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Editing the 3D
 
-## Learn More
+1. Open `design/3d/pg-tower.blend` (scene `PGTower`).
+2. Keep the names of the empties `cam_0…cam_7` and `tgt_0…tgt_7`; the web reads them as camera positions.
+3. Export glTF Binary with Draco to `public/models/pg-tower.glb`.
 
-To learn more about Next.js, take a look at the following resources:
+## Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The contact form is UI only; it isn't connected to any system yet (see `src/features/story/contact-form.tsx`).
+- With reduced motion or no WebGL, the page shows `public/images/tower-fallback.webp` instead of the 3D.

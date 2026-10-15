@@ -1,64 +1,56 @@
-import { getTranslations } from "next-intl/server"
+import Link from "next/link"
+import { getLocale, getTranslations } from "next-intl/server"
 
-import { LanguageResponseDto } from "@/services/generated-cli/api-app-service"
+import Logo from "@/components/brand/logo"
+import ButtonLink from "@/components/ui/button-link"
 
 import { LANGUAGE } from "@/shared/constants/common.constants"
 
-import DesktopNavbar from "./navbar-component/desktop-navbar"
-import MobileNavbar from "./navbar-component/mobile-navbar"
-import NavbarShell from "./navbar-component/navbar-shell"
+/** Product identity left, sections centre-right, one coral action (design system: navigation.*). */
+export default async function Navbar() {
+  const t = await getTranslations("nav")
+  const locale = await getLocale()
+  const other = locale === LANGUAGE.TH ? LANGUAGE.EN : LANGUAGE.TH
 
-export interface NavLinkItem {
-  key: string
-  href: string
-  label: string
-  children?: NavLinkItem[]
-}
-
-export interface NavbarLabels {
-  signIn: string
-  startTrading: string
-  language: string
-}
-
-interface NavbarProps {
-  language: LANGUAGE
-  languages: LanguageResponseDto[]
-  menuItems?: NavLinkItem[]
-  showLogo?: boolean
-}
-
-/** Swaps every link label for its CMS translation, children included. */
-function withTranslatedLabels(
-  items: NavLinkItem[],
-  t: Awaited<ReturnType<typeof getTranslations>>,
-): NavLinkItem[] {
-  return items.map((item) => ({
-    ...item,
-    label: t(item.key),
-    ...(item.children ? { children: withTranslatedLabels(item.children, t) } : {}),
-  }))
-}
-
-const Navbar = async ({ language, languages, menuItems = [], showLogo = false }: NavbarProps) => {
-  const t = await getTranslations()
-  const labels: NavbarLabels = {
-    signIn: t("navbar.signIn"),
-    startTrading: t("navbar.startTrading"),
-    language: t("navbar.language"),
-  }
-  // link labels come from translate_values (CMS), the same catalog next-intl reads
-  const links = withTranslatedLabels(menuItems, t)
+  const links = [
+    { href: "#services", label: t("services") },
+    { href: "#capability", label: t("capability") },
+    { href: "#process", label: t("process") },
+  ]
 
   return (
-    <>
-      <NavbarShell>
-        <DesktopNavbar language={language} languages={languages} navLinks={links} showLogo={showLogo} labels={labels}/>
-        <MobileNavbar language={language} languages={languages} navLinks={links} showLogo={showLogo} labels={labels} />
-      </NavbarShell>
-      <div aria-hidden className="h-(--navbar-height) shrink-0" />
-    </>
+    <header className="fixed inset-x-0 top-0 z-30 border-b border-stone bg-ivory">
+      <a
+        href="#top"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:rounded-control focus:bg-ink focus:px-4 focus:py-2 focus:text-ivory"
+      >
+        {t("skip")}
+      </a>
+      <nav className="mx-auto flex h-16 max-w-[1440px] items-center gap-6 px-4 md:h-20 md:px-[72px]">
+        <a href="#top" className="mr-auto shrink-0">
+          <Logo width={120} priority />
+        </a>
+        <ul className="hidden items-center gap-8 lg:flex">
+          {links.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} className="text-[15px] text-ink hover:text-rust">
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <Link
+          href={`/${other}`}
+          hrefLang={other}
+          aria-label={t("language")}
+          className="font-mono text-[12px] text-ink underline-offset-4 hover:underline"
+        >
+          {t("languageShort")}
+        </Link>
+        <ButtonLink href="#contact" size="sm" className="hidden sm:inline-flex">
+          {t("cta")}
+        </ButtonLink>
+      </nav>
+    </header>
   )
 }
-
-export default Navbar
