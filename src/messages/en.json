@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "title": "PG Solution — Software for trading, AI marketing and business",
+    "description": "PG Solution develops software for trading technology, AI marketing and business operations."
+  },
+  "nav": {
+    "services": "Services",
+    "capability": "Capability",
+    "process": "How we work",
+    "cta": "Talk to the team",
+    "language": "ภาษาไทย",
+    "languageShort": "TH",
+    "skip": "Skip to content",
+    "depth": "Level"
+  },
+  "hero": {
+    "eyebrow": "TRADING TECH / AI MARKETING",
+    "title": "Technology that\nkeeps business moving.",
+    "lead": "We connect data, systems and AI to the way your team works — from trading and marketing to the systems that run the business.",
+    "cta": "Start with your problem",
+    "note": "Software for trading,\nAI marketing and business.",
+    "flow": "DATA → LOGIC → ACTION",
+    "flowCaption": "One system, extended in many directions",
+    "scroll": "Scroll to enter the tower",
+    "pillars": [
+      { "title": "Trading technology", "body": "Market data, orders and trading systems" },
+      { "title": "AI marketing", "body": "Ad budgets, creative and decisions" },
+      { "title": "Business systems", "body": "Sales, people, stock and payments" },
+      { "title": "Digital experience", "body": "Websites and pages ready for real use" }
+    ]
+  },
+  "services": {
+    "label": "02 / SERVICES",
+    "title": "Systems built as parts\nthat connect into one picture",
+    "lead": "Before work starts we describe what we will build, its scope and its connections, so each system fits today and leaves room to grow.",
+    "note": "Start with one system or plan an ecosystem where data flows on — scope is set by how the business actually works.",
+    "noteTag": "MODULAR / CONNECTED",
+    "items": [
+      { "name": "PG Broker API", "tag": "TRADING", "body": "Connects market data and order flow" },
+      { "name": "PG Ads AI", "tag": "MARKETING", "body": "Manages ad budgets and creative with AI" },
+      { "name": "PG AI", "tag": "AI SYSTEM", "body": "AI models and workflows for organisations" },
+      { "name": "PG CRM", "tag": "OPERATIONS", "body": "Customers, sales process and follow-up" },
+      { "name": "PG HR", "tag": "OPERATIONS", "body": "Staff, payroll and working hours" },
+      { "name": "PG Commerce", "tag": "COMMERCE", "body": "Online store, stock and payments" },
+      { "name": "PG Pages", "tag": "EXPERIENCE", "body": "Landing pages from ready templates" },
+      { "name": "PG Web", "tag": "EXPERIENCE", "body": "Corporate websites and their upkeep" }
+    ]
+  },
+  "capability": {
+    "label": "03 / FEATURED CAPABILITY",
+    "title": "Start from a core capability,\nthen connect the work around it",
+    "lead": "PG Broker API and PG Ads AI show how we turn data into work. PG AI and the business systems carry the workflow through to where the team actually uses it.",
+    "broker": {
+      "name": "PG Broker API",
+      "tag": "CORE / TRADING",
+      "body": "Connects market data and order flow",
+      "stream": "MARKET DATA STREAM",
+      "status": "CONNECTED",
+      "steps": ["SOURCE", "NORMALIZE", "ORDER", "STATUS"],
+      "detail": "We define sources, data structure, order logic and the states to track, so the team can see what each connection point does."
+    },
+    "ads": {
+      "name": "PG Ads AI",
+      "tag": "CORE / MARKETING",
+      "body": "Manages ad budgets and creative with AI",
+      "creativeTag": "CREATIVE 03",
+      "creative": "Copy matched to the audience",
+      "rows": [
+        { "key": "BUDGET", "value": "Allocated by rules" },
+        { "key": "AUDIENCE", "value": "Split for testing" },
+        { "key": "CREATIVE", "value": "Versions managed" },
+        { "key": "REVIEW", "value": "Sent back to adjust" }
+      ],
+      "detail": "We set rules for budget, audience, creative and review so AI helps where it fits — and the team still sees the reasoning and stays in control."
+    },
+    "extensions": "CONNECTED EXTENSIONS",
+    "extensionItems": ["PG AI", "CRM / HR / Commerce", "Pages / Web"]
+  },
+  "principles": {
+    "label": "04 / PRINCIPLES",
+    "title": "Think in systems,\ntalk like people",
+    "items": [
+      { "name": "Clarity", "sub": "Clear from brief to daily use", "body": "Scope, logic and next action are visible to every team." },
+      { "name": "Craft", "sub": "Care for the system and the experience", "body": "Technical detail and the way people use it move together." },
+      { "name": "Momentum", "sub": "Grows with the business", "body": "No dead ends — the system is ready for change." }
+    ]
+  },
+  "process": {
+    "label": "05 / WORKING PROCESS",
+    "title": "Start from clear requirements,\nbuild so the team sees progress",
+    "lead": "We split decisions into steps, so scope is agreed early, connections are tested quickly and the system improves from real use.",
+    "steps": [
+      { "name": "Brief", "body": "Understand goals, users, data and existing constraints" },
+      { "name": "Scope", "body": "Separate what to build, the connection points and how teams work together" },
+      { "name": "Build in stages", "body": "Core first, then detail, reviewed together" },
+      { "name": "Connect", "body": "Test data, states and workflow across related systems" },
+      { "name": "Improve from use", "body": "Learn from real work, then plan the next round" }
+    ],
+    "summary": "Explain what we will build before explaining how it changes the business",
+    "summaryTag": "REQUIREMENTS → SCOPE → BUILD → LEARN"
+  },
+  "ecosystem": {
+    "label": "06 / CONNECTED ECOSYSTEM",
+    "title": "One set of data runs through the workflow\nand returns as a decision",
+    "lead": "Good architecture doesn't put everything in one system. It decides what is the source, where the logic lives and who needs to see the result.",
+    "map": "SYSTEM MAP / PRACTICAL FLOW",
+    "mapNote": "Where the system decides or hands work on",
+    "columns": [
+      { "step": "01 / INPUT", "name": "Data", "items": ["Market & orders", "Customer activity", "Commerce events"] },
+      { "step": "02 / ORCHESTRATE", "name": "Workflows", "items": ["Rules & status", "Team handoff", "Review & approval"] },
+      { "step": "03 / ASSIST", "name": "AI", "items": ["Model & prompt", "Decision support", "Human control"] },
+      { "step": "04 / OPERATE", "name": "Business systems", "items": ["CRM & HR", "Commerce", "Pages & Web"] }
+    ],
+    "loop": "REAL USE / FEEDBACK / NEXT ITERATION"
+  },
+  "useCases": {
+    "label": "07 / USE CASES",
+    "title": "Results explained by how the work is done,\nnot vague promises",
+    "lead": "Each use case starts from the real work: who uses which data, when they decide, and where the system should remove friction.",
+    "items": [
+      { "tag": "TRADING OPERATIONS", "name": "Trading with clear status", "body": "Market data, orders and the states to track live in one flow." },
+      { "tag": "AI MARKETING", "name": "Marketing where AI works within limits", "body": "Budget, creative, audience and review — the team still controls the reasoning." },
+      { "tag": "SALES WORKFLOW", "name": "Sales works from the same data", "body": "Customers and activity from every channel enter one clear follow-up process." },
+      { "tag": "CONNECTED BUSINESS", "name": "Front office and back office, joined", "body": "Website, store, stock, payments and support keep the data moving." }
+    ]
+  },
+  "contact": {
+    "label": "08 / START A CONVERSATION",
+    "title": "Start with your problem,\nthen shape the right system.",
+    "lead": "Tell us how your team works today, where the data lives and where a system should help. We start by understanding the requirements and what scope is realistic.",
+    "checklist": ["What you want to build or connect", "The users and workflows involved", "Systems or data you already have"],
+    "form": {
+      "title": "Talk to the team",
+      "tag": "PROJECT INQUIRY",
+      "name": "Name / company",
+      "namePlaceholder": "Who should we contact",
+      "channel": "Contact channel",
+      "channelPlaceholder": "Email, phone or LINE",
+      "type": "Project type",
+      "typePlaceholder": "e.g. Trading, AI, Business system or Website",
+      "detail": "Your brief",
+      "detailPlaceholder": "Context, current systems and what should get better",
+      "privacy": "We use this only to understand the project and reply through the channel you give.",
+      "submit": "Send project details",
+      "errors": {
+        "name": "Add a name or company so the team knows who to contact",
+        "channel": "Add an email, phone number or LINE ID we can reply to",
+        "detail": "Describe the brief in at least 20 characters so the team can prepare"
+      },
+      "notConnected": "This form isn't connected to the inquiry system yet, so nothing was sent"
+    }
+  },
+  "footer": {
+    "about": "PG Solution develops software for trading technology, AI marketing and business operations.",
+    "tagline": "TRADING TECH / AI MARKETING",
+    "services": "SERVICES",
+    "navigation": "NAVIGATION",
+    "rights": "PG SOLUTION / ALL RIGHTS RESERVED"
+  }
+}

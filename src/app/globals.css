@@ -1,14 +1,79 @@
 @import "tailwindcss";
-@import "@radix-ui/themes/styles.css";
 
-/* Tailwind v4: enable class-based dark mode */
-@variant dark (&:is(.dark *));
+/* PG Solution design system v1.1 — color.* / type.* / space / radius tokens.
+   Ratio on any surface: Ivory 70 / Ink 20 / Coral 10. Coral is an action cue, never text
+   on Ivory — use Rust for essential text accents. */
+@theme {
+  --color-ink: #242220;
+  --color-ink-raised: #34312d;
+  --color-ivory: #f5f1e8;
+  --color-coral: #ff6946;
+  --color-stone: #e5ddd1;
+  --color-muted: #6b645b;
+  --color-rust: #af3d25;
+  --color-paper: #fffdf8;
 
-@import "../styles/theme-tokens.css";
-@import "../styles/base-foundation.css";
-@import "../styles/base-transitions.css";
-@import "../styles/custom-animations.css";
-@import "../styles/component.navbar.css";
-@import "../styles/component.surface-noise.css";
-@import "../styles/component.text-editor.css";
-@import "../styles/component.blog-article.css";
+  --font-sans: var(--font-anuphan), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --radius-control: 8px;
+  --radius-panel: 16px;
+
+  /* type.* — desktop scale; mobile overrides below */
+  --text-display: 4rem;
+  --text-display--line-height: 4.5rem;
+  --text-h1: 3rem;
+  --text-h1--line-height: 3.625rem;
+  --text-h2: 2rem;
+  --text-h2--line-height: 2.625rem;
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 2.125rem;
+  --text-body: 1.125rem;
+  --text-body--line-height: 1.8125rem;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.3125rem;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --text-display: 2.5rem;
+    --text-display--line-height: 3.125rem;
+    --text-h1: 2.25rem;
+    --text-h1--line-height: 2.875rem;
+    --text-body: 1rem;
+    --text-body--line-height: 1.625rem;
+  }
+}
+
+html {
+  background: var(--color-ink);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* No body background: the fixed 3D stage sits at a negative z-index and would be painted over. */
+body {
+  font-family: var(--font-sans);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-coral);
+  color: var(--color-ink);
+}
