@@ -47,7 +47,7 @@ export function getSiteUrl(): string {
   if (process.env.NODE_ENV === "production") {
     throw new Error("[seo] NEXT_PUBLIC_APP_URL must be set in production")
   }
-  return "http://localhost:3006"
+  return "http://localhost:3008"
 }
 
 /** Backward-compatible alias. Prefer getSiteUrl(). */
