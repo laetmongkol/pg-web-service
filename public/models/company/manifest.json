@@ -1,0 +1,135 @@
+{
+  "pip-group": {
+    "file": "/models/company/pip-group-v1.glb",
+    "size": [
+      87.08,
+      19.56,
+      57.07
+    ],
+    "heroTarget": [
+      7.13,
+      10.54,
+      13.24
+    ],
+    "tris": 34020,
+    "buildingSize": [
+      69.0,
+      19.5,
+      35.8
+    ]
+  },
+  "sriwilai": {
+    "file": "/models/company/sriwilai-v1.glb",
+    "size": [
+      80.93,
+      31.17,
+      56.0
+    ],
+    "heroTarget": [
+      4.08,
+      8.89,
+      6.3
+    ],
+    "tris": 97184,
+    "buildingSize": [
+      61.22,
+      31.17,
+      38.16
+    ]
+  },
+  "dms": {
+    "file": "/models/company/dms-v1.glb",
+    "size": [
+      65.0,
+      17.35,
+      52.0
+    ],
+    "heroTarget": [
+      3.55,
+      8.88,
+      12.28
+    ],
+    "tris": 28580,
+    "buildingSize": [
+      47.0,
+      16.0,
+      35.6
+    ]
+  },
+  "pip-evolution": {
+    "file": "/models/company/pip-evolution-v1.glb",
+    "size": [
+      49.0,
+      15.5,
+      35.65
+    ],
+    "heroTarget": [
+      2.05,
+      7.76,
+      1.05
+    ],
+    "tris": 10472,
+    "buildingSize": [
+      42.14,
+      15.26,
+      26.08
+    ]
+  },
+  "pg-solution": {
+    "file": "/models/company/pg-solution-v1.glb",
+    "size": [
+      90.0,
+      21.0,
+      33.99
+    ],
+    "heroTarget": [
+      15.31,
+      10.97,
+      12.7
+    ],
+    "tris": 24166,
+    "buildingSize": [
+      70.0,
+      20.75,
+      26.0
+    ]
+  },
+  "sabaidee-finx": {
+    "file": "/models/company/sabaidee-finx-v1.glb",
+    "size": [
+      90.0,
+      46.2,
+      50.64
+    ],
+    "heroTarget": [
+      12.55,
+      18.59,
+      17.1
+    ],
+    "tris": 10908,
+    "buildingSize": [
+      72.31,
+      46.2,
+      34.0
+    ]
+  },
+  "seven-days": {
+    "file": "/models/company/seven-days-v1.glb",
+    "size": [
+      72.04,
+      16.46,
+      60.0
+    ],
+    "heroTarget": [
+      -11.28,
+      7.23,
+      16.19
+    ],
+    "tris": 10414,
+    "buildingSize": [
+      54.0,
+      16.4,
+      37.05
+    ]
+  }
+}

@@ -202,3 +202,47 @@ html.lenis body {
     ),
     color-mix(in oklab, var(--color-night-900) 45%, transparent);
 }
+
+/* Company pages (/[locale]/[company]): the wrapper sets --c-* from companies.ts and every
+   section reads only these, so one set of components wears seven brands. */
+@theme inline {
+  --font-display: var(--c-display, var(--font-anuphan));
+}
+
+/* Brand glass for company pages: the surface colour frosted over the 3D scene, a rim that
+   catches light from the top-left and warms to the brand colour bottom-right. */
+@utility cglass {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(160deg, color-mix(in oklab, var(--c-ink) 7%, transparent), transparent 46%),
+    color-mix(in oklab, var(--c-surface) var(--cglass-fill, 62%), transparent);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, #fff 28%, transparent),
+    0 30px 60px -36px color-mix(in oklab, #000 60%, transparent);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      140deg,
+      color-mix(in oklab, var(--c-ink) 26%, transparent),
+      transparent 45%,
+      color-mix(in oklab, var(--c-primary) 45%, transparent)
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    --cglass-fill: 88%;
+  }
+}
